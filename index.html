@@ -1,1327 +1,877 @@
 <!DOCTYPE html>
-<!-- saved from url=(0109)file:///D:/Usuarios/clucero/Documents/CAPACITACION/EPEC%20%E2%80%94%20Gesti%C3%B3n%20de%20Capacitaciones.html -->
+<!-- saved from url=(0054)file:///D:/Usuarios/clucero/Downloads/index%20(8).html -->
 <html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EPEC — Gestión de Capacitaciones</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com/">
-  <link href="./index_files/css2" rel="stylesheet">
-  <link rel="stylesheet" href="./index_files/tabler-icons.min.css">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --c1: #0F6E56;
-      --c2: #1D9E75;
-      --c3: #E1F5EE;
-      --c4: #9FE1CB;
-      --c5: #085041;
-      --accent: #185FA5;
-      --accent-light: #E6F1FB;
-      --warn: #BA7517;
-      --warn-light: #FAEEDA;
-      --danger: #A32D2D;
-      --danger-light: #FCEBEB;
-      --bg: #FFFFFF;
-      --bg2: #F7F8FA;
-      --bg3: #EFF1F5;
-      --txt: #1A1A1A;
-      --txt2: #6B7280;
-      --txt3: #9CA3AF;
-      --brd: rgba(0,0,0,0.10);
-      --brd2: rgba(0,0,0,0.18);
-      --radius: 12px;
-      --radius-sm: 8px;
-      --shadow: 0 1px 4px rgba(0,0,0,0.08), 0 0 0 0.5px rgba(0,0,0,0.06);
-      --shadow-md: 0 4px 16px rgba(0,0,0,0.10), 0 0 0 0.5px rgba(0,0,0,0.06);
-    }
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EPEC SAU — Gestión de Capacitaciones</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link href="./index_files/css2" rel="stylesheet">
+<link rel="stylesheet" href="./index_files/tabler-icons.min.css">
+<script src="./index_files/chart.umd.min.js.descargar"></script>
+<style>
+:root{--primary:#218570;--primary-dk:#175d4e;--primary-lt:#e4f0ed;--accent:#c0392b;--virtual:#1a5276;--bg:#f0f5f3;--surface:#fff;--border:#cfe0db;--text:#1a2e28;--muted:#5a7a74;--radius:10px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:14px}
+.header{background:var(--primary);color:#fff;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:200;box-shadow:0 2px 10px rgba(33,133,112,.35)}
+.hbrand{display:flex;align-items:center;gap:12px}
+.logo-e{width:38px;height:38px;background:#fff;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;color:var(--primary);font-style:italic;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.htitle{font-size:15px;font-weight:700}
+.htitle span{font-size:11px;opacity:.8;display:block;font-weight:400;margin-top:1px}
+.hstatus{display:flex;align-items:center;gap:6px;font-size:12px;opacity:.85}
+.sdot{width:7px;height:7px;border-radius:50%;background:#6effd6;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.nav-tabs{background:var(--surface);border-bottom:2px solid var(--border);display:flex;overflow-x:auto;padding:0 1rem;gap:2px}
+.nav-tab{padding:13px 18px;font-size:13px;font-weight:500;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:all .15s}
+.nav-tab:hover{color:var(--primary);background:var(--primary-lt);border-radius:6px 6px 0 0}
+.nav-tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:700}
+.nav-tab i{font-size:16px}
+.content{max-width:1140px;margin:0 auto;padding:1.5rem}
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #1A1D23;
-        --bg2: #22262E;
-        --bg3: #2A2F38;
-        --txt: #F0F0F0;
-        --txt2: #9CA3AF;
-        --txt3: #6B7280;
-        --brd: rgba(255,255,255,0.09);
-        --brd2: rgba(255,255,255,0.15);
-        --c3: #0a2e22;
-        --c4: #1a4d38;
-        --accent-light: #0c2240;
-        --warn-light: #2e1e05;
-        --danger-light: #2a0e0e;
-        --shadow: 0 1px 4px rgba(0,0,0,0.3), 0 0 0 0.5px rgba(255,255,255,0.04);
-        --shadow-md: 0 4px 16px rgba(0,0,0,0.4), 0 0 0 0.5px rgba(255,255,255,0.04);
-      }
-    }
+/* CALENDARIO */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:10px}
+.cal-header h2{font-size:19px;font-weight:700;color:var(--primary)}
+.cal-nav{display:flex;gap:8px;align-items:center}
+.cal-legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:1rem;align-items:center}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:500;color:var(--muted)}
+.leg-dot{width:10px;height:10px;border-radius:3px}
+.btn-s{background:var(--surface);color:var(--text);padding:7px 14px;border:1px solid var(--border);border-radius:7px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;font-weight:500}
+.btn-s:hover{background:var(--primary-lt);color:var(--primary);border-color:var(--primary)}
+.view-toggle{display:flex;border:1px solid var(--border);border-radius:7px;overflow:hidden}
+.vt-btn{padding:6px 14px;font-size:12px;border:none;background:var(--surface);cursor:pointer;font-weight:500;color:var(--muted);transition:all .15s}
+.vt-btn.active{background:var(--primary);color:#fff;font-weight:700}
+.week-header{display:grid;grid-template-columns:56px repeat(7,1fr);background:var(--primary);border-radius:var(--radius) var(--radius) 0 0;overflow:hidden}
+.wh-empty{background:var(--primary-dk)}
+.wh-day{padding:10px 6px;text-align:center;color:#fff;border-left:1px solid rgba(255,255,255,.15)}
+.wh-day .wh-name{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;opacity:.85}
+.wh-day .wh-num{font-size:20px;font-weight:800;line-height:1.2;margin-top:2px}
+.wh-day.wh-today{background:rgba(255,255,255,.18)}
+.wh-day .wh-tdot{width:5px;height:5px;border-radius:50%;background:#6effd6;margin:3px auto 0}
+.week-body{display:flex;background:var(--border);border-left:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border);border-radius:0 0 var(--radius) var(--radius);overflow:hidden}
+.hour-col{width:56px;flex-shrink:0;background:#f8fbfa;border-right:1px solid var(--border)}
+.hour-label{height:60px;display:flex;align-items:flex-start;justify-content:flex-end;padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)}
+.days-grid{flex:1;display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border)}
+.day-col{background:var(--surface);position:relative;min-height:480px}
+.day-col.today-col{background:#fefff8}
+.day-col.weekend-col{background:#f8fbfa}
+.hour-stripe{height:60px;border-bottom:1px solid var(--border);position:relative;cursor:pointer}
+.hour-stripe:hover{background:rgba(33,133,112,.06)}
+.hour-stripe.half::after{content:'';position:absolute;top:50%;left:0;right:0;border-top:1px dashed rgba(0,0,0,.06)}
+.cal-evt{position:absolute;left:3px;right:3px;border-radius:5px;padding:3px 5px;font-size:10px;font-weight:600;cursor:pointer;overflow:hidden;z-index:2;border-left:3px solid transparent;line-height:1.3;transition:all .15s}
+.cal-evt:hover{filter:brightness(.92)}
+.cal-evt.presencial{background:#d0ede8;border-left-color:#218570;color:#0d5e4f}
+.cal-evt.virtual{background:#d6e4f0;border-left-color:#1a5276;color:#0a3d62}
+.cal-evt.hibrida,.cal-evt.híbrida{background:#fde8e6;border-left-color:#c0392b;color:#922b21}
+.evt-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.evt-time{font-size:9px;opacity:.7;margin-top:1px}
+.month-view{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border);border-radius:var(--radius);overflow:hidden}
+.mv-head{background:var(--primary);color:#fff;text-align:center;padding:10px 4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.mv-day{background:var(--surface);min-height:100px;padding:5px;transition:background .1s}
+.mv-day.other{background:#f7faf9;opacity:.7}
+.mv-day.today{background:#fffbf5;outline:2px solid var(--accent);outline-offset:-2px}
+.mv-day:hover{background:var(--primary-lt)}
+.mv-num{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:3px}
+.mv-day.today .mv-num{color:var(--accent);font-weight:800}
+.mv-evt{font-size:10px;padding:2px 5px;border-radius:4px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;font-weight:600}
+.mv-evt.presencial{background:#d0ede8;color:#0d5e4f}
+.mv-evt.virtual{background:#d6e4f0;color:#0a3d62}
+.mv-evt.hibrida,.mv-evt.híbrida{background:#fde8e6;color:#922b21}
+.mv-add{font-size:10px;color:var(--primary);cursor:pointer;padding:1px 3px;border-radius:3px;opacity:0;transition:opacity .15s}
+.mv-day:hover .mv-add{opacity:1}
 
-    html { height: 100%; }
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: var(--bg3);
-      color: var(--txt);
-      min-height: 100%;
-      font-size: 14px;
-      line-height: 1.5;
-    }
+/* CURSOS */
+.filters{display:flex;gap:10px;margin-bottom:1.2rem;flex-wrap:wrap}
+.filter-input{flex:1;min-width:180px;padding:8px 12px;border:1px solid var(--border);border-radius:7px;font-size:13px;outline:none;background:var(--surface);color:var(--text)}
+.filter-input:focus{border-color:var(--primary)}
+.curso-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:10px;cursor:pointer;transition:all .15s;border-left:4px solid transparent}
+.curso-card:hover{box-shadow:0 4px 14px rgba(33,133,112,.13);transform:translateY(-1px)}
+.curso-card.presencial{border-left-color:var(--primary)}
+.curso-card.virtual{border-left-color:var(--virtual)}
+.curso-card.hibrida,.curso-card.híbrida{border-left-color:var(--accent)}
+.curso-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.curso-name{font-size:15px;font-weight:700}
+.badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;flex-shrink:0}
+.badge.presencial{background:#d0ede8;color:#0d5e4f}
+.badge.virtual{background:#d6e4f0;color:#0a3d62}
+.badge.hibrida,.badge.híbrida{background:#fde8e6;color:#922b21}
+.curso-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted)}
+.curso-meta span{display:flex;align-items:center;gap:4px}
 
-    /* LAYOUT */
-    .app-shell {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(10,30,25,.45);z-index:300;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto}
+.overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:14px;padding:1.5rem;width:100%;max-width:620px;position:relative;margin:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;cursor:pointer;font-size:22px;color:var(--muted);line-height:1}
+.modal-close:hover{color:var(--accent)}
+.modal h2{font-size:18px;font-weight:700;margin-bottom:1rem;padding-right:30px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+.detail-item label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:2px}
+.detail-item p{font-size:14px;font-weight:500}
+.partic-box{background:var(--bg);border-radius:7px;padding:10px 14px;margin-bottom:1rem}
+.partic-box h4{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.partic-box ul{list-style:none}
+.partic-box li{font-size:13px;padding:3px 0;display:flex;align-items:center;gap:6px}
+.partic-box li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--primary);flex-shrink:0}
+.nov-section{border-top:1px solid var(--border);padding-top:1rem;margin-top:.5rem}
+.nov-section h4{font-size:13px;font-weight:700;margin-bottom:10px}
+.nov-item{background:var(--bg);border-radius:7px;padding:8px 12px;margin-bottom:6px;font-size:13px;border-left:3px solid var(--primary)}
+.nov-fecha{font-size:11px;color:var(--muted);margin-top:3px}
+.nov-form{display:flex;gap:8px;margin-top:8px}
+.nov-form textarea{flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-size:13px;resize:none;height:60px;font-family:inherit}
+.nov-form textarea:focus{outline:none;border-color:var(--primary)}
 
-    /* TOPBAR */
-    .topbar {
-      background: var(--c1);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 0 20px;
-      height: 56px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      flex-shrink: 0;
-    }
-    .topbar-logo {
-      font-size: 16px;
-      font-weight: 600;
-      letter-spacing: -.2px;
-      white-space: nowrap;
-    }
-    .topbar-sub {
-      font-size: 12px;
-      opacity: .7;
-      white-space: nowrap;
-    }
-    .topbar-spacer { flex: 1; }
-    .live-indicator {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      opacity: .85;
-      white-space: nowrap;
-    }
-    .live-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #5DCAA5;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.85)} }
+/* FORMULARIO */
+.form-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem}
+.fsec{font-size:12px;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:1px;margin:1.2rem 0 .8rem;border-top:1px solid var(--border);padding-top:1rem}
+.fsec:first-child{margin-top:0;border-top:none;padding-top:0}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg.full{grid-column:1/-1}
+.fg label{font-size:12px;font-weight:700;color:var(--muted)}
+.fg input,.fg select,.fg textarea{padding:9px 12px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-family:inherit;outline:none;background:var(--surface);color:var(--text);transition:border-color .15s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(33,133,112,.1)}
+.fg textarea{resize:vertical;min-height:80px}
+.btn-p{background:var(--primary);color:#fff;padding:10px 22px;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .15s}
+.btn-p:hover{background:var(--primary-dk);transform:translateY(-1px)}
+.btn-d{background:#fdecea;color:var(--accent);border:1px solid #f5c6c3;border-radius:8px;padding:8px 16px;font-size:13px;cursor:pointer}
+.btn-d:hover{background:#f9d0cc}
 
-    /* NAV */
-    .nav-tabs {
-      background: var(--bg);
-      border-bottom: 1px solid var(--brd);
-      display: flex;
-      overflow-x: auto;
-      scrollbar-width: none;
-      flex-shrink: 0;
-      position: sticky;
-      top: 56px;
-      z-index: 99;
-    }
-    .nav-tabs::-webkit-scrollbar { display: none; }
-    .nav-tab {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      padding: 10px 20px;
-      cursor: pointer;
-      color: var(--txt2);
-      font-size: 12px;
-      font-weight: 500;
-      border-bottom: 2.5px solid transparent;
-      transition: color .18s, border-color .18s;
-      white-space: nowrap;
-      background: none;
-      border-top: none;
-      border-left: none;
-      border-right: none;
-    }
-    .nav-tab i { font-size: 18px; }
-    .nav-tab:hover { color: var(--c2); }
-    .nav-tab.active { color: var(--c1); border-bottom-color: var(--c1); }
+/* REPORTES */
+.rpf{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.2rem;align-items:center}
+.period-btns{display:flex;gap:6px;flex-wrap:wrap}
+.pb{padding:7px 14px;border:1px solid var(--border);border-radius:20px;background:var(--surface);font-size:12px;cursor:pointer;font-weight:600;transition:all .15s}
+.pb:hover,.pb.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:1.5rem}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.2rem;text-align:center;border-top:3px solid var(--primary)}
+.stat-num{font-size:28px;font-weight:800;color:var(--primary)}
+.stat-label{font-size:12px;color:var(--muted);margin-top:3px;font-weight:500}
+.report-table{width:100%;border-collapse:collapse;background:var(--surface);border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)}
+.report-table th{background:var(--primary);color:#fff;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:11px 14px;text-align:left}
+.report-table td{padding:10px 14px;font-size:13px;border-top:1px solid var(--border)}
+.report-table tr:hover td{background:var(--primary-lt)}
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:1.5rem}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem}
+.chart-card.full{grid-column:1/-1}
+.chart-title{font-size:13px;font-weight:700;color:var(--primary);margin-bottom:1rem;display:flex;align-items:center;gap:6px}
+.chart-wrap{position:relative;height:220px}
+.chart-wrap.tall{height:260px}
 
-    /* CONTENT */
-    .content {
-      flex: 1;
-      padding: 20px;
-      max-width: 1100px;
-      width: 100%;
-      margin: 0 auto;
-    }
+/* AULAS */
+.aulas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
+.aula-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all .2s}
+.aula-card:hover{box-shadow:0 6px 20px rgba(33,133,112,.15);transform:translateY(-2px)}
+.ac-head{background:var(--primary);color:#fff;padding:1rem 1.2rem;display:flex;align-items:center;gap:10px}
+.ac-icon{width:38px;height:38px;background:rgba(255,255,255,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.ac-name{font-size:15px;font-weight:700}
+.ac-tipo{font-size:11px;opacity:.8;margin-top:1px}
+.ac-body{padding:1rem 1.2rem}
+.ac-specs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
+.ac-spec{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.ac-spec i{font-size:15px;color:var(--primary)}
+.ac-spec strong{color:var(--text);font-weight:700}
+.ac-disp label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px}
+.disp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:1rem}
+.dia-slot{text-align:center;padding:5px 2px;border-radius:5px;font-size:10px;border:1px solid var(--border)}
+.dia-slot .dia{font-weight:700;margin-bottom:2px}
+.dia-slot.libre{background:#d0ede8;border-color:#9ecfc6;color:#0d5e4f}
+.dia-slot.ocupado{background:#fde8e6;border-color:#f5c6c3;color:#922b21}
+.ac-actions{display:flex;gap:8px}
+.btn-res{flex:1;background:var(--primary);color:#fff;border:none;padding:9px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s}
+.btn-res:hover{background:var(--primary-dk)}
+.btn-vr{padding:9px 14px;border:1px solid var(--border);border-radius:7px;background:var(--surface);font-size:13px;cursor:pointer;color:var(--muted);display:flex;align-items:center;gap:4px;transition:all .15s}
+.btn-vr:hover{background:var(--primary-lt);color:var(--primary);border-color:var(--primary)}
 
-    .pane { display: none; }
-    .pane.active { display: block; }
+/* MODAL RESERVA — MÓDULOS MÚLTIPLES */
+.res-modal{max-width:560px}
+.res-fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modulos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px}
+.modulo-btn{padding:10px 6px;border:1.5px solid var(--border);border-radius:8px;background:var(--surface);font-size:11px;cursor:pointer;transition:all .15s;font-weight:600;text-align:center;color:var(--muted);line-height:1.4}
+.modulo-btn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-lt)}
+.modulo-btn.sel{background:var(--primary);border-color:var(--primary-dk);color:#fff}
+.modulos-tip{font-size:11px;color:var(--muted);margin-top:6px;font-style:italic}
+.seleccion-resumen{background:var(--primary-lt);border:1px solid var(--primary);border-radius:7px;padding:8px 12px;font-size:12px;font-weight:600;color:var(--primary-dk);margin-top:8px;display:none}
+.seleccion-resumen.visible{display:block}
+.res-list h4{font-size:13px;font-weight:700;margin-bottom:8px;color:var(--muted)}
+.res-item{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--bg);border-radius:7px;margin-bottom:5px;font-size:12px}
+.res-item strong{display:block;font-size:13px}
 
-    /* CARDS */
-    .card {
-      background: var(--bg);
-      border-radius: var(--radius);
-      border: 1px solid var(--brd);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-    .card-header {
-      padding: 14px 18px;
-      border-bottom: 1px solid var(--brd);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 600;
-      font-size: 14px;
-    }
-    .card-header i { color: var(--c1); font-size: 18px; }
-    .card-body { padding: 18px; }
-
-    /* CALENDAR */
-    .cal-controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-    .cal-controls h2 {
-      font-size: 16px;
-      font-weight: 600;
-      flex: 1;
-      text-align: center;
-    }
-    .btn-icon {
-      background: var(--bg);
-      border: 1px solid var(--brd);
-      color: var(--txt);
-      width: 34px;
-      height: 34px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      transition: background .15s;
-    }
-    .btn-icon:hover { background: var(--bg2); }
-
-    .cal-grid {
-      display: grid;
-      grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 4px;
-    }
-    .cal-day-name {
-      text-align: center;
-      font-size: 11px;
-      color: var(--txt2);
-      font-weight: 600;
-      padding: 5px 0;
-      text-transform: uppercase;
-      letter-spacing: .5px;
-    }
-    .cal-day {
-      min-height: 72px;
-      background: var(--bg2);
-      border-radius: var(--radius-sm);
-      padding: 5px;
-      border: 1px solid var(--brd);
-      cursor: pointer;
-      transition: border-color .15s;
-      overflow: hidden;
-    }
-    .cal-day:hover { border-color: var(--c2); }
-    .cal-day.today { border-color: var(--c2); background: var(--c3); }
-    .cal-day.other-month .cal-day-num { opacity: .3; }
-    .cal-day.selected { border-color: var(--c1); border-width: 2px; }
-    .cal-day-num { font-size: 12px; font-weight: 600; margin-bottom: 3px; }
-    .cal-event {
-      font-size: 10px;
-      padding: 2px 4px;
-      border-radius: 3px;
-      margin-bottom: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .ev-presencial { background: #B5D4F4; color: #0C447C; }
-    .ev-virtual    { background: #F4C0D1; color: #72243E; }
-    .ev-hibrida    { background: #9FE1CB; color: #085041; }
-    .ev-more { font-size: 10px; color: var(--txt3); }
-
-    /* DETAIL PANEL */
-    .detail-panel {
-      margin-top: 16px;
-      background: var(--bg);
-      border-radius: var(--radius);
-      border: 1px solid var(--brd);
-      box-shadow: var(--shadow-md);
-      overflow: hidden;
-    }
-    .detail-panel-header {
-      background: var(--c1);
-      color: #fff;
-      padding: 14px 18px;
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-    }
-    .detail-panel-header h3 { font-size: 15px; font-weight: 600; flex: 1; }
-    .btn-close {
-      background: rgba(255,255,255,.15);
-      border: none;
-      color: #fff;
-      border-radius: 6px;
-      width: 28px;
-      height: 28px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      flex-shrink: 0;
-    }
-    .btn-close:hover { background: rgba(255,255,255,.25); }
-    .detail-body { padding: 16px 18px; }
-    .detail-fields {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-    .field-item { display: flex; flex-direction: column; gap: 2px; }
-    .field-label {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--txt2);
-      text-transform: uppercase;
-      letter-spacing: .4px;
-    }
-    .field-value { font-size: 13px; color: var(--txt); }
-    .participants-wrap { margin-bottom: 14px; }
-    .participants-wrap .field-label { margin-bottom: 6px; }
-    .participant-tags { display: flex; flex-wrap: wrap; gap: 5px; }
-    .participant-tag {
-      background: var(--c3);
-      color: var(--c5);
-      font-size: 11px;
-      padding: 3px 9px;
-      border-radius: 20px;
-      font-weight: 500;
-    }
-    .novedad-block {
-      background: var(--warn-light);
-      border-left: 3px solid var(--warn);
-      border-radius: 0 6px 6px 0;
-      padding: 10px 12px;
-      margin-bottom: 12px;
-    }
-    .novedad-block-label {
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--warn);
-      text-transform: uppercase;
-      letter-spacing: .5px;
-      margin-bottom: 5px;
-    }
-    .novedad-block p { font-size: 12px; color: var(--txt); white-space: pre-wrap; }
-    .novedad-add {
-      display: flex;
-      gap: 6px;
-    }
-    .novedad-add input {
-      flex: 1;
-      padding: 7px 10px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--brd2);
-      background: var(--bg);
-      color: var(--txt);
-      font-size: 13px;
-      font-family: inherit;
-    }
-    .novedad-add input:focus { outline: none; border-color: var(--c2); }
-    .btn-add-novedad {
-      background: var(--warn);
-      color: #fff;
-      border: none;
-      padding: 7px 14px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 500;
-      font-family: inherit;
-      white-space: nowrap;
-    }
-    .btn-add-novedad:hover { background: #9a6212; }
-
-    /* BADGES */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      font-size: 11px;
-      font-weight: 500;
-      padding: 2px 9px;
-      border-radius: 20px;
-    }
-    .badge-green  { background: #C0DD97; color: #27500A; }
-    .badge-blue   { background: #B5D4F4; color: #0C447C; }
-    .badge-pink   { background: #F4C0D1; color: #72243E; }
-    .badge-amber  { background: #FAC775; color: #412402; }
-
-    /* COURSE LIST */
-    .search-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 14px;
-      flex-wrap: wrap;
-    }
-    .search-row input,
-    .search-row select {
-      padding: 8px 12px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--brd2);
-      background: var(--bg);
-      color: var(--txt);
-      font-size: 13px;
-      font-family: inherit;
-    }
-    .search-row input { flex: 1; min-width: 160px; }
-    .search-row input:focus,
-    .search-row select:focus { outline: none; border-color: var(--c2); }
-
-    .course-card {
-      background: var(--bg);
-      border: 1px solid var(--brd);
-      border-radius: var(--radius);
-      padding: 14px 16px;
-      margin-bottom: 8px;
-      cursor: pointer;
-      transition: border-color .15s, box-shadow .15s;
-    }
-    .course-card:hover { border-color: var(--c2); box-shadow: var(--shadow-md); }
-    .course-card-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-    .course-name { font-size: 14px; font-weight: 600; }
-    .course-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .meta-item {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 12px;
-      color: var(--txt2);
-    }
-    .meta-item i { font-size: 14px; }
-    .empty-state {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--txt2);
-    }
-    .empty-state i { font-size: 40px; opacity: .3; display: block; margin-bottom: 10px; }
-
-    /* FORM */
-    .form-section-title {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--txt2);
-      text-transform: uppercase;
-      letter-spacing: .5px;
-      margin: 18px 0 10px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid var(--brd);
-    }
-    .form-section-title:first-child { margin-top: 0; }
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    .form-group { display: flex; flex-direction: column; gap: 4px; }
-    .form-group.full { grid-column: 1 / -1; }
-    .form-group label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--txt2);
-    }
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      padding: 8px 10px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--brd2);
-      background: var(--bg);
-      color: var(--txt);
-      font-size: 13px;
-      font-family: inherit;
-      transition: border-color .15s;
-    }
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus { outline: none; border-color: var(--c2); }
-    .form-group textarea { resize: vertical; min-height: 80px; }
-    .required-mark { color: var(--danger); }
-
-    .btn-primary {
-      background: var(--c1);
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      font-family: inherit;
-      width: 100%;
-      margin-top: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: background .15s;
-    }
-    .btn-primary:hover { background: var(--c2); }
-    .save-feedback {
-      margin-top: 10px;
-      font-size: 13px;
-      text-align: center;
-      min-height: 20px;
-      font-weight: 500;
-    }
-
-    /* REPORTS */
-    .report-bar {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
-      align-items: center;
-    }
-    .report-bar select {
-      padding: 8px 12px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--brd2);
-      background: var(--bg);
-      color: var(--txt);
-      font-size: 13px;
-      font-family: inherit;
-    }
-    .btn-export {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      padding: 8px 16px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 600;
-      font-family: inherit;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-left: auto;
-      transition: opacity .15s;
-    }
-    .btn-export:hover { opacity: .88; }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-    .stat-card {
-      background: var(--bg);
-      border: 1px solid var(--brd);
-      border-radius: var(--radius);
-      padding: 14px;
-      text-align: center;
-    }
-    .stat-card .num {
-      font-size: 26px;
-      font-weight: 700;
-      color: var(--c1);
-      line-height: 1;
-    }
-    .stat-card .lbl {
-      font-size: 11px;
-      color: var(--txt2);
-      margin-top: 4px;
-      font-weight: 500;
-    }
-
-    .rep-title {
-      font-size: 13px;
-      color: var(--txt2);
-      margin-bottom: 10px;
-    }
-
-    .table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--brd); }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-      background: var(--bg);
-      table-layout: fixed;
-    }
-    table th {
-      text-align: left;
-      padding: 9px 12px;
-      background: var(--bg2);
-      color: var(--txt2);
-      font-weight: 700;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: .4px;
-      border-bottom: 1px solid var(--brd);
-      white-space: nowrap;
-    }
-    table td {
-      padding: 9px 12px;
-      border-bottom: 1px solid var(--brd);
-      color: var(--txt);
-      vertical-align: middle;
-    }
-    table tr:last-child td { border-bottom: none; }
-    table tr:hover td { background: var(--bg2); }
-    table td.overflow-cell {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 0;
-    }
-
-    /* FOOTER */
-    .footer {
-      background: var(--bg);
-      border-top: 1px solid var(--brd);
-      padding: 8px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 11px;
-      color: var(--txt3);
-      flex-shrink: 0;
-    }
-    .footer-sync { color: var(--c2); font-weight: 500; }
-
-    /* LOADING */
-    #loading-overlay {
-      position: fixed;
-      inset: 0;
-      background: var(--bg);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      z-index: 999;
-    }
-    .spinner {
-      width: 36px;
-      height: 36px;
-      border: 3px solid var(--brd);
-      border-top-color: var(--c1);
-      border-radius: 50%;
-      animation: spin .8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* RESPONSIVE */
-    @media (max-width: 600px) {
-      .content { padding: 12px; }
-      .form-grid { grid-template-columns: 1fr; }
-      .form-group.full { grid-column: 1; }
-      .detail-fields { grid-template-columns: 1fr; }
-      .cal-day { min-height: 50px; }
-      .topbar-sub { display: none; }
-      table { font-size: 11px; }
-    }
-  </style>
+.empty{text-align:center;padding:3rem 1rem;color:var(--muted)}
+.empty i{font-size:48px;margin-bottom:1rem;opacity:.3;display:block}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:#1a2e28;color:#fff;padding:12px 20px;border-radius:9px;font-size:13px;z-index:1000;display:flex;align-items:center;gap:8px;transform:translateY(100px);opacity:0;transition:all .3s;border-left:4px solid var(--primary)}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.error{border-left-color:var(--accent)}
+.footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--muted);border-top:1px solid var(--border);margin-top:2rem;background:var(--surface)}
+.footer strong{color:var(--primary)}
+@media print{.header,.nav-tabs,.rpf,.footer,.btn-p,.btn-s{display:none!important}body{background:#fff}#section-reportes{display:block!important}.print-hdr{display:block!important}}
+.print-hdr{display:none;text-align:center;margin-bottom:1.5rem}
+.print-hdr h1{font-size:20px;color:var(--primary)}
+@media(max-width:640px){.fgrid,.detail-grid,.res-fgrid,.charts-grid,.modulos-grid{grid-template-columns:1fr}.charts-grid .full{grid-column:1}.content{padding:1rem}}
+</style>
 </head>
 <body>
 
+<header class="header">
+  <div class="hbrand">
+    <div class="logo-e">E</div>
+    <div class="htitle">EPEC SAU · Centro de Formación Profesional<span>Gestión de Capacitaciones</span></div>
+  </div>
+  <div class="hstatus"><div class="sdot"></div><span id="user-count">7 usuarios conectados</span></div>
+</header>
 
+<nav class="nav-tabs">
+  <button class="nav-tab" onclick="showTab(&#39;calendario&#39;)" id="tab-calendario"><i class="ti ti-calendar"></i>Calendario</button>
+  <button class="nav-tab" onclick="showTab(&#39;cursos&#39;)" id="tab-cursos"><i class="ti ti-list"></i>Cursos</button>
+  <button class="nav-tab" onclick="showTab(&#39;nuevo&#39;)" id="tab-nuevo"><i class="ti ti-plus"></i>Nuevo curso</button>
+  <button class="nav-tab" onclick="showTab(&#39;reportes&#39;)" id="tab-reportes"><i class="ti ti-chart-bar"></i>Reportes</button>
+  <button class="nav-tab active" onclick="showTab(&#39;aulas&#39;)" id="tab-aulas"><i class="ti ti-door"></i>Reservá tu aula</button>
+</nav>
 
-<div class="app-shell">
-
-  <header class="topbar">
-    <i class="ti ti-school" style="font-size:22px" aria-hidden="true"></i>
-    <div>
-      <div class="topbar-logo">EPEC · Centro de Formación Profesional</div>
-      <div class="topbar-sub">Gestión de Capacitaciones</div>
-    </div>
-    <div class="topbar-spacer"></div>
-    <div class="live-indicator">
-      <div class="live-dot"></div>
-      <span id="live-users">1 usuario conectado</span>
-    </div>
-  </header>
-
-  <nav class="nav-tabs" role="tablist">
-    <button class="nav-tab active" onclick="showTab(&#39;calendario&#39;,this)" role="tab" aria-selected="true">
-      <i class="ti ti-calendar" aria-hidden="true"></i>Calendario
-    </button>
-    <button class="nav-tab" onclick="showTab(&#39;cursos&#39;,this)" role="tab" aria-selected="false">
-      <i class="ti ti-list" aria-hidden="true"></i>Cursos
-    </button>
-    <button class="nav-tab" onclick="showTab(&#39;nuevo&#39;,this)" role="tab" aria-selected="false">
-      <i class="ti ti-circle-plus" aria-hidden="true"></i>Nuevo curso
-    </button>
-    <button class="nav-tab" onclick="showTab(&#39;reportes&#39;,this)" role="tab" aria-selected="false">
-      <i class="ti ti-chart-bar" aria-hidden="true"></i>Reportes
-    </button>
-  </nav>
-
-  <main class="content">
-
-    <!-- ═══════════════ CALENDARIO ═══════════════ -->
-    <div id="tab-calendario" class="pane active">
-      <div class="cal-controls">
-        <button class="btn-icon" onclick="changeMonth(-1)" aria-label="Mes anterior"><i class="ti ti-chevron-left"></i></button>
-        <h2 id="cal-title">Mayo 2026</h2>
-        <button class="btn-icon" onclick="changeMonth(1)" aria-label="Mes siguiente"><i class="ti ti-chevron-right"></i></button>
+<!-- CALENDARIO -->
+<div id="section-calendario" class="content" style="display: none;">
+  <div class="cal-header">
+    <h2 id="cal-titulo">Semana: Lun 25 — Dom 31 de Mayo 2026</h2>
+    <div class="cal-nav">
+      <div class="view-toggle">
+        <button class="vt-btn active" id="vt-semana" onclick="setVista(&#39;semana&#39;)"><i class="ti ti-layout-columns"></i>Semana</button>
+        <button class="vt-btn" id="vt-mes" onclick="setVista(&#39;mes&#39;)"><i class="ti ti-calendar-month"></i>Mes</button>
       </div>
-      <div class="cal-grid" id="cal-names" aria-label="Días de la semana"><div class="cal-day-name">Dom</div><div class="cal-day-name">Lun</div><div class="cal-day-name">Mar</div><div class="cal-day-name">Mié</div><div class="cal-day-name">Jue</div><div class="cal-day-name">Vie</div><div class="cal-day-name">Sáb</div></div>
-      <div class="cal-grid" id="cal-body" role="grid" aria-label="Calendario de cursos"><div class="cal-day other-month"><div class="cal-day-num">26</div></div><div class="cal-day other-month"><div class="cal-day-num">27</div></div><div class="cal-day other-month"><div class="cal-day-num">28</div></div><div class="cal-day other-month"><div class="cal-day-num">29</div></div><div class="cal-day other-month"><div class="cal-day-num">30</div></div><div class="cal-day" onclick="selectCalDay(1)"><div class="cal-day-num">1</div></div><div class="cal-day" onclick="selectCalDay(2)"><div class="cal-day-num">2</div></div><div class="cal-day" onclick="selectCalDay(3)"><div class="cal-day-num">3</div></div><div class="cal-day" onclick="selectCalDay(4)"><div class="cal-day-num">4</div></div><div class="cal-day" onclick="selectCalDay(5)"><div class="cal-day-num">5</div><div class="cal-event ev-presencial" onclick="showCalDetail(event,&#39;sample1&#39;)">Seguridad Eléctrica …</div></div><div class="cal-day" onclick="selectCalDay(6)"><div class="cal-day-num">6</div><div class="cal-event ev-presencial" onclick="showCalDetail(event,&#39;sample1&#39;)">Seguridad Eléctrica …</div></div><div class="cal-day" onclick="selectCalDay(7)"><div class="cal-day-num">7</div><div class="cal-event ev-presencial" onclick="showCalDetail(event,&#39;sample1&#39;)">Seguridad Eléctrica …</div></div><div class="cal-day" onclick="selectCalDay(8)"><div class="cal-day-num">8</div></div><div class="cal-day" onclick="selectCalDay(9)"><div class="cal-day-num">9</div></div><div class="cal-day" onclick="selectCalDay(10)"><div class="cal-day-num">10</div></div><div class="cal-day" onclick="selectCalDay(11)"><div class="cal-day-num">11</div></div><div class="cal-day" onclick="selectCalDay(12)"><div class="cal-day-num">12</div><div class="cal-event ev-hibrida" onclick="showCalDetail(event,&#39;sample2&#39;)">Excel Avanzado para …</div></div><div class="cal-day" onclick="selectCalDay(13)"><div class="cal-day-num">13</div><div class="cal-event ev-hibrida" onclick="showCalDetail(event,&#39;sample2&#39;)">Excel Avanzado para …</div></div><div class="cal-day" onclick="selectCalDay(14)"><div class="cal-day-num">14</div><div class="cal-event ev-hibrida" onclick="showCalDetail(event,&#39;sample2&#39;)">Excel Avanzado para …</div></div><div class="cal-day" onclick="selectCalDay(15)"><div class="cal-day-num">15</div></div><div class="cal-day" onclick="selectCalDay(16)"><div class="cal-day-num">16</div></div><div class="cal-day" onclick="selectCalDay(17)"><div class="cal-day-num">17</div></div><div class="cal-day" onclick="selectCalDay(18)"><div class="cal-day-num">18</div></div><div class="cal-day" onclick="selectCalDay(19)"><div class="cal-day-num">19</div></div><div class="cal-day today" onclick="selectCalDay(20)"><div class="cal-day-num">20</div><div class="cal-event ev-virtual" onclick="showCalDetail(event,&#39;sample3&#39;)">Liderazgo y Gestión …</div></div><div class="cal-day" onclick="selectCalDay(21)"><div class="cal-day-num">21</div><div class="cal-event ev-virtual" onclick="showCalDetail(event,&#39;sample3&#39;)">Liderazgo y Gestión …</div></div><div class="cal-day" onclick="selectCalDay(22)"><div class="cal-day-num">22</div></div><div class="cal-day" onclick="selectCalDay(23)"><div class="cal-day-num">23</div></div><div class="cal-day" onclick="selectCalDay(24)"><div class="cal-day-num">24</div></div><div class="cal-day" onclick="selectCalDay(25)"><div class="cal-day-num">25</div></div><div class="cal-day" onclick="selectCalDay(26)"><div class="cal-day-num">26</div></div><div class="cal-day" onclick="selectCalDay(27)"><div class="cal-day-num">27</div></div><div class="cal-day" onclick="selectCalDay(28)"><div class="cal-day-num">28</div></div><div class="cal-day" onclick="selectCalDay(29)"><div class="cal-day-num">29</div></div><div class="cal-day" onclick="selectCalDay(30)"><div class="cal-day-num">30</div></div><div class="cal-day" onclick="selectCalDay(31)"><div class="cal-day-num">31</div></div><div class="cal-day other-month"><div class="cal-day-num">1</div></div><div class="cal-day other-month"><div class="cal-day-num">2</div></div><div class="cal-day other-month"><div class="cal-day-num">3</div></div><div class="cal-day other-month"><div class="cal-day-num">4</div></div><div class="cal-day other-month"><div class="cal-day-num">5</div></div><div class="cal-day other-month"><div class="cal-day-num">6</div></div></div>
-      <div id="cal-detail"></div>
+      <button class="btn-s" onclick="navCal(-1)"><i class="ti ti-chevron-left"></i></button>
+      <button class="btn-s" onclick="navCalHoy()">Hoy</button>
+      <button class="btn-s" onclick="navCal(1)"><i class="ti ti-chevron-right"></i></button>
     </div>
-
-    <!-- ═══════════════ LISTA CURSOS ═══════════════ -->
-    <div id="tab-cursos" class="pane">
-      <div class="search-row">
-        <input type="search" id="search-input" placeholder="Buscar por nombre, docente, gerencia..." oninput="filterCourses()" aria-label="Buscar cursos">
-        <select id="filter-ger" onchange="filterCourses()" aria-label="Filtrar por gerencia">
-          <option value="">Todas las gerencias</option>
-          <option>Gerencia de Distribución</option>
-          <option>Gerencia de Generación</option>
-          <option>Gerencia de RR.HH.</option>
-          <option>Gerencia de Sistemas</option>
-          <option>Gerencia Comercial</option>
-          <option>Gerencia de Planificación</option>
-          <option>Dirección General</option>
-        </select>
-        <select id="filter-mod" onchange="filterCourses()" aria-label="Filtrar por modalidad">
-          <option value="">Todas las modalidades</option>
-          <option>Presencial</option>
-          <option>Virtual</option>
-          <option>Híbrida</option>
-        </select>
-      </div>
-      <div id="course-list"><div class="course-card" onclick="showListDetail(&#39;sample1&#39;)">
-        <div class="course-card-top">
-          <div class="course-name">Seguridad Eléctrica en Alta Tensión</div>
-          <span class="badge badge-blue">Presencial</span>
-        </div>
-        <div class="course-meta">
-          <span class="meta-item"><i class="ti ti-user" aria-hidden="true"></i>Ing. Roberto Díaz</span>
-          <span class="meta-item"><i class="ti ti-building" aria-hidden="true"></i>EPEC Interno</span>
-          <span class="meta-item"><i class="ti ti-sitemap" aria-hidden="true"></i>Gerencia de Distribución</span>
-          <span class="meta-item"><i class="ti ti-calendar" aria-hidden="true"></i>2026-05-05 → 2026-05-07</span>
-          <span class="meta-item"><i class="ti ti-clock" aria-hidden="true"></i>24 hs</span>
-          <span class="meta-item"><i class="ti ti-users" aria-hidden="true"></i>4 participantes</span>
-        </div>
-      </div><div class="course-card" onclick="showListDetail(&#39;sample2&#39;)">
-        <div class="course-card-top">
-          <div class="course-name">Excel Avanzado para Gestión</div>
-          <span class="badge badge-green">Híbrida</span>
-        </div>
-        <div class="course-meta">
-          <span class="meta-item"><i class="ti ti-user" aria-hidden="true"></i>Prof. Sandra Ruiz</span>
-          <span class="meta-item"><i class="ti ti-building" aria-hidden="true"></i>UTN Córdoba</span>
-          <span class="meta-item"><i class="ti ti-sitemap" aria-hidden="true"></i>Gerencia de RR.HH.</span>
-          <span class="meta-item"><i class="ti ti-calendar" aria-hidden="true"></i>2026-05-12 → 2026-05-14</span>
-          <span class="meta-item"><i class="ti ti-clock" aria-hidden="true"></i>16 hs</span>
-          <span class="meta-item"><i class="ti ti-users" aria-hidden="true"></i>3 participantes</span>
-        </div>
-      </div><div class="course-card" onclick="showListDetail(&#39;sample3&#39;)">
-        <div class="course-card-top">
-          <div class="course-name">Liderazgo y Gestión de Equipos</div>
-          <span class="badge badge-pink">Virtual</span>
-        </div>
-        <div class="course-meta">
-          <span class="meta-item"><i class="ti ti-user" aria-hidden="true"></i>Lic. Mónica Vera</span>
-          <span class="meta-item"><i class="ti ti-building" aria-hidden="true"></i>Capacitar SA</span>
-          <span class="meta-item"><i class="ti ti-sitemap" aria-hidden="true"></i>Dirección General</span>
-          <span class="meta-item"><i class="ti ti-calendar" aria-hidden="true"></i>2026-05-20 → 2026-05-21</span>
-          <span class="meta-item"><i class="ti ti-clock" aria-hidden="true"></i>12 hs</span>
-          <span class="meta-item"><i class="ti ti-users" aria-hidden="true"></i>2 participantes</span>
-        </div>
-      </div></div>
-      <div id="course-detail-list"></div>
+  </div>
+  <div class="cal-legend">
+    <span class="leg-item"><span class="leg-dot" style="background:#218570"></span>Presencial</span>
+    <span class="leg-item"><span class="leg-dot" style="background:#1a5276"></span>Virtual</span>
+    <span class="leg-item"><span class="leg-dot" style="background:#c0392b"></span>Híbrida</span>
+    <span style="font-size:12px;color:var(--muted)"><i class="ti ti-info-circle" style="vertical-align:-2px"></i> Hacé clic en cualquier franja horaria para agregar una capacitación</span>
+  </div>
+  <div id="cal-semana-wrap">
+    <div class="week-header" id="week-header"><div class="wh-empty"></div><div class="wh-day"><div class="wh-name">Lun</div><div class="wh-num">25</div></div><div class="wh-day"><div class="wh-name">Mar</div><div class="wh-num">26</div></div><div class="wh-day"><div class="wh-name">Mié</div><div class="wh-num">27</div></div><div class="wh-day"><div class="wh-name">Jue</div><div class="wh-num">28</div></div><div class="wh-day"><div class="wh-name">Vie</div><div class="wh-num">29</div></div><div class="wh-day"><div class="wh-name">Sáb</div><div class="wh-num">30</div></div><div class="wh-day"><div class="wh-name">Dom</div><div class="wh-num">31</div></div></div>
+    <div class="week-body">
+      <div class="hour-col" id="hour-col"><div class="hour-label">7:00</div><div class="hour-label">8:00</div><div class="hour-label">9:00</div><div class="hour-label">10:00</div><div class="hour-label">11:00</div><div class="hour-label">12:00</div><div class="hour-label">13:00</div><div class="hour-label">14:00</div><div class="hour-label">15:00</div><div class="hour-label">16:00</div><div class="hour-label">17:00</div><div class="hour-label">18:00</div><div class="hour-label">19:00</div></div>
+      <div class="days-grid" id="days-grid"><div class="day-col" style="position: relative;"><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div></div><div class="day-col" style="position: relative;"><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div></div><div class="day-col" style="position: relative;"><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="cal-evt presencial" style="top: 8px; height: 114px;"><div class="evt-name">SISTEMA  SCADA Y ANALISIS DE FALLAS - CENTRO OPERATIVO DE DISTRIBUCION (COD)</div></div><div class="cal-evt presencial" style="top: 60px; height: 356px;"><div class="evt-name">SISTEMA SCADA Y ANALISIS DE FALLAS</div><div class="evt-time">08:00–14:00</div></div></div><div class="day-col" style="position: relative;"><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="cal-evt presencial" style="top: 8px; height: 114px;"><div class="evt-name">SISTEMA  SCADA Y ANALISIS DE FALLAS - CENTRO OPERATIVO DE DISTRIBUCION (COD)</div></div><div class="cal-evt presencial" style="top: 60px; height: 356px;"><div class="evt-name">SISTEMA SCADA Y ANALISIS DE FALLAS</div><div class="evt-time">08:00–14:00</div></div></div><div class="day-col" style="position: relative;"><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="cal-evt presencial" style="top: 8px; height: 114px;"><div class="evt-name">SISTEMA  SCADA Y ANALISIS DE FALLAS - CENTRO OPERATIVO DE DISTRIBUCION (COD)</div></div><div class="cal-evt presencial" style="top: 60px; height: 356px;"><div class="evt-name">SISTEMA SCADA Y ANALISIS DE FALLAS</div><div class="evt-time">08:00–14:00</div></div></div><div class="day-col weekend-col" style="position: relative;"><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div></div><div class="day-col weekend-col" style="position: relative;"><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div></div></div>
     </div>
-
-    <!-- ═══════════════ NUEVO CURSO ═══════════════ -->
-    <div id="tab-nuevo" class="pane">
-      <div class="card">
-        <div class="card-header">
-          <i class="ti ti-circle-plus" aria-hidden="true"></i>
-          Registrar nueva capacitación
-        </div>
-        <div class="card-body">
-
-          <div class="form-section-title">Información general</div>
-          <div class="form-grid">
-            <div class="form-group full">
-              <label for="f-nombre">Nombre de la capacitación <span class="required-mark">*</span></label>
-              <input id="f-nombre" type="text" placeholder="Ej: Seguridad en Alta Tensión" autocomplete="off">
-            </div>
-            <div class="form-group">
-              <label for="f-modalidad">Modalidad <span class="required-mark">*</span></label>
-              <select id="f-modalidad">
-                <option>Presencial</option>
-                <option>Virtual</option>
-                <option>Híbrida</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="f-horas">Duración (horas) <span class="required-mark">*</span></label>
-              <input id="f-horas" type="number" placeholder="Ej: 16" min="1">
-            </div>
-            <div class="form-group">
-              <label for="f-inicio">Fecha de inicio <span class="required-mark">*</span></label>
-              <input id="f-inicio" type="date">
-            </div>
-            <div class="form-group">
-              <label for="f-fin">Fecha de finalización <span class="required-mark">*</span></label>
-              <input id="f-fin" type="date">
-            </div>
-          </div>
-
-          <div class="form-section-title">Responsables y origen</div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label for="f-docente">Docente / Instructor <span class="required-mark">*</span></label>
-              <input id="f-docente" type="text" placeholder="Nombre completo">
-            </div>
-            <div class="form-group">
-              <label for="f-institucion">Institución que dicta <span class="required-mark">*</span></label>
-              <input id="f-institucion" type="text" placeholder="Ej: UTN Córdoba, EPEC Interno...">
-            </div>
-            <div class="form-group">
-              <label for="f-gerencia">Gerencia requirente <span class="required-mark">*</span></label>
-              <select id="f-gerencia">
-                <option value="">Seleccionar gerencia...</option>
-                <option>Gerencia de Distribución</option>
-                <option>Gerencia de Generación</option>
-                <option>Gerencia de RR.HH.</option>
-                <option>Gerencia de Sistemas</option>
-                <option>Gerencia Comercial</option>
-                <option>Gerencia de Planificación</option>
-                <option>Dirección General</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="f-cupo">Cupo máximo de participantes</label>
-              <input id="f-cupo" type="number" placeholder="Ej: 20" min="1">
-            </div>
-          </div>
-
-          <div class="form-section-title">Participantes</div>
-          <div class="form-grid">
-            <div class="form-group full">
-              <label for="f-participantes">Listado de participantes (uno por línea o separados por coma)</label>
-              <textarea id="f-participantes" rows="4" placeholder="Juan Pérez
-María García
-Carlos López, Ana Martínez"></textarea>
-            </div>
-          </div>
-
-          <div class="form-section-title">Observaciones</div>
-          <div class="form-grid">
-            <div class="form-group full">
-              <label for="f-novedad">Novedades / Observaciones iniciales</label>
-              <textarea id="f-novedad" rows="3" placeholder="Requisitos previos, materiales, sala, link, etc."></textarea>
-            </div>
-          </div>
-
-          <button class="btn-primary" onclick="saveCourse()">
-            <i class="ti ti-device-floppy" aria-hidden="true"></i> Guardar capacitación
-          </button>
-          <div class="save-feedback" id="save-msg" role="alert"></div>
-        </div>
-      </div>
+  </div>
+  <div id="cal-mes-wrap" style="display:none">
+    <div class="month-view" id="month-view">
+      <div class="mv-head">Dom</div><div class="mv-head">Lun</div><div class="mv-head">Mar</div>
+      <div class="mv-head">Mié</div><div class="mv-head">Jue</div><div class="mv-head">Vie</div><div class="mv-head">Sáb</div>
     </div>
-
-    <!-- ═══════════════ REPORTES ═══════════════ -->
-    <div id="tab-reportes" class="pane">
-      <div class="report-bar">
-        <select id="rep-period" onchange="renderReport()" aria-label="Período del reporte">
-          <option value="diario">Reporte diario</option>
-          <option value="semanal" selected="">Reporte semanal</option>
-          <option value="quincenal">Reporte quincenal</option>
-          <option value="mensual">Reporte mensual</option>
-        </select>
-        <select id="rep-gerencia" onchange="renderReport()" aria-label="Gerencia">
-          <option value="">Todas las gerencias</option>
-          <option>Gerencia de Distribución</option>
-          <option>Gerencia de Generación</option>
-          <option>Gerencia de RR.HH.</option>
-          <option>Gerencia de Sistemas</option>
-          <option>Gerencia Comercial</option>
-          <option>Gerencia de Planificación</option>
-          <option>Dirección General</option>
-        </select>
-        <button class="btn-export" onclick="exportCSV()">
-          <i class="ti ti-download" aria-hidden="true"></i> Exportar CSV
-        </button>
-      </div>
-      <div class="stats-grid" id="rep-stats"><div class="stat-card"><div class="num">1</div><div class="lbl">Cursos</div></div><div class="stat-card"><div class="num">2</div><div class="lbl">Participantes</div></div><div class="stat-card"><div class="num">12</div><div class="lbl">Horas totales</div></div><div class="stat-card"><div class="num">1</div><div class="lbl">Gerencias</div></div></div>
-      <p class="rep-title" id="rep-title">Mostrando 1 capacitacion de esta semana</p>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th style="width:22%">Capacitación</th>
-              <th style="width:14%">Docente</th>
-              <th style="width:16%">Gerencia</th>
-              <th style="width:14%">Institución</th>
-              <th style="width:9%">Inicio</th>
-              <th style="width:9%">Fin</th>
-              <th style="width:6%">Hs</th>
-              <th style="width:6%">Partic.</th>
-              <th style="width:11%">Modalidad</th>
-            </tr>
-          </thead>
-          <tbody id="rep-body"><tr>
-            <td class="overflow-cell" title="Liderazgo y Gestión de Equipos">Liderazgo y Gestión de Equipos</td>
-            <td class="overflow-cell">Lic. Mónica Vera</td>
-            <td class="overflow-cell">Dirección General</td>
-            <td class="overflow-cell">Capacitar SA</td>
-            <td>2026-05-20</td>
-            <td>2026-05-21</td>
-            <td>12</td>
-            <td>2</td>
-            <td><span class="badge badge-pink">Virtual</span></td>
-          </tr></tbody>
-        </table>
-      </div>
-    </div>
-
-  </main>
-
-  <footer class="footer">
-    <span>EPEC · Centro de Formación Profesional © <span id="year">2026</span></span>
-    <span id="sync-msg" class="footer-sync">Sincronizado · 01:12:05</span>
-  </footer>
-
+  </div>
 </div>
 
-<!-- Firebase SDK -->
+<!-- CURSOS -->
+<div id="section-cursos" class="content" style="display: none;">
+  <div class="filters">
+    <input type="text" class="filter-input" placeholder="🔍 Buscar capacitación..." id="buscar" oninput="filtrarCursos()">
+    <select class="filter-input" id="filtro-gerencia" onchange="filtrarCursos()">
+      <option value="">Todas las gerencias</option>
+      <option>Directorio / Gerencia General</option><option>Gerencia de Recursos Humanos y Desarrollo</option>
+      <option>Gerencia TIC</option><option>Gerencia de Transmisión</option><option>Gerencia de Distribución</option>
+      <option>Gerencia de Generación</option><option>Gerencia de Finanzas y Abastecimiento</option>
+      <option>Gerencia de Ingeniería y Obras</option><option>Gerencia de Infraestructura</option>
+      <option>Gerencia de Planificación Estratégica y Control de Gestión</option><option>Gerencia de Asesoría y Gestión Legal</option>
+    </select>
+    <select class="filter-input" id="filtro-modalidad" onchange="filtrarCursos()">
+      <option value="">Todas las modalidades</option><option>Presencial</option><option>Virtual</option><option>Híbrida</option>
+    </select>
+  </div>
+  <div id="lista-cursos"><div class="curso-card presencial" onclick="abrirCurso(&#39;-OtGri_2gZKmNeLohtmE&#39;)">
+    <div class="curso-card-header"><div class="curso-name">SISTEMA  SCADA Y ANALISIS DE FALLAS - CENTRO OPERATIVO DE DISTRIBUCION (COD)</div><span class="badge presencial">Presencial</span></div>
+    <div class="curso-meta"><span><i class="ti ti-user"></i>AGUSTIN ORTENSI</span><span><i class="ti ti-building"></i>FUNDALUZ</span><span><i class="ti ti-sitemap"></i>Gerencia de Distribución</span><span><i class="ti ti-calendar"></i>2026-05-27→2026-05-29</span><span><i class="ti ti-clock"></i>6 hs</span><span><i class="ti ti-users"></i>1 part.</span></div>
+  </div><div class="curso-card presencial" onclick="abrirCurso(&#39;-OtGtAHa1zPBOmSqPK5r&#39;)">
+    <div class="curso-card-header"><div class="curso-name">SISTEMA SCADA Y ANALISIS DE FALLAS</div><span class="badge presencial">Presencial</span></div>
+    <div class="curso-meta"><span><i class="ti ti-user"></i>AGUSTIN ORTENSI</span><span><i class="ti ti-building"></i>FUNDALUZ</span><span><i class="ti ti-sitemap"></i>Gerencia de Distribución</span><span><i class="ti ti-calendar"></i>2026-05-27→2026-05-27</span><span><i class="ti ti-clock"></i>7 hs</span><span><i class="ti ti-users"></i>0 part.</span></div>
+  </div><div class="curso-card presencial" onclick="abrirCurso(&#39;-OtGtVmUeXGSaplWe8r4&#39;)">
+    <div class="curso-card-header"><div class="curso-name">SISTEMA SCADA Y ANALISIS DE FALLAS</div><span class="badge presencial">Presencial</span></div>
+    <div class="curso-meta"><span><i class="ti ti-user"></i>AGUSTIN ORTENSI</span><span><i class="ti ti-building"></i>FUNDALUZ</span><span><i class="ti ti-sitemap"></i>Gerencia de Distribución</span><span><i class="ti ti-calendar"></i>2026-05-28→2026-05-28</span><span><i class="ti ti-clock"></i>7 hs</span><span><i class="ti ti-users"></i>0 part.</span></div>
+  </div><div class="curso-card presencial" onclick="abrirCurso(&#39;-OtGthWL3G4sVcrXBaQu&#39;)">
+    <div class="curso-card-header"><div class="curso-name">SISTEMA SCADA Y ANALISIS DE FALLAS</div><span class="badge presencial">Presencial</span></div>
+    <div class="curso-meta"><span><i class="ti ti-user"></i>AGUSTIN ORTENSI</span><span><i class="ti ti-building"></i>FUNDALUZ</span><span><i class="ti ti-sitemap"></i>Gerencia de Distribución</span><span><i class="ti ti-calendar"></i>2026-05-29→2026-05-29</span><span><i class="ti ti-clock"></i>7 hs</span><span><i class="ti ti-users"></i>0 part.</span></div>
+  </div></div>
+</div>
+
+<!-- NUEVO CURSO -->
+<div id="section-nuevo" class="content" style="display: none;">
+  <div class="form-card">
+    <div class="fsec">Información general</div>
+    <div class="fgrid">
+      <div class="fg full"><label>Nombre de la capacitación *</label><input type="text" id="f-nombre" placeholder="Ej: Seguridad Eléctrica en Alta Tensión"></div>
+      <div class="fg"><label>Modalidad *</label><select id="f-modalidad"><option value="">Seleccionar...</option><option>Presencial</option><option>Virtual</option><option>Híbrida</option></select></div>
+      <div class="fg"><label>Duración (horas) *</label><input type="number" id="f-horas" min="1" placeholder="Ej: 16"></div>
+      <div class="fg"><label>Fecha de inicio *</label><input type="date" id="f-inicio"></div>
+      <div class="fg"><label>Fecha de finalización *</label><input type="date" id="f-fin"></div>
+    </div>
+    <div class="fsec">Responsables y origen</div>
+    <div class="fgrid">
+      <div class="fg"><label>Docente / Instructor *</label><input type="text" id="f-docente" placeholder="Nombre del docente"></div>
+      <div class="fg"><label>Institución que dicta *</label><input type="text" id="f-institucion" placeholder="Ej: UTN Córdoba"></div>
+      <div class="fg"><label>Gerencia requirente *</label>
+        <select id="f-gerencia"><option value="">Seleccionar gerencia...</option>
+          <option>Directorio / Gerencia General</option><option>Gerencia de Recursos Humanos y Desarrollo</option>
+          <option>Gerencia TIC</option><option>Gerencia de Transmisión</option><option>Gerencia de Distribución</option>
+          <option>Gerencia de Generación</option><option>Gerencia de Finanzas y Abastecimiento</option>
+          <option>Gerencia de Ingeniería y Obras</option><option>Gerencia de Infraestructura</option>
+          <option>Gerencia de Planificación Estratégica y Control de Gestión</option><option>Gerencia de Asesoría y Gestión Legal</option>
+        </select>
+      </div>
+      <div class="fg"><label>Cupo máximo</label><input type="number" id="f-cupo" min="1" placeholder="Ej: 20"></div>
+    </div>
+    <div class="fsec">Participantes</div>
+    <div class="fgrid"><div class="fg full"><label>Listado (uno por línea)</label><textarea id="f-participantes" placeholder="Juan Pérez
+María González
+..."></textarea></div></div>
+    <div class="fsec">Observaciones</div>
+    <div class="fgrid"><div class="fg full"><label>Novedades / Observaciones iniciales</label><textarea id="f-observaciones" placeholder="Información adicional..."></textarea></div></div>
+    <div style="margin-top:1.5rem;display:flex;gap:10px">
+      <button class="btn-p" onclick="guardarCurso()"><i class="ti ti-device-floppy"></i>Guardar capacitación</button>
+      <button class="btn-s" onclick="limpiarForm()"><i class="ti ti-x"></i>Limpiar</button>
+    </div>
+  </div>
+</div>
+
+<!-- REPORTES -->
+<div id="section-reportes" class="content" style="display: none;">
+  <div class="print-hdr"><h1>EPEC SAU — Centro de Formación Profesional</h1><p id="print-sub">Reporte Quincenal — 22 de mayo de 2026</p></div>
+  <div class="rpf">
+    <div class="period-btns">
+      <button class="pb" onclick="setPer(&#39;diario&#39;,this)">Diario</button>
+      <button class="pb" onclick="setPer(&#39;semanal&#39;,this)">Semanal</button>
+      <button class="pb active" onclick="setPer(&#39;quincenal&#39;,this)">Quincenal</button>
+      <button class="pb" onclick="setPer(&#39;mensual&#39;,this)">Mensual</button>
+    </div>
+    <select class="filter-input" id="filtro-rep-ger" onchange="generarReporte()" style="max-width:280px">
+      <option value="">Todas las gerencias</option>
+      <option>Directorio / Gerencia General</option><option>Gerencia de Recursos Humanos y Desarrollo</option>
+      <option>Gerencia TIC</option><option>Gerencia de Transmisión</option><option>Gerencia de Distribución</option>
+      <option>Gerencia de Generación</option><option>Gerencia de Finanzas y Abastecimiento</option>
+      <option>Gerencia de Ingeniería y Obras</option><option>Gerencia de Infraestructura</option>
+      <option>Gerencia de Planificación Estratégica y Control de Gestión</option><option>Gerencia de Asesoría y Gestión Legal</option>
+    </select>
+    <button class="btn-s" onclick="exportarCSV()"><i class="ti ti-file-spreadsheet"></i>CSV</button>
+    <button class="btn-p" onclick="exportarPDF()"><i class="ti ti-file-type-pdf"></i>PDF</button>
+  </div>
+  <div class="stats-grid" id="rep-stats"><div class="stat-card"><div class="stat-num">0</div><div class="stat-label">Cursos</div></div><div class="stat-card"><div class="stat-num">0</div><div class="stat-label">Participantes</div></div><div class="stat-card"><div class="stat-num">0</div><div class="stat-label">Horas totales</div></div><div class="stat-card"><div class="stat-num">0</div><div class="stat-label">Gerencias</div></div></div>
+  <div class="charts-grid" id="charts-grid" style="display:none">
+    <div class="chart-card"><div class="chart-title"><i class="ti ti-chart-pie"></i>Cursos por modalidad</div><div class="chart-wrap"><canvas id="ch-modal"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title"><i class="ti ti-chart-donut"></i>Horas por gerencia (Top 5)</div><div class="chart-wrap"><canvas id="ch-ger-h"></canvas></div></div>
+    <div class="chart-card full"><div class="chart-title"><i class="ti ti-trending-up"></i>Tendencia — últimos 6 meses</div><div class="chart-wrap tall"><canvas id="ch-tend"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title"><i class="ti ti-chart-bar"></i>Cursos por gerencia</div><div class="chart-wrap"><canvas id="ch-ger-c"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title"><i class="ti ti-users"></i>Participantes por modalidad</div><div class="chart-wrap"><canvas id="ch-pm"></canvas></div></div>
+  </div>
+  <div id="rep-table"><div class="empty"><i class="ti ti-file-off"></i><p>No hay capacitaciones en este período</p></div></div>
+</div>
+
+<!-- AULAS -->
+<div id="section-aulas" class="content" style="display: block;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:10px">
+    <div><h2 style="font-size:18px;font-weight:800;color:var(--primary)">Reservá tu aula</h2><p style="font-size:13px;color:var(--muted);margin-top:3px">Podés reservar 1, 2 o 3 módulos horarios consecutivos</p></div>
+  </div>
+  <div class="aulas-grid" id="aulas-container"><div class="aula-card"><div class="ac-head"><div class="ac-icon"><i class="ti ti-school" style="color:#fff;font-size:20px"></i></div><div><div class="ac-name">Aula 15</div><div class="ac-tipo">Aula teórica</div></div></div>
+    <div class="ac-body"><div class="ac-specs"><div class="ac-spec"><i class="ti ti-users"></i><span>Capacidad: <strong>15 personas</strong></span></div><div class="ac-spec"><i class="ti ti-tool"></i><span style="font-size:11px">Proyector, pizarrón</span></div></div>
+    <div class="ac-disp"><label>Disponibilidad esta semana</label><div class="disp-grid"><div class="dia-slot libre"><div class="dia">Lun</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mar</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mié</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Jue</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Vie</div><div>✓</div></div></div></div>
+    <div class="ac-actions"><button class="btn-res" onclick="abrirReserva(&#39;aula15&#39;,&#39;Aula 15&#39;)"><i class="ti ti-calendar-plus"></i>Reservar</button><button class="btn-vr" onclick="abrirReserva(&#39;aula15&#39;,&#39;Aula 15&#39;)"><i class="ti ti-list"></i></button></div></div></div><div class="aula-card"><div class="ac-head"><div class="ac-icon"><i class="ti ti-school" style="color:#fff;font-size:20px"></i></div><div><div class="ac-name">Aula 16</div><div class="ac-tipo">Aula teórica</div></div></div>
+    <div class="ac-body"><div class="ac-specs"><div class="ac-spec"><i class="ti ti-users"></i><span>Capacidad: <strong>15 personas</strong></span></div><div class="ac-spec"><i class="ti ti-tool"></i><span style="font-size:11px">Proyector, pizarrón</span></div></div>
+    <div class="ac-disp"><label>Disponibilidad esta semana</label><div class="disp-grid"><div class="dia-slot libre"><div class="dia">Lun</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mar</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mié</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Jue</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Vie</div><div>✓</div></div></div></div>
+    <div class="ac-actions"><button class="btn-res" onclick="abrirReserva(&#39;aula16&#39;,&#39;Aula 16&#39;)"><i class="ti ti-calendar-plus"></i>Reservar</button><button class="btn-vr" onclick="abrirReserva(&#39;aula16&#39;,&#39;Aula 16&#39;)"><i class="ti ti-list"></i></button></div></div></div><div class="aula-card"><div class="ac-head"><div class="ac-icon"><i class="ti ti-school" style="color:#fff;font-size:20px"></i></div><div><div class="ac-name">Aula 17</div><div class="ac-tipo">Aula teórica</div></div></div>
+    <div class="ac-body"><div class="ac-specs"><div class="ac-spec"><i class="ti ti-users"></i><span>Capacidad: <strong>15 personas</strong></span></div><div class="ac-spec"><i class="ti ti-tool"></i><span style="font-size:11px">Proyector, pizarrón</span></div></div>
+    <div class="ac-disp"><label>Disponibilidad esta semana</label><div class="disp-grid"><div class="dia-slot libre"><div class="dia">Lun</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mar</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mié</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Jue</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Vie</div><div>✓</div></div></div></div>
+    <div class="ac-actions"><button class="btn-res" onclick="abrirReserva(&#39;aula17&#39;,&#39;Aula 17&#39;)"><i class="ti ti-calendar-plus"></i>Reservar</button><button class="btn-vr" onclick="abrirReserva(&#39;aula17&#39;,&#39;Aula 17&#39;)"><i class="ti ti-list"></i></button></div></div></div><div class="aula-card"><div class="ac-head"><div class="ac-icon"><i class="ti ti-tools" style="color:#fff;font-size:20px"></i></div><div><div class="ac-name">Aula Laboratorio 1</div><div class="ac-tipo">Laboratorio</div></div></div>
+    <div class="ac-body"><div class="ac-specs"><div class="ac-spec"><i class="ti ti-users"></i><span>Capacidad: <strong>20 personas</strong></span></div><div class="ac-spec"><i class="ti ti-tool"></i><span style="font-size:11px">Bancos, herramientas eléctricas</span></div></div>
+    <div class="ac-disp"><label>Disponibilidad esta semana</label><div class="disp-grid"><div class="dia-slot libre"><div class="dia">Lun</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mar</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mié</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Jue</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Vie</div><div>✓</div></div></div></div>
+    <div class="ac-actions"><button class="btn-res" onclick="abrirReserva(&#39;aulalaboratorio1&#39;,&#39;Aula Laboratorio 1&#39;)"><i class="ti ti-calendar-plus"></i>Reservar</button><button class="btn-vr" onclick="abrirReserva(&#39;aulalaboratorio1&#39;,&#39;Aula Laboratorio 1&#39;)"><i class="ti ti-list"></i></button></div></div></div><div class="aula-card"><div class="ac-head"><div class="ac-icon"><i class="ti ti-tools" style="color:#fff;font-size:20px"></i></div><div><div class="ac-name">Aula Laboratorio 2</div><div class="ac-tipo">Laboratorio</div></div></div>
+    <div class="ac-body"><div class="ac-specs"><div class="ac-spec"><i class="ti ti-users"></i><span>Capacidad: <strong>20 personas</strong></span></div><div class="ac-spec"><i class="ti ti-tool"></i><span style="font-size:11px">Equipos de medición, tableros</span></div></div>
+    <div class="ac-disp"><label>Disponibilidad esta semana</label><div class="disp-grid"><div class="dia-slot libre"><div class="dia">Lun</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mar</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mié</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Jue</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Vie</div><div>✓</div></div></div></div>
+    <div class="ac-actions"><button class="btn-res" onclick="abrirReserva(&#39;aulalaboratorio2&#39;,&#39;Aula Laboratorio 2&#39;)"><i class="ti ti-calendar-plus"></i>Reservar</button><button class="btn-vr" onclick="abrirReserva(&#39;aulalaboratorio2&#39;,&#39;Aula Laboratorio 2&#39;)"><i class="ti ti-list"></i></button></div></div></div><div class="aula-card"><div class="ac-head"><div class="ac-icon"><i class="ti ti-device-desktop" style="color:#fff;font-size:20px"></i></div><div><div class="ac-name">Aula Informática</div><div class="ac-tipo">Sala de PCs</div></div></div>
+    <div class="ac-body"><div class="ac-specs"><div class="ac-spec"><i class="ti ti-users"></i><span>Capacidad: <strong>18 personas</strong></span></div><div class="ac-spec"><i class="ti ti-tool"></i><span style="font-size:11px">18 PCs, proyector, internet</span></div></div>
+    <div class="ac-disp"><label>Disponibilidad esta semana</label><div class="disp-grid"><div class="dia-slot libre"><div class="dia">Lun</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mar</div><div>✓</div></div><div class="dia-slot ocupado"><div class="dia">Mié</div><div>✕</div></div><div class="dia-slot ocupado"><div class="dia">Jue</div><div>✕</div></div><div class="dia-slot ocupado"><div class="dia">Vie</div><div>✕</div></div></div></div>
+    <div class="ac-actions"><button class="btn-res" onclick="abrirReserva(&#39;aulainformatica&#39;,&#39;Aula Informática&#39;)"><i class="ti ti-calendar-plus"></i>Reservar</button><button class="btn-vr" onclick="abrirReserva(&#39;aulainformatica&#39;,&#39;Aula Informática&#39;)"><i class="ti ti-list"></i></button></div></div></div><div class="aula-card"><div class="ac-head"><div class="ac-icon"><i class="ti ti-building-community" style="color:#fff;font-size:20px"></i></div><div><div class="ac-name">Aula Magna</div><div class="ac-tipo">Auditorio</div></div></div>
+    <div class="ac-body"><div class="ac-specs"><div class="ac-spec"><i class="ti ti-users"></i><span>Capacidad: <strong>30 personas</strong></span></div><div class="ac-spec"><i class="ti ti-tool"></i><span style="font-size:11px">Escenario, micrófono, proyección HD</span></div></div>
+    <div class="ac-disp"><label>Disponibilidad esta semana</label><div class="disp-grid"><div class="dia-slot libre"><div class="dia">Lun</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mar</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mié</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Jue</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Vie</div><div>✓</div></div></div></div>
+    <div class="ac-actions"><button class="btn-res" onclick="abrirReserva(&#39;aulamagna&#39;,&#39;Aula Magna&#39;)"><i class="ti ti-calendar-plus"></i>Reservar</button><button class="btn-vr" onclick="abrirReserva(&#39;aulamagna&#39;,&#39;Aula Magna&#39;)"><i class="ti ti-list"></i></button></div></div></div></div>
+</div>
+
+<!-- MODAL DETALLE CURSO -->
+<div class="overlay" id="modal-curso">
+  <div class="modal">
+    <button class="modal-close" onclick="cerrarModal(&#39;modal-curso&#39;)">×</button>
+    <h2 id="modal-nombre">SISTEMA  SCADA Y ANALISIS DE FALLAS - CENTRO OPERATIVO DE DISTRIBUCION (COD)</h2>
+    <div id="modal-badge" style="margin-bottom:1rem"><span class="badge presencial">Presencial</span></div>
+    <div class="detail-grid" id="modal-det"><div class="detail-item"><label>Docente</label><p>AGUSTIN ORTENSI</p></div><div class="detail-item"><label>Institución</label><p>FUNDALUZ</p></div><div class="detail-item"><label>Gerencia</label><p>Gerencia de Distribución</p></div><div class="detail-item"><label>Cupo</label><p>15</p></div><div class="detail-item"><label>Inicio</label><p>2026-05-27</p></div><div class="detail-item"><label>Finalización</label><p>2026-05-29</p></div><div class="detail-item"><label>Duración</label><p>6 horas</p></div><div class="detail-item"><label>Registrado</label><p>22/5/2026</p></div></div>
+    <div class="partic-box" id="modal-part"><h4>Participantes (1)</h4><ul><li>OPERADORES DE M/T COD.</li></ul></div>
+    <div class="nov-section">
+      <h4>Novedades / Observaciones</h4>
+      <div id="modal-novs"><p style="font-size:13px;color:var(--muted);margin-bottom:8px">Sin novedades registradas.</p></div>
+      <div class="nov-form">
+        <textarea id="nueva-nov" placeholder="Agregar una novedad o actualización..."></textarea>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <button class="btn-p" onclick="agregarNov()" style="font-size:12px;padding:8px 14px"><i class="ti ti-plus"></i>Agregar</button>
+          <button class="btn-d" onclick="eliminarCurso()" style="font-size:12px;padding:8px 14px"><i class="ti ti-trash"></i>Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL QUICK-ADD CALENDARIO -->
+<div class="overlay" id="modal-quick">
+  <div class="modal" style="max-width:440px">
+    <button class="modal-close" onclick="cerrarModal(&#39;modal-quick&#39;)">×</button>
+    <h2 style="font-size:16px;margin-bottom:1rem" id="qa-titulo">Nueva capacitación — Dom 31/05</h2>
+    <div class="fgrid">
+      <div class="fg full"><label>Nombre *</label><input type="text" id="qa-nombre" placeholder="Nombre de la capacitación"></div>
+      <div class="fg"><label>Modalidad *</label><select id="qa-modal"><option value="">Seleccionar...</option><option>Presencial</option><option>Virtual</option><option>Híbrida</option></select></div>
+      <div class="fg"><label>Horas *</label><input type="number" id="qa-horas" min="1" placeholder="Ej: 8"></div>
+      <div class="fg"><label>Hora inicio</label><input type="time" id="qa-hora-ini" value="08:00"></div>
+      <div class="fg"><label>Hora fin</label><input type="time" id="qa-hora-fin" value="12:00"></div>
+      <div class="fg"><label>Docente</label><input type="text" id="qa-docente" placeholder="Nombre del docente"></div>
+      <div class="fg"><label>Institución</label><input type="text" id="qa-inst" placeholder="Institución que dicta"></div>
+      <div class="fg full"><label>Gerencia requirente</label>
+        <select id="qa-ger"><option value="">Seleccionar...</option>
+          <option>Directorio / Gerencia General</option><option>Gerencia de Recursos Humanos y Desarrollo</option>
+          <option>Gerencia TIC</option><option>Gerencia de Transmisión</option><option>Gerencia de Distribución</option>
+          <option>Gerencia de Generación</option><option>Gerencia de Finanzas y Abastecimiento</option>
+          <option>Gerencia de Ingeniería y Obras</option><option>Gerencia de Infraestructura</option>
+          <option>Gerencia de Planificación Estratégica y Control de Gestión</option><option>Gerencia de Asesoría y Gestión Legal</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:1rem;display:flex;gap:8px">
+      <button class="btn-p" onclick="guardarQuick()"><i class="ti ti-check"></i>Guardar</button>
+      <button class="btn-s" onclick="cerrarModal(&#39;modal-quick&#39;)">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RESERVA AULA — MÚLTIPLES MÓDULOS -->
+<div class="overlay" id="modal-reserva">
+  <div class="modal res-modal">
+    <button class="modal-close" onclick="cerrarModal(&#39;modal-reserva&#39;)">×</button>
+    <h2 id="res-titulo" style="font-size:18px;margin-bottom:1rem">Reservar — Aula 17</h2>
+    <div class="res-fgrid">
+      <div class="fg"><label>Fecha *</label><input type="date" id="res-fecha"></div>
+      <div class="fg"><label>Gerencia requirente *</label>
+        <select id="res-gerencia"><option value="">Seleccionar...</option>
+          <option>Directorio / Gerencia General</option><option>Gerencia de Recursos Humanos y Desarrollo</option>
+          <option>Gerencia TIC</option><option>Gerencia de Transmisión</option><option>Gerencia de Distribución</option>
+          <option>Gerencia de Generación</option><option>Gerencia de Finanzas y Abastecimiento</option>
+          <option>Gerencia de Ingeniería y Obras</option><option>Gerencia de Infraestructura</option>
+          <option>Gerencia de Planificación Estratégica y Control de Gestión</option><option>Gerencia de Asesoría y Gestión Legal</option>
+        </select>
+      </div>
+      <div class="fg"><label>Responsable *</label><input type="text" id="res-resp" placeholder="Nombre y apellido"></div>
+      <div class="fg"><label>Capacitación</label><input type="text" id="res-cap" placeholder="Nombre del curso"></div>
+    </div>
+
+    <!-- MÓDULOS HORARIOS — selección múltiple -->
+    <div style="margin-top:14px">
+      <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px">MÓDULOS HORARIOS * — Seleccioná 1, 2 o 3 módulos consecutivos</label>
+      <div class="modulos-grid">
+        <button class="modulo-btn" onclick="toggleModulo(this,&#39;07:00-09:00&#39;)"><strong>Módulo 1</strong><br>07:00 – 09:00</button>
+        <button class="modulo-btn" onclick="toggleModulo(this,&#39;09:00-11:00&#39;)"><strong>Módulo 2</strong><br>09:00 – 11:00</button>
+        <button class="modulo-btn" onclick="toggleModulo(this,&#39;11:00-13:00&#39;)"><strong>Módulo 3</strong><br>11:00 – 13:00</button>
+        <button class="modulo-btn" onclick="toggleModulo(this,&#39;14:00-16:00&#39;)"><strong>Módulo 4</strong><br>14:00 – 16:00</button>
+        <button class="modulo-btn" onclick="toggleModulo(this,&#39;16:00-18:00&#39;)"><strong>Módulo 5</strong><br>16:00 – 18:00</button>
+        <button class="modulo-btn" onclick="toggleModulo(this,&#39;08:00-17:00&#39;)"><strong>Día completo</strong><br>08:00 – 17:00</button>
+      </div>
+      <div class="modulos-tip">Hacé clic en los módulos que necesitás. Podés seleccionar hasta 3.</div>
+      <div class="seleccion-resumen" id="res-resumen">✓ 3 módulos seleccionados: 07:00 – 13:00</div>
+    </div>
+
+    <div style="margin-top:12px">
+      <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:5px">Observaciones</label>
+      <textarea id="res-obs" placeholder="Equipamiento necesario, cantidad de personas, etc." style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-family:inherit;resize:none;height:60px;outline:none"></textarea>
+    </div>
+
+    <div style="margin-top:1rem;display:flex;gap:8px">
+      <button class="btn-p" onclick="confirmarReserva()"><i class="ti ti-check"></i>Confirmar reserva</button>
+      <button class="btn-s" onclick="cerrarModal(&#39;modal-reserva&#39;)">Cancelar</button>
+    </div>
+    <div class="res-list" style="margin-top:1rem">
+      <h4>Reservas registradas para esta aula</h4>
+      <div id="res-del-aula"><p style="font-size:12px;color:var(--muted)">No hay reservas para esta aula.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast success" id="toast"><i class="ti ti-check" id="toast-i"></i><span id="toast-m">Capacitación agregada al calendario</span></div>
+<footer class="footer"><strong>EPEC SAU</strong> · Centro de Formación Profesional © 2026 &nbsp;·&nbsp; <span id="sync-st">Sincronizado · 07:54:16</span></footer>
+
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getDatabase, ref, onValue, set, push, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getDatabase,ref,push,onValue,set,remove}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+const cfg={apiKey:"AIzaSyBvE7RSYKS4gmwcq48FttdR55fIjcj9dbU",authDomain:"epec---capacitaciones.firebaseapp.com",databaseURL:"https://epec---capacitaciones-default-rtdb.firebaseio.com",projectId:"epec---capacitaciones",storageBucket:"epec---capacitaciones.firebasestorage.app",messagingSenderId:"990909328558",appId:"1:990909328558:web:ead9e4118a814e0d20513f"};
+const app=initializeApp(cfg),db=getDatabase(app),cursosRef=ref(db,'cursos'),reservasRef=ref(db,'reservas'),usersRef=ref(db,'usuarios_activos');
+window.db=db;window.ref=ref;window.push=push;window.set=set;window.remove=remove;window.cursosRef=cursosRef;window.reservasRef=reservasRef;
+const myId='u_'+Math.random().toString(36).substr(2,9),myRef=ref(db,'usuarios_activos/'+myId);
+set(myRef,{ts:Date.now()});window.addEventListener('beforeunload',()=>remove(myRef));
+onValue(usersRef,s=>{const n=s.exists()?Object.keys(s.val()).length:0;document.getElementById('user-count').textContent=n+' usuario'+(n!==1?'s':'')+' conectado'+(n!==1?'s':'');});
+window.cursosData={};
+onValue(cursosRef,s=>{window.cursosData=s.exists()?s.val():{};renderCal();filtrarCursos();generarReporte();document.getElementById('sync-st').textContent='Sincronizado · '+new Date().toLocaleTimeString('es-AR');});
+window.reservasData={};
+onValue(reservasRef,s=>{window.reservasData=s.exists()?s.val():{};renderResAula();});
+</script>
 
-  /* ╔══════════════════════════════════════════════════════════════════╗
-     ║  CONFIGURACIÓN FIREBASE — Reemplazá estos valores con los tuyos ║
-     ║  Creá tu proyecto gratis en https://console.firebase.google.com ║
-     ╚══════════════════════════════════════════════════════════════════╝ */
-  const firebaseConfig = {
-    apiKey:            "AIzaSyBvE7RSYKS4gmwcq48FttdR55fIjcj9dbU",
-    authDomain:        "epec---capacitaciones.firebaseapp.com",
-    databaseURL:       "https://epec---capacitaciones-default-rtdb.firebaseio.com",
-    projectId:         "epec---capacitaciones",
-    storageBucket:     "epec---capacitaciones.firebasestorage.app",
-    messagingSenderId: "990909328558",
-    appId:             "1:990909328558:web:ead9e4118a814e0d20513f"
-  };
+<script>
+// ── CONSTANTES ──
+const MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DIAS=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const EC=['#218570','#c0392b','#1a5276','#d68910','#6c3483','#117a65','#943126','#1f618d','#b7950b','#4a235a'];
+const AULAS=[
+  {id:'aula15',nombre:'Aula 15',tipo:'Aula teórica',capacidad:15,equipamiento:'Proyector, pizarrón',icono:'ti-school'},
+  {id:'aula16',nombre:'Aula 16',tipo:'Aula teórica',capacidad:15,equipamiento:'Proyector, pizarrón',icono:'ti-school'},
+  {id:'aula17',nombre:'Aula 17',tipo:'Aula teórica',capacidad:15,equipamiento:'Proyector, pizarrón',icono:'ti-school'},
+  {id:'aulalaboratorio1',nombre:'Aula Laboratorio 1',tipo:'Laboratorio',capacidad:20,equipamiento:'Bancos, herramientas eléctricas',icono:'ti-tools'},
+  {id:'aulalaboratorio2',nombre:'Aula Laboratorio 2',tipo:'Laboratorio',capacidad:20,equipamiento:'Equipos de medición, tableros',icono:'ti-tools'},
+  {id:'aulainformatica',nombre:'Aula Informática',tipo:'Sala de PCs',capacidad:18,equipamiento:'18 PCs, proyector, internet',icono:'ti-device-desktop'},
+  {id:'aulamagna',nombre:'Aula Magna',tipo:'Auditorio',capacidad:30,equipamiento:'Escenario, micrófono, proyección HD',icono:'ti-building-community'}
+];
 
-  const app = initializeApp(firebaseConfig);
-  const db  = getDatabase(app);
-  const cursosRef = ref(db, 'epec/cursos');
+let vista='semana', periodoRep='semanal', cursoSel=null, aulaSel=null;
+let modulosSeleccionados=[], charts={}, qaFecha=null;
 
-  // Escucha cambios en tiempo real
-  onValue(cursosRef, (snapshot) => {
-    const data = snapshot.val();
-    window._courses = data ? Object.entries(data).map(([k,v]) => ({...v, _key: k})) : getSampleData();
-    renderCalendar();
-    renderCourseList();
-    if (document.getElementById('tab-reportes').classList.contains('active')) renderReport();
-    syncMsg('Sincronizado · ' + new Date().toLocaleTimeString('es-AR'));
-    hideLoading();
+// ── FECHA CORRECTA ARGENTINA ──
+// Usa la fecha local del navegador sin conversión UTC
+function hoyLocal(){
+  const d=new Date();
+  return new Date(d.getFullYear(),d.getMonth(),d.getDate());
+}
+function dateStrLocal(d){
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,'0');
+  const dia=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${dia}`;
+}
+
+function showTab(t){
+  ['calendario','cursos','nuevo','reportes','aulas'].forEach(x=>{
+    document.getElementById('section-'+x).style.display=x===t?'block':'none';
+    document.getElementById('tab-'+x).classList.toggle('active',x===t);
+  });
+  if(t==='aulas')renderAulas();
+  if(t==='reportes')setTimeout(generarReporte,80);
+  if(t==='calendario')renderCal();
+}
+window.showTab=showTab;
+
+function toast(msg,tipo='success'){
+  const el=document.getElementById('toast'),i=document.getElementById('toast-i');
+  document.getElementById('toast-m').textContent=msg;
+  el.className='toast '+tipo;i.className='ti '+(tipo==='success'?'ti-check':'ti-alert-circle');
+  el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3500);
+}
+function cerrarModal(id){document.getElementById(id).classList.remove('open');}
+window.cerrarModal=cerrarModal;
+
+// ── CALENDARIO ──
+const HORAS_INI=7, H_PX=60;
+let calBase=hoyLocal();
+
+function getLun(d){
+  // En Argentina la semana empieza el LUNES
+  // getDay(): 0=Dom,1=Lun,2=Mar,3=Mie,4=Jue,5=Vie,6=Sab
+  const r=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+  const dow=r.getDay();
+  // Si es domingo (0), retroceder 6 días; si es lunes (1), retroceder 0; etc.
+  const retroceder=[6,0,1,2,3,4,5][dow];
+  r.setDate(r.getDate()-retroceder);
+  return r;
+}
+function setVista(v){
+  vista=v;
+  document.getElementById('vt-semana').classList.toggle('active',v==='semana');
+  document.getElementById('vt-mes').classList.toggle('active',v==='mes');
+  document.getElementById('cal-semana-wrap').style.display=v==='semana'?'block':'none';
+  document.getElementById('cal-mes-wrap').style.display=v==='mes'?'block':'none';
+  renderCal();
+}
+window.setVista=setVista;
+function navCal(dir){
+  if(vista==='semana')calBase=new Date(calBase.getFullYear(),calBase.getMonth(),calBase.getDate()+dir*7);
+  else calBase=new Date(calBase.getFullYear(),calBase.getMonth()+dir,1);
+  renderCal();
+}
+function navCalHoy(){calBase=hoyLocal();renderCal();}
+window.navCal=navCal;window.navCalHoy=navCalHoy;
+
+function renderCal(){vista==='semana'?renderSemana():renderMes();}
+window.renderCal=renderCal;
+
+function renderSemana(){
+  const lun=getLun(calBase);
+  const dias=Array.from({length:7},(_,i)=>new Date(lun.getFullYear(),lun.getMonth(),lun.getDate()+i));
+  const hoy=hoyLocal();
+  // dias[0]=Lun, dias[6]=Dom — mostramos Lun X — Dom Y
+  const primerDia=dias[0];const ultimoDia=dias[6];
+  document.getElementById('cal-titulo').textContent=
+    'Semana: '+DIAS[primerDia.getDay()]+' '+primerDia.getDate()+' — '+DIAS[ultimoDia.getDay()]+' '+ultimoDia.getDate()+' de '+MESES[ultimoDia.getMonth()]+' '+ultimoDia.getFullYear();
+
+  const wh=document.getElementById('week-header');
+  wh.innerHTML='<div class="wh-empty"></div>';
+  dias.forEach(d=>{
+    const esHoy=dateStrLocal(d)===dateStrLocal(hoy);
+    const div=document.createElement('div');
+    div.className='wh-day'+(esHoy?' wh-today':'');
+    div.innerHTML=`<div class="wh-name">${DIAS[d.getDay()]}</div><div class="wh-num">${d.getDate()}</div>${esHoy?'<div class="wh-tdot"></div>':''}`;
+    wh.appendChild(div);
   });
 
-  // Guardar nuevo curso
-  window.firebasePush = (course) => push(cursosRef, course);
+  const hcol=document.getElementById('hour-col');hcol.innerHTML='';
+  for(let h=HORAS_INI;h<=19;h++){const l=document.createElement('div');l.className='hour-label';l.textContent=h+':00';hcol.appendChild(l);}
 
-  // Actualizar novedades de un curso
-  window.firebaseUpdate = (key, data) => update(ref(db, 'epec/cursos/' + key), data);
-
-  // Fallback: si Firebase no carga en 4s, usamos datos de ejemplo
-  setTimeout(() => {
-    if (!window._courses) {
-      window._courses = getSampleData();
-      renderCalendar();
-      renderCourseList();
-      syncMsg('Modo offline · Sin conexión a Firebase');
-      hideLoading();
-    }
-  }, 4000);
-
-  function getSampleData() {
-    const y = new Date().getFullYear();
-    const m = String(new Date().getMonth()+1).padStart(2,'0');
-    return [
-      { _key:'sample1', nombre:'Seguridad Eléctrica en Alta Tensión', docente:'Ing. Roberto Díaz', institucion:'EPEC Interno', gerencia:'Gerencia de Distribución', modalidad:'Presencial', inicio:`${y}-${m}-05`, fin:`${y}-${m}-07`, horas:24, cupo:15, participantes:'Juan Pérez, María García, Carlos López, Ana Martínez', novedades:'Requiere EPP completo. Aula 3, edificio central.' },
-      { _key:'sample2', nombre:'Excel Avanzado para Gestión', docente:'Prof. Sandra Ruiz', institucion:'UTN Córdoba', gerencia:'Gerencia de RR.HH.', modalidad:'Híbrida', inicio:`${y}-${m}-12`, fin:`${y}-${m}-14`, horas:16, cupo:20, participantes:'Paula Soto, Diego Herrera, Laura Mendez', novedades:'Cada participante debe traer notebook.' },
-      { _key:'sample3', nombre:'Liderazgo y Gestión de Equipos', docente:'Lic. Mónica Vera', institucion:'Capacitar SA', gerencia:'Dirección General', modalidad:'Virtual', inicio:`${y}-${m}-20`, fin:`${y}-${m}-21`, horas:12, cupo:30, participantes:'Gerentes de área, Jefes de departamento', novedades:'Link Zoom enviado por correo institucional.' },
-    ];
-  }
-
-  function syncMsg(msg) {
-    const el = document.getElementById('sync-msg');
-    if (el) el.textContent = msg;
-  }
-
-  function hideLoading() {
-    const el = document.getElementById('loading-overlay');
-    if (el) { el.style.opacity = '0'; el.style.transition = 'opacity .4s'; setTimeout(() => el.remove(), 400); }
-  }
-
-</script>
-
-<!-- App Logic -->
-<script>
-  const MONTHS_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-  const DAYS_ES   = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
-  const MOD_BADGE = { 'Presencial':'badge-blue', 'Virtual':'badge-pink', 'Híbrida':'badge-green' };
-  const MOD_EV    = { 'Presencial':'ev-presencial', 'Virtual':'ev-virtual', 'Híbrida':'ev-hibrida' };
-
-  let curMonth = new Date().getMonth();
-  let curYear  = new Date().getFullYear();
-  window._courses = [];
-
-  document.getElementById('year').textContent = new Date().getFullYear();
-
-  function showTab(id, btn) {
-    document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-tab').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
-    document.getElementById('tab-' + id).classList.add('active');
-    btn.classList.add('active');
-    btn.setAttribute('aria-selected','true');
-    if (id === 'reportes') renderReport();
-    if (id === 'cursos') renderCourseList();
-  }
-
-  // ─── CALENDARIO ───────────────────────────────────────────────
-  function changeMonth(d) {
-    curMonth += d;
-    if (curMonth > 11) { curMonth = 0; curYear++; }
-    if (curMonth < 0)  { curMonth = 11; curYear--; }
-    renderCalendar();
-  }
-
-  function coursesForDay(y, m, day) {
-    const ds = `${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-    return (window._courses||[]).filter(c => c.inicio <= ds && c.fin >= ds);
-  }
-
-  function renderCalendar() {
-    document.getElementById('cal-title').textContent = MONTHS_ES[curMonth] + ' ' + curYear;
-
-    const namesEl = document.getElementById('cal-names');
-    namesEl.innerHTML = DAYS_ES.map(d => `<div class="cal-day-name">${d}</div>`).join('');
-
-    const bodyEl = document.getElementById('cal-body');
-    bodyEl.innerHTML = '';
-    const today   = new Date();
-    const first   = new Date(curYear, curMonth, 1).getDay();
-    const dimCur  = new Date(curYear, curMonth+1, 0).getDate();
-    const dimPrev = new Date(curYear, curMonth, 0).getDate();
-
-    for (let i = 0; i < first; i++) {
-      bodyEl.innerHTML += `<div class="cal-day other-month"><div class="cal-day-num">${dimPrev - first + 1 + i}</div></div>`;
-    }
-    for (let d = 1; d <= dimCur; d++) {
-      const isToday = d === today.getDate() && curMonth === today.getMonth() && curYear === today.getFullYear();
-      const evs = coursesForDay(curYear, curMonth, d);
-      const evHtml = evs.slice(0,2).map(c =>
-        `<div class="cal-event ${MOD_EV[c.modalidad]||'ev-hibrida'}" onclick="showCalDetail(event,'${c._key}')">${esc(c.nombre.slice(0,20))}${c.nombre.length>20?'…':''}</div>`
-      ).join('') + (evs.length > 2 ? `<div class="ev-more">+${evs.length-2} más</div>` : '');
-      bodyEl.innerHTML += `<div class="cal-day${isToday?' today':''}" onclick="selectCalDay(${d})"><div class="cal-day-num">${d}</div>${evHtml}</div>`;
-    }
-    const rem = (first + dimCur) % 7;
-    for (let i = 1; i < (rem === 0 ? 1 : 8 - rem); i++) {
-      bodyEl.innerHTML += `<div class="cal-day other-month"><div class="cal-day-num">${i}</div></div>`;
-    }
-  }
-
-  function selectCalDay(d) {
-    const evs = coursesForDay(curYear, curMonth, d);
-    const el = document.getElementById('cal-detail');
-    if (!evs.length) { el.innerHTML = `<p style="text-align:center;color:var(--txt2);padding:16px;font-size:13px">Sin cursos programados para el ${d} de ${MONTHS_ES[curMonth]}</p>`; return; }
-    el.innerHTML = evs.map(c => renderDetail(c, 'cal-detail')).join('');
-  }
-
-  function showCalDetail(e, key) {
-    e.stopPropagation();
-    const c = (window._courses||[]).find(x => x._key === key);
-    if (!c) return;
-    document.getElementById('cal-detail').innerHTML = renderDetail(c, 'cal-detail');
-  }
-
-  // ─── LISTA CURSOS ─────────────────────────────────────────────
-  function renderCourseList() {
-    filterCourses();
-  }
-
-  function filterCourses() {
-    const q   = (document.getElementById('search-input')?.value||'').toLowerCase();
-    const ger = document.getElementById('filter-ger')?.value||'';
-    const mod = document.getElementById('filter-mod')?.value||'';
-    const filtered = (window._courses||[]).filter(c => {
-      const match = !q || [c.nombre,c.docente,c.gerencia,c.institucion].some(f => (f||'').toLowerCase().includes(q));
-      return match && (!ger || c.gerencia === ger) && (!mod || c.modalidad === mod);
-    });
-    const el = document.getElementById('course-list');
-    if (!filtered.length) {
-      el.innerHTML = `<div class="empty-state"><i class="ti ti-mood-empty"></i>No se encontraron cursos con esos filtros</div>`;
-      return;
-    }
-    el.innerHTML = filtered.map(c => {
-      const parts = parseParticipants(c.participantes);
-      return `<div class="course-card" onclick="showListDetail('${c._key}')">
-        <div class="course-card-top">
-          <div class="course-name">${esc(c.nombre)}</div>
-          <span class="badge ${MOD_BADGE[c.modalidad]||'badge-green'}">${esc(c.modalidad)}</span>
-        </div>
-        <div class="course-meta">
-          <span class="meta-item"><i class="ti ti-user" aria-hidden="true"></i>${esc(c.docente)}</span>
-          <span class="meta-item"><i class="ti ti-building" aria-hidden="true"></i>${esc(c.institucion)}</span>
-          <span class="meta-item"><i class="ti ti-sitemap" aria-hidden="true"></i>${esc(c.gerencia)}</span>
-          <span class="meta-item"><i class="ti ti-calendar" aria-hidden="true"></i>${esc(c.inicio)} → ${esc(c.fin)}</span>
-          <span class="meta-item"><i class="ti ti-clock" aria-hidden="true"></i>${c.horas||0} hs</span>
-          <span class="meta-item"><i class="ti ti-users" aria-hidden="true"></i>${parts.length} participante${parts.length!==1?'s':''}</span>
-        </div>
-      </div>`;
-    }).join('');
-  }
-
-  function showListDetail(key) {
-    const c = (window._courses||[]).find(x => x._key === key);
-    if (!c) return;
-    document.getElementById('course-detail-list').innerHTML = renderDetail(c, 'course-detail-list');
-    document.getElementById('course-detail-list').scrollIntoView({ behavior:'smooth', block:'nearest' });
-  }
-
-  // ─── DETALLE COMPARTIDO ───────────────────────────────────────
-  function renderDetail(c, containerId) {
-    const parts = parseParticipants(c.participantes);
-    const novedades = (c.novedades||'').trim();
-    return `<div class="detail-panel">
-      <div class="detail-panel-header">
-        <h3>${esc(c.nombre)}</h3>
-        <button class="btn-close" onclick="document.getElementById('${containerId}').innerHTML=''" aria-label="Cerrar detalle"><i class="ti ti-x"></i></button>
-      </div>
-      <div class="detail-body">
-        <div class="detail-fields">
-          <div class="field-item"><span class="field-label">Docente</span><span class="field-value">${esc(c.docente)}</span></div>
-          <div class="field-item"><span class="field-label">Institución</span><span class="field-value">${esc(c.institucion)}</span></div>
-          <div class="field-item"><span class="field-label">Gerencia requirente</span><span class="field-value">${esc(c.gerencia)}</span></div>
-          <div class="field-item"><span class="field-label">Modalidad</span><span class="field-value"><span class="badge ${MOD_BADGE[c.modalidad]||'badge-green'}">${esc(c.modalidad)}</span></span></div>
-          <div class="field-item"><span class="field-label">Período</span><span class="field-value">${esc(c.inicio)} al ${esc(c.fin)}</span></div>
-          <div class="field-item"><span class="field-label">Duración</span><span class="field-value">${c.horas||0} horas</span></div>
-          <div class="field-item"><span class="field-label">Participantes</span><span class="field-value">${parts.length} / ${c.cupo||'sin límite'}</span></div>
-        </div>
-        ${parts.length ? `<div class="participants-wrap"><div class="field-label">Listado de participantes</div><div class="participant-tags" style="margin-top:6px">${parts.map(p=>`<span class="participant-tag">${esc(p)}</span>`).join('')}</div></div>` : ''}
-        ${novedades ? `<div class="novedad-block"><div class="novedad-block-label"><i class="ti ti-alert-circle"></i> Novedades del curso</div><p>${esc(novedades)}</p></div>` : ''}
-        <div class="novedad-add">
-          <input id="nov-${c._key}" type="text" placeholder="Agregar novedad o actualización..." aria-label="Nueva novedad" />
-          <button class="btn-add-novedad" onclick="addNovedad('${c._key}','${containerId}')">
-            <i class="ti ti-plus" aria-hidden="true"></i> Agregar
-          </button>
-        </div>
-      </div>
-    </div>`;
-  }
-
-  function addNovedad(key, containerId) {
-    const inp = document.getElementById('nov-' + key);
-    const val = inp?.value.trim();
-    if (!val) return;
-    const ts = new Date().toLocaleString('es-AR', { dateStyle:'short', timeStyle:'short' });
-    const c = (window._courses||[]).find(x => x._key === key);
-    if (!c) return;
-    const updated = (c.novedades ? c.novedades + '\n' : '') + `[${ts}] ${val}`;
-    inp.value = '';
-    if (typeof window.firebaseUpdate === 'function') {
-      window.firebaseUpdate(key, { novedades: updated });
-    } else {
-      c.novedades = updated;
-      document.getElementById(containerId).innerHTML = renderDetail(c, containerId);
-    }
-  }
-
-  // ─── GUARDAR CURSO ────────────────────────────────────────────
-  function saveCourse() {
-    const get = id => document.getElementById(id)?.value.trim();
-    const nombre     = get('f-nombre');
-    const inicio     = get('f-inicio');
-    const fin        = get('f-fin');
-    const docente    = get('f-docente');
-    const institucion= get('f-institucion');
-    const gerencia   = get('f-gerencia');
-    const msg = document.getElementById('save-msg');
-
-    if (!nombre || !inicio || !fin || !docente || !institucion || !gerencia) {
-      msg.style.color = 'var(--danger)';
-      msg.textContent = '⚠ Por favor completá todos los campos obligatorios (*)';
-      return;
-    }
-    if (fin < inicio) {
-      msg.style.color = 'var(--danger)';
-      msg.textContent = '⚠ La fecha de fin no puede ser anterior al inicio';
-      return;
-    }
-
-    const course = {
-      nombre, inicio, fin,
-      horas:        parseInt(get('f-horas')) || 0,
-      modalidad:    get('f-modalidad'),
-      docente, institucion, gerencia,
-      cupo:         parseInt(get('f-cupo')) || 0,
-      participantes: get('f-participantes'),
-      novedades:    get('f-novedad'),
-      creadoEn:     new Date().toISOString(),
-    };
-
-    if (typeof window.firebasePush === 'function') {
-      window.firebasePush(course).then(() => {
-        msg.style.color = 'var(--c1)';
-        msg.textContent = '✓ Capacitación guardada y visible para todos los usuarios en tiempo real';
-        clearForm();
-        setTimeout(() => { msg.textContent = ''; }, 4000);
-      }).catch(err => {
-        msg.style.color = 'var(--danger)';
-        msg.textContent = '⚠ Error al guardar. Verificá la conexión a Firebase.';
+  const dg=document.getElementById('days-grid');dg.innerHTML='';
+  dias.forEach((d,di)=>{
+    const esHoy=dateStrLocal(d)===dateStrLocal(hoy);
+    const esWE=d.getDay()===0||d.getDay()===6;
+    const col=document.createElement('div');
+    col.className='day-col'+(esHoy?' today-col':'')+(esWE?' weekend-col':'');
+    col.style.position='relative';
+    for(let h=HORAS_INI;h<=19;h++){
+      const s=document.createElement('div');s.className='hour-stripe half';s.style.height=H_PX+'px';
+      s.addEventListener('click',()=>{
+        qaFecha=dateStrLocal(d);
+        document.getElementById('qa-titulo').textContent='Nueva capacitación — '+DIAS[d.getDay()]+' '+d.getDate()+'/'+String(d.getMonth()+1).padStart(2,'0');
+        document.getElementById('qa-nombre').value='';document.getElementById('qa-modal').value='';
+        document.getElementById('qa-horas').value='';document.getElementById('qa-docente').value='';
+        document.getElementById('qa-inst').value='';document.getElementById('qa-ger').value='';
+        document.getElementById('qa-hora-ini').value=String(h).padStart(2,'0')+':00';
+        document.getElementById('qa-hora-fin').value=String(Math.min(h+2,18)).padStart(2,'0')+':00';
+        document.getElementById('modal-quick').classList.add('open');
       });
-    } else {
-      const newC = { ...course, _key: 'local_' + Date.now() };
-      window._courses.push(newC);
-      msg.style.color = 'var(--c1)';
-      msg.textContent = '✓ Guardado localmente (Firebase no conectado)';
-      clearForm();
-      setTimeout(() => { msg.textContent = ''; }, 3000);
+      col.appendChild(s);
     }
-  }
-
-  function clearForm() {
-    ['f-nombre','f-horas','f-docente','f-institucion','f-participantes','f-novedad','f-inicio','f-fin'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.value = '';
+    const ds=dateStrLocal(d);
+    Object.entries(window.cursosData||{}).forEach(([id,c])=>{
+      if(ds>=c.inicio&&ds<=c.fin){
+        const mod=(c.modalidad||'').toLowerCase().replace('í','i');
+        const ev=document.createElement('div');ev.className='cal-evt '+mod;
+        let topPx=8,htPx=H_PX*2-6;
+        if(c.horaIni){const[hh,mm]=c.horaIni.split(':').map(Number);topPx=((hh-HORAS_INI)*H_PX+(mm/60)*H_PX);if(c.horaFin){const[he,me]=c.horaFin.split(':').map(Number);htPx=((he-hh)*H_PX+(me-mm)/60*H_PX)-4;}else htPx=H_PX*2-4;}
+        ev.style.top=topPx+'px';ev.style.height=Math.max(htPx,22)+'px';
+        ev.innerHTML=`<div class="evt-name">${c.nombre}</div>${c.horaIni?`<div class="evt-time">${c.horaIni}${c.horaFin?'–'+c.horaFin:''}</div>`:''}`;
+        ev.onclick=(e)=>{e.stopPropagation();abrirCurso(id);};col.appendChild(ev);
+      }
     });
-    const ger = document.getElementById('f-gerencia');
-    if (ger) ger.value = '';
+    dg.appendChild(col);
+  });
+}
+
+function renderMes(){
+  const y=calBase.getFullYear(),m=calBase.getMonth();
+  document.getElementById('cal-titulo').textContent=MESES[m]+' '+y;
+  const mv=document.getElementById('month-view');mv.querySelectorAll('.mv-day').forEach(el=>el.remove());
+  const primerDia=new Date(y,m,1).getDay(),totalDias=new Date(y,m+1,0).getDate();
+  const hoy=hoyLocal();
+  for(let i=0;i<primerDia;i++){const p=new Date(y,m,0-(primerDia-i-2));mv.appendChild(crearMvDia(p.getDate(),true,false,null));}
+  for(let d=1;d<=totalDias;d++){
+    const esHoy=d===hoy.getDate()&&m===hoy.getMonth()&&y===hoy.getFullYear();
+    const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const el=crearMvDia(d,false,esHoy,ds);
+    Object.entries(window.cursosData||{}).forEach(([id,c])=>{if(ds>=c.inicio&&ds<=c.fin){const mod=(c.modalidad||'').toLowerCase().replace('í','i');const ev=document.createElement('div');ev.className='mv-evt '+mod;ev.textContent=c.nombre;ev.onclick=(e)=>{e.stopPropagation();abrirCurso(id);};el.appendChild(ev);}});
+    mv.appendChild(el);
   }
+  const r=(primerDia+totalDias)%7===0?0:7-((primerDia+totalDias)%7);
+  for(let i=1;i<=r;i++)mv.appendChild(crearMvDia(i,true,false,null));
+}
 
-  // ─── REPORTES ─────────────────────────────────────────────────
-  function getRange(period) {
-    const now   = new Date();
-    const start = new Date(now);
-    if      (period === 'diario')    { start.setHours(0,0,0,0); }
-    else if (period === 'semanal')   { start.setDate(now.getDate() - now.getDay()); }
-    else if (period === 'quincenal') { start.setDate(now.getDate() - 14); }
-    else                             { start.setDate(1); start.setHours(0,0,0,0); }
-    const end = new Date(now.getFullYear(), now.getMonth() + 3, 0);
-    return { start: start.toISOString().slice(0,10), end: end.toISOString().slice(0,10) };
+function crearMvDia(num,otro,hoy,ds){
+  const el=document.createElement('div');el.className='mv-day'+(otro?' other':'')+(hoy?' today':'');
+  const n=document.createElement('div');n.className='mv-num';n.textContent=num;el.appendChild(n);
+  if(ds){const add=document.createElement('span');add.className='mv-add';add.textContent='+ Agregar';add.onclick=(e)=>{e.stopPropagation();qaFecha=ds;document.getElementById('qa-titulo').textContent='Nueva capacitación — '+ds;['qa-nombre','qa-modal','qa-horas','qa-docente','qa-inst','qa-ger'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('qa-hora-ini').value='08:00';document.getElementById('qa-hora-fin').value='12:00';document.getElementById('modal-quick').classList.add('open');};el.appendChild(add);}
+  return el;
+}
+
+function guardarQuick(){
+  const nombre=document.getElementById('qa-nombre').value.trim();
+  const modalidad=document.getElementById('qa-modal').value;
+  const horas=document.getElementById('qa-horas').value;
+  if(!nombre||!modalidad||!horas||!qaFecha){toast('Completá nombre, modalidad y horas','error');return;}
+  window.push(window.cursosRef,{nombre,modalidad,horas:parseInt(horas),inicio:qaFecha,fin:qaFecha,horaIni:document.getElementById('qa-hora-ini').value,horaFin:document.getElementById('qa-hora-fin').value,docente:document.getElementById('qa-docente').value.trim(),institucion:document.getElementById('qa-inst').value.trim(),gerencia:document.getElementById('qa-ger').value,creado:new Date().toISOString()})
+    .then(()=>{cerrarModal('modal-quick');toast('Capacitación agregada al calendario');});
+}
+window.guardarQuick=guardarQuick;
+
+// ── CURSOS ──
+function filtrarCursos(){
+  const b=(document.getElementById('buscar')?.value||'').toLowerCase();
+  const g=document.getElementById('filtro-gerencia')?.value||'';
+  const m=document.getElementById('filtro-modalidad')?.value||'';
+  const lista=document.getElementById('lista-cursos');if(!lista)return;
+  const f=Object.entries(window.cursosData||{}).filter(([,c])=>(!b||c.nombre?.toLowerCase().includes(b))&&(!g||c.gerencia===g)&&(!m||c.modalidad===m));
+  if(!f.length){lista.innerHTML=`<div class="empty"><i class="ti ti-file-off"></i><p>No se encontraron capacitaciones</p></div>`;return;}
+  lista.innerHTML=f.map(([id,c])=>`<div class="curso-card ${(c.modalidad||'').toLowerCase().replace('í','i')}" onclick="abrirCurso('${id}')">
+    <div class="curso-card-header"><div class="curso-name">${c.nombre}</div><span class="badge ${(c.modalidad||'').toLowerCase().replace('í','i')}">${c.modalidad||''}</span></div>
+    <div class="curso-meta"><span><i class="ti ti-user"></i>${c.docente||'—'}</span><span><i class="ti ti-building"></i>${c.institucion||'—'}</span><span><i class="ti ti-sitemap"></i>${c.gerencia||'—'}</span><span><i class="ti ti-calendar"></i>${c.inicio||''}→${c.fin||''}</span><span><i class="ti ti-clock"></i>${c.horas||0} hs</span><span><i class="ti ti-users"></i>${c.participantes_lista?c.participantes_lista.split('\n').filter(Boolean).length:0} part.</span></div>
+  </div>`).join('');
+}
+window.filtrarCursos=filtrarCursos;
+
+function abrirCurso(id){
+  cursoSel=id;const c=window.cursosData[id];if(!c)return;
+  document.getElementById('modal-nombre').textContent=c.nombre;
+  const mod=(c.modalidad||'').toLowerCase().replace('í','i');
+  document.getElementById('modal-badge').innerHTML=`<span class="badge ${mod}">${c.modalidad||''}</span>`;
+  document.getElementById('modal-det').innerHTML=`<div class="detail-item"><label>Docente</label><p>${c.docente||'—'}</p></div><div class="detail-item"><label>Institución</label><p>${c.institucion||'—'}</p></div><div class="detail-item"><label>Gerencia</label><p>${c.gerencia||'—'}</p></div><div class="detail-item"><label>Cupo</label><p>${c.cupo||'—'}</p></div><div class="detail-item"><label>Inicio</label><p>${c.inicio||'—'}</p></div><div class="detail-item"><label>Finalización</label><p>${c.fin||'—'}</p></div><div class="detail-item"><label>Duración</label><p>${c.horas||0} horas</p></div><div class="detail-item"><label>Registrado</label><p>${c.creado?new Date(c.creado).toLocaleDateString('es-AR'):'—'}</p></div>`;
+  const ps=c.participantes_lista?c.participantes_lista.split('\n').filter(Boolean):[];
+  document.getElementById('modal-part').innerHTML=ps.length?`<h4>Participantes (${ps.length})</h4><ul>${ps.map(p=>`<li>${p.trim()}</li>`).join('')}</ul>`:`<h4>Participantes</h4><p style="font-size:13px;color:var(--muted)">Sin participantes registrados</p>`;
+  const novs=Object.values(c.novedades||{}).sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
+  document.getElementById('modal-novs').innerHTML=novs.length?novs.map(n=>`<div class="nov-item"><div>${n.texto}</div><div class="nov-fecha">${new Date(n.fecha).toLocaleString('es-AR')}</div></div>`).join(''):`<p style="font-size:13px;color:var(--muted);margin-bottom:8px">Sin novedades registradas.</p>`;
+  document.getElementById('modal-curso').classList.add('open');
+}
+window.abrirCurso=abrirCurso;
+
+function agregarNov(){const txt=document.getElementById('nueva-nov').value.trim();if(!txt||!cursoSel)return;window.push(window.ref(window.db,'cursos/'+cursoSel+'/novedades'),{texto:txt,fecha:new Date().toISOString()}).then(()=>{document.getElementById('nueva-nov').value='';toast('Novedad agregada');});}
+window.agregarNov=agregarNov;
+function eliminarCurso(){if(!cursoSel||!confirm('¿Eliminás esta capacitación?'))return;window.remove(window.ref(window.db,'cursos/'+cursoSel)).then(()=>{cerrarModal('modal-curso');toast('Capacitación eliminada');});}
+window.eliminarCurso=eliminarCurso;
+
+// ── FORMULARIO ──
+function guardarCurso(){
+  const v={nombre:document.getElementById('f-nombre').value.trim(),modalidad:document.getElementById('f-modalidad').value,horas:document.getElementById('f-horas').value,inicio:document.getElementById('f-inicio').value,fin:document.getElementById('f-fin').value,docente:document.getElementById('f-docente').value.trim(),institucion:document.getElementById('f-institucion').value.trim(),gerencia:document.getElementById('f-gerencia').value};
+  if(Object.values(v).some(x=>!x)){toast('Completá todos los campos obligatorios','error');return;}
+  window.push(window.cursosRef,{...v,horas:parseInt(v.horas),cupo:document.getElementById('f-cupo').value||null,participantes_lista:document.getElementById('f-participantes').value.trim(),observaciones:document.getElementById('f-observaciones').value.trim(),creado:new Date().toISOString()})
+    .then(()=>{limpiarForm();toast('Capacitación guardada');showTab('cursos');}).catch(()=>toast('Error al guardar','error'));
+}
+window.guardarCurso=guardarCurso;
+function limpiarForm(){['f-nombre','f-horas','f-inicio','f-fin','f-docente','f-institucion','f-cupo','f-participantes','f-observaciones'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('f-modalidad').value='';document.getElementById('f-gerencia').value='';}
+window.limpiarForm=limpiarForm;
+
+// ── REPORTES ──
+function setPer(p,btn){periodoRep=p;document.querySelectorAll('.pb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');generarReporte();}
+window.setPer=setPer;
+function getFilt(){
+  const g=document.getElementById('filtro-rep-ger')?.value||'';
+  const hoy=hoyLocal(),desde=new Date(hoy.getFullYear(),hoy.getMonth(),hoy.getDate());
+  if(periodoRep==='diario'){}
+  else if(periodoRep==='semanal')desde.setDate(desde.getDate()-7);
+  else if(periodoRep==='quincenal')desde.setDate(desde.getDate()-15);
+  else desde.setDate(desde.getDate()-30);
+  const ds=dateStrLocal(desde),hs=dateStrLocal(hoy);
+  return Object.entries(window.cursosData||{}).filter(([,c])=>c.fin>=ds&&c.inicio<=hs&&(!g||c.gerencia===g));
+}
+function generarReporte(){
+  const f=getFilt();
+  const tc=f.length,th=f.reduce((s,[,c])=>s+(parseInt(c.horas)||0),0);
+  const tp=f.reduce((s,[,c])=>s+(c.participantes_lista?c.participantes_lista.split('\n').filter(Boolean).length:0),0);
+  const gu=new Set(f.map(([,c])=>c.gerencia).filter(Boolean)).size;
+  document.getElementById('rep-stats').innerHTML=`<div class="stat-card"><div class="stat-num">${tc}</div><div class="stat-label">Cursos</div></div><div class="stat-card"><div class="stat-num">${tp}</div><div class="stat-label">Participantes</div></div><div class="stat-card"><div class="stat-num">${th}</div><div class="stat-label">Horas totales</div></div><div class="stat-card"><div class="stat-num">${gu}</div><div class="stat-label">Gerencias</div></div>`;
+  const cg=document.getElementById('charts-grid');cg.style.display=f.length?'grid':'none';if(f.length)renderCharts(f);
+  const wrap=document.getElementById('rep-table');
+  if(!f.length){wrap.innerHTML=`<div class="empty"><i class="ti ti-file-off"></i><p>No hay capacitaciones en este período</p></div>`;return;}
+  wrap.innerHTML=`<p style="font-size:13px;color:var(--muted);margin-bottom:10px">Mostrando ${tc} capacitaci${tc===1?'ón':'ones'}</p><div style="overflow-x:auto"><table class="report-table"><thead><tr><th>Capacitación</th><th>Docente</th><th>Gerencia</th><th>Institución</th><th>Inicio</th><th>Fin</th><th>Hs</th><th>Partic.</th><th>Modalidad</th></tr></thead><tbody>${f.map(([,c])=>`<tr><td>${c.nombre}</td><td>${c.docente||'—'}</td><td>${c.gerencia||'—'}</td><td>${c.institucion||'—'}</td><td>${c.inicio||'—'}</td><td>${c.fin||'—'}</td><td>${c.horas||0}</td><td>${c.participantes_lista?c.participantes_lista.split('\n').filter(Boolean).length:0}</td><td>${c.modalidad||'—'}</td></tr>`).join('')}</tbody></table></div>`;
+}
+window.generarReporte=generarReporte;
+
+function dstr(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
+function renderCharts(f){
+  const CP='#218570',CV='#1a5276',CH='#c0392b';
+  dstr('m');const mc={Presencial:0,Virtual:0,Híbrida:0};f.forEach(([,c])=>{if(mc[c.modalidad]!==undefined)mc[c.modalidad]++;});
+  const ctxM=document.getElementById('ch-modal');if(ctxM)charts['m']=new Chart(ctxM,{type:'pie',data:{labels:Object.keys(mc),datasets:[{data:Object.values(mc),backgroundColor:[CP,CV,CH],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:12},padding:16}}}}});
+  dstr('gh');const hg={};f.forEach(([,c])=>{if(c.gerencia)hg[c.gerencia]=(hg[c.gerencia]||0)+(parseInt(c.horas)||0);});
+  const t5=Object.entries(hg).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const ctxGH=document.getElementById('ch-ger-h');if(ctxGH)charts['gh']=new Chart(ctxGH,{type:'doughnut',data:{labels:t5.map(([g])=>g.replace('Gerencia de ','').replace('Gerencia ','').substring(0,18)),datasets:[{data:t5.map(([,h])=>h),backgroundColor:EC,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:10}}}}});
+  dstr('t');const hoy=hoyLocal(),ml=[],mc2=[],mh=[];
+  for(let i=5;i>=0;i--){const d=new Date(hoy.getFullYear(),hoy.getMonth()-i,1),y=d.getFullYear(),m=d.getMonth();ml.push(MESES[m].substring(0,3)+' '+y);const ms=Object.values(window.cursosData||{}).filter(c=>{if(!c.inicio)return false;const ci=new Date(c.inicio+'T00:00:00');return ci.getFullYear()===y&&ci.getMonth()===m;});mc2.push(ms.length);mh.push(ms.reduce((s,c)=>s+(parseInt(c.horas)||0),0));}
+  const ctxT=document.getElementById('ch-tend');if(ctxT)charts['t']=new Chart(ctxT,{type:'line',data:{labels:ml,datasets:[{label:'Cursos',data:mc2,borderColor:CP,backgroundColor:CP+'30',tension:.4,fill:true,pointBackgroundColor:CP,pointRadius:5},{label:'Horas (÷10)',data:mh.map(h=>Math.round(h/10)),borderColor:CH,backgroundColor:CH+'20',tension:.4,fill:false,pointBackgroundColor:CH,pointRadius:5,borderDash:[6,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},scales:{y:{beginAtZero:true,grid:{color:'#e4f0ed'},ticks:{stepSize:1}},x:{grid:{color:'#f0f0f0'}}}}});
+  dstr('gc');const cg2={};f.forEach(([,c])=>{if(c.gerencia)cg2[c.gerencia]=(cg2[c.gerencia]||0)+1;});
+  const gs=Object.entries(cg2).sort((a,b)=>b[1]-a[1]).slice(0,7);
+  const ctxGC=document.getElementById('ch-ger-c');if(ctxGC)charts['gc']=new Chart(ctxGC,{type:'bar',data:{labels:gs.map(([g])=>g.replace('Gerencia de ','').replace('Gerencia ','').substring(0,14)+'…'),datasets:[{label:'Cursos',data:gs.map(([,n])=>n),backgroundColor:EC,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1},grid:{color:'#e4f0ed'}},x:{grid:{display:false},ticks:{font:{size:10}}}}}});
+  dstr('pm');const pm={Presencial:0,Virtual:0,Híbrida:0};f.forEach(([,c])=>{const n=c.participantes_lista?c.participantes_lista.split('\n').filter(Boolean).length:0;if(pm[c.modalidad]!==undefined)pm[c.modalidad]+=n;});
+  const ctxPM=document.getElementById('ch-pm');if(ctxPM)charts['pm']=new Chart(ctxPM,{type:'bar',data:{labels:['Participantes'],datasets:[{label:'Presencial',data:[pm.Presencial],backgroundColor:CP,borderRadius:6},{label:'Virtual',data:[pm.Virtual],backgroundColor:CV,borderRadius:6},{label:'Híbrida',data:[pm['Híbrida']||0],backgroundColor:CH,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,grid:{color:'#e4f0ed'}}}}});
+}
+function exportarCSV(){const r=[['Capacitación','Docente','Gerencia','Institución','Inicio','Fin','Horas','Participantes','Modalidad']];getFilt().forEach(([,c])=>r.push([c.nombre||'',c.docente||'',c.gerencia||'',c.institucion||'',c.inicio||'',c.fin||'',c.horas||0,c.participantes_lista?c.participantes_lista.split('\n').filter(Boolean).length:0,c.modalidad||'']));const csv=r.map(row=>row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}));a.download='EPEC_'+new Date().toISOString().split('T')[0]+'.csv';a.click();}
+window.exportarCSV=exportarCSV;
+function exportarPDF(){const lab={diario:'Diario',semanal:'Semanal',quincenal:'Quincenal',mensual:'Mensual'};document.getElementById('print-sub').textContent='Reporte '+lab[periodoRep]+' — '+new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});window.print();}
+window.exportarPDF=exportarPDF;
+
+// ── AULAS ──
+function renderAulas(){
+  const cont=document.getElementById('aulas-container');
+  cont.innerHTML=AULAS.map(a=>{
+    const ra=Object.values(window.reservasData||{}).filter(r=>r.aulaId===a.id);
+    const hoy=hoyLocal();
+    const slots=['Lun','Mar','Mié','Jue','Vie'].map((d,i)=>{
+      const f=new Date(hoy.getFullYear(),hoy.getMonth(),hoy.getDate()-hoy.getDay()+1+i);
+      const fs=dateStrLocal(f);const oc=ra.some(r=>r.fecha===fs);
+      return `<div class="dia-slot ${oc?'ocupado':'libre'}"><div class="dia">${d}</div><div>${oc?'✕':'✓'}</div></div>`;
+    }).join('');
+    return `<div class="aula-card"><div class="ac-head"><div class="ac-icon"><i class="ti ${a.icono}" style="color:#fff;font-size:20px"></i></div><div><div class="ac-name">${a.nombre}</div><div class="ac-tipo">${a.tipo}</div></div></div>
+    <div class="ac-body"><div class="ac-specs"><div class="ac-spec"><i class="ti ti-users"></i><span>Capacidad: <strong>${a.capacidad} personas</strong></span></div><div class="ac-spec"><i class="ti ti-tool"></i><span style="font-size:11px">${a.equipamiento}</span></div></div>
+    <div class="ac-disp"><label>Disponibilidad esta semana</label><div class="disp-grid">${slots}</div></div>
+    <div class="ac-actions"><button class="btn-res" onclick="abrirReserva('${a.id}','${a.nombre}')"><i class="ti ti-calendar-plus"></i>Reservar</button><button class="btn-vr" onclick="abrirReserva('${a.id}','${a.nombre}')"><i class="ti ti-list"></i></button></div></div></div>`;
+  }).join('');
+}
+
+// ── RESERVA MÚLTIPLES MÓDULOS ──
+function abrirReserva(aulaId,nombre){
+  aulaSel=aulaId;modulosSeleccionados=[];
+  document.getElementById('res-titulo').textContent='Reservar — '+nombre;
+  document.getElementById('res-fecha').value=dateStrLocal(hoyLocal());
+  document.getElementById('res-gerencia').value='';
+  document.getElementById('res-resp').value='';document.getElementById('res-cap').value='';document.getElementById('res-obs').value='';
+  document.querySelectorAll('.modulo-btn').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('res-resumen').classList.remove('visible');
+  renderResAula(aulaId);
+  document.getElementById('modal-reserva').classList.add('open');
+}
+window.abrirReserva=abrirReserva;
+
+function toggleModulo(btn,horario){
+  const idx=modulosSeleccionados.indexOf(horario);
+  // Día completo es exclusivo
+  if(horario==='08:00-17:00'){
+    if(idx>=0){modulosSeleccionados=[];btn.classList.remove('sel');}
+    else{modulosSeleccionados=['08:00-17:00'];document.querySelectorAll('.modulo-btn').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');}
+  } else {
+    // Deseleccionar día completo si estaba
+    if(modulosSeleccionados.includes('08:00-17:00')){
+      modulosSeleccionados=[];document.querySelectorAll('.modulo-btn').forEach(b=>b.classList.remove('sel'));
+    }
+    if(idx>=0){modulosSeleccionados.splice(idx,1);btn.classList.remove('sel');}
+    else if(modulosSeleccionados.length<3){modulosSeleccionados.push(horario);btn.classList.add('sel');}
+    else{toast('Podés seleccionar hasta 3 módulos','error');return;}
   }
+  actualizarResumen();
+}
+window.toggleModulo=toggleModulo;
 
-  function renderReport() {
-    const period = document.getElementById('rep-period')?.value || 'semanal';
-    const ger    = document.getElementById('rep-gerencia')?.value || '';
-    const { start, end } = getRange(period);
-
-    const filtered = (window._courses||[]).filter(c => c.fin >= start && c.inicio <= end && (!ger || c.gerencia === ger));
-
-    const totalPart = filtered.reduce((s,c) => s + parseParticipants(c.participantes).length, 0);
-    const totalHs   = filtered.reduce((s,c) => s + (parseInt(c.horas)||0), 0);
-    const gerencias = new Set(filtered.map(c => c.gerencia)).size;
-
-    document.getElementById('rep-stats').innerHTML = [
-      ['Cursos', filtered.length],
-      ['Participantes', totalPart],
-      ['Horas totales', totalHs],
-      ['Gerencias', gerencias],
-    ].map(([lbl,num]) => `<div class="stat-card"><div class="num">${num}</div><div class="lbl">${lbl}</div></div>`).join('');
-
-    const labels = { diario:'del día de hoy', semanal:'de esta semana', quincenal:'de las últimas 2 semanas', mensual:'del mes en curso' };
-    document.getElementById('rep-title').textContent = `Mostrando ${filtered.length} capacitacion${filtered.length!==1?'es':''} ${labels[period]}${ger ? ' · ' + ger : ''}`;
-
-    document.getElementById('rep-body').innerHTML = filtered.length
-      ? filtered.map(c => {
-          const p = parseParticipants(c.participantes).length;
-          return `<tr>
-            <td class="overflow-cell" title="${esc(c.nombre)}">${esc(c.nombre)}</td>
-            <td class="overflow-cell">${esc(c.docente)}</td>
-            <td class="overflow-cell">${esc(c.gerencia)}</td>
-            <td class="overflow-cell">${esc(c.institucion)}</td>
-            <td>${esc(c.inicio)}</td>
-            <td>${esc(c.fin)}</td>
-            <td>${c.horas||0}</td>
-            <td>${p}</td>
-            <td><span class="badge ${MOD_BADGE[c.modalidad]||'badge-green'}">${esc(c.modalidad)}</span></td>
-          </tr>`;
-        }).join('')
-      : `<tr><td colspan="9" style="text-align:center;color:var(--txt2);padding:30px">Sin capacitaciones en este período</td></tr>`;
+function actualizarResumen(){
+  const res=document.getElementById('res-resumen');
+  if(!modulosSeleccionados.length){res.classList.remove('visible');return;}
+  if(modulosSeleccionados[0]==='08:00-17:00'){res.textContent='✓ Reserva: Día completo (08:00 – 17:00)';}
+  else{
+    const horas=modulosSeleccionados.map(m=>m.split('-'));
+    const inicio=horas[0][0];const fin=horas[horas.length-1][1];
+    res.textContent=`✓ ${modulosSeleccionados.length} módulo${modulosSeleccionados.length>1?'s':''} seleccionado${modulosSeleccionados.length>1?'s':''}: ${inicio} – ${fin}`;
   }
+  res.classList.add('visible');
+}
 
-  function exportCSV() {
-    const period = document.getElementById('rep-period')?.value || 'semanal';
-    const ger    = document.getElementById('rep-gerencia')?.value || '';
-    const { start, end } = getRange(period);
-    const filtered = (window._courses||[]).filter(c => c.fin >= start && c.inicio <= end && (!ger || c.gerencia === ger));
+function confirmarReserva(){
+  const fecha=document.getElementById('res-fecha').value;
+  const ger=document.getElementById('res-gerencia').value;
+  const resp=document.getElementById('res-resp').value.trim();
+  if(!fecha||!ger||!resp||!modulosSeleccionados.length){toast('Completá fecha, gerencia, responsable y al menos un módulo horario','error');return;}
+  const horarioStr=modulosSeleccionados.join(' | ');
+  window.push(window.reservasRef,{aulaId:aulaSel,fecha,horario:horarioStr,modulos:modulosSeleccionados,gerencia:ger,responsable:resp,capacitacion:document.getElementById('res-cap').value.trim(),observaciones:document.getElementById('res-obs').value.trim(),creada:new Date().toISOString()})
+    .then(()=>{toast('Reserva confirmada');renderAulas();renderResAula(aulaSel);}).catch(()=>toast('Error al guardar','error'));
+}
+window.confirmarReserva=confirmarReserva;
 
-    const header = ['Capacitacion','Docente','Institucion','Gerencia','Modalidad','Inicio','Fin','Horas','Cupo','Participantes','Novedades'];
-    const rows   = filtered.map(c => [
-      c.nombre, c.docente, c.institucion, c.gerencia, c.modalidad,
-      c.inicio, c.fin, c.horas||0, c.cupo||0,
-      parseParticipants(c.participantes).join(' | '),
-      (c.novedades||'').replace(/\n/g,' | ')
-    ].map(v => `"${String(v).replace(/"/g,"'")}"`));
+function renderResAula(aulaId){
+  const id=aulaId||aulaSel;if(!id)return;
+  const rs=Object.entries(window.reservasData||{}).filter(([,r])=>r.aulaId===id).sort((a,b)=>a[1].fecha>b[1].fecha?1:-1);
+  const c=document.getElementById('res-del-aula');if(!c)return;
+  c.innerHTML=rs.length?rs.map(([rid,r])=>`<div class="res-item"><div><strong>${r.fecha} · ${r.horario||''}</strong>${r.gerencia||''} — ${r.responsable||''}${r.capacitacion?' · '+r.capacitacion:''}</div><button class="btn-d" style="padding:4px 10px;font-size:11px" onclick="cancelarRes('${rid}')"><i class="ti ti-trash"></i></button></div>`).join(''):`<p style="font-size:12px;color:var(--muted)">No hay reservas para esta aula.</p>`;
+}
+window.renderResAula=renderResAula;
 
-    const csv = [header, ...rows].map(r => r.join(',')).join('\n');
-    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href = url;
-    a.download = `EPEC_Capacitaciones_${period}_${new Date().toISOString().slice(0,10)}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
+function cancelarRes(id){if(!confirm('¿Cancelar esta reserva?'))return;window.remove(window.ref(window.db,'reservas/'+id)).then(()=>{toast('Reserva cancelada');renderResAula(aulaSel);renderAulas();});}
+window.cancelarRes=cancelarRes;
 
-  // ─── UTILIDADES ───────────────────────────────────────────────
-  function parseParticipants(raw) {
-    if (!raw) return [];
-    return raw.split(/,|\n/).map(p => p.trim()).filter(Boolean);
-  }
-
-  function esc(str) {
-    return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  // Actualizar contador de usuarios (simulado — en producción usar Firebase Presence)
-  const users = [1,1,2,1,2,3,2,1,2];
-  let ui = 0;
-  setInterval(() => {
-    const n = users[ui % users.length]; ui++;
-    const el = document.getElementById('live-users');
-    if (el) el.textContent = `${n} usuario${n>1?'s':''} conectado${n>1?'s':''}`;
-  }, 12000);
+// INIT
+renderCal();generarReporte();
 </script>
-
 
 
 </body></html>
