@@ -1,14 +1,14 @@
 
 <!DOCTYPE html>
-<!-- saved from url=(0059)file:///D:/Usuarios/clucero/Downloads/EPEC_index_nuevo.html -->
-<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>EPEC SAU — Gestión de Capacitaciones</title>
 <link rel="preconnect" href="https://fonts.googleapis.com/">
-<link href="./index_files/css2" rel="stylesheet">
-<link rel="stylesheet" href="./index_files/tabler-icons.min.css">
-<script src="./index_files/chart.umd.min.js.descargar"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.x/dist/tabler-icons.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 /* ═══════════════════════════════════════════════
    VARIABLES Y RESET
@@ -397,24 +397,24 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
     <div class="logo-e">E</div>
     <div class="htitle">EPEC SAU · Centro de Formación Profesional<span>Gestión de Capacitaciones</span></div>
   </div>
-  <div class="hstatus"><div class="sdot"></div><span id="user-count">2 usuarios conectados</span></div>
+  <div class="hstatus"><div class="sdot"></div><span id="user-count">En vivo</span></div>
 </header>
 
 <!-- NAV -->
 <nav class="nav-tabs">
-  <button class="nav-tab active" onclick="showSection(&#39;calendario&#39;,this)">
+  <button class="nav-tab active" onclick="showSection('calendario',this)">
     <i class="ti ti-calendar"></i>Calendario
   </button>
-  <button class="nav-tab" onclick="showSection(&#39;cursos&#39;,this)">
+  <button class="nav-tab" onclick="showSection('cursos',this)">
     <i class="ti ti-list"></i>Cursos
   </button>
-  <button class="nav-tab" onclick="showSection(&#39;nuevo&#39;,this)">
+  <button class="nav-tab" onclick="showSection('nuevo',this)">
     <i class="ti ti-circle-plus"></i>Nuevo curso
   </button>
-  <button class="nav-tab" onclick="showSection(&#39;reportes&#39;,this)">
+  <button class="nav-tab" onclick="showSection('reportes',this)">
     <i class="ti ti-chart-bar"></i>Reportes
   </button>
-  <button class="nav-tab" onclick="showSection(&#39;aulas&#39;,this)">
+  <button class="nav-tab" onclick="showSection('aulas',this)">
     <i class="ti ti-building"></i>Aulas
   </button>
 </nav>
@@ -426,15 +426,18 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 ══════════════════════════════════ -->
 <section id="section-calendario" class="section active">
   <div class="cal-header">
-    <h2 id="cal-title">Semana del 8 al 12 de Junio 2026</h2>
+    <h2 id="cal-title"></h2>
     <div class="cal-nav">
       <div class="view-toggle">
-        <button class="vt-btn active" id="vt-semana" onclick="setView(&#39;semana&#39;)">Semana</button>
-        <button class="vt-btn" id="vt-mes" onclick="setView(&#39;mes&#39;)">Mes</button>
+        <button class="vt-btn active" id="vt-semana" onclick="setView('semana')">Semana</button>
+        <button class="vt-btn" id="vt-mes" onclick="setView('mes')">Mes</button>
       </div>
       <button class="btn-s" onclick="navCal(-1)"><i class="ti ti-chevron-left"></i> Anterior</button>
       <button class="btn-s" onclick="navCal(0)"><i class="ti ti-calendar"></i> Hoy</button>
       <button class="btn-s" onclick="navCal(1)">Siguiente <i class="ti ti-chevron-right"></i></button>
+      <button class="btn-s" onclick="imprimirCalendario()" style="background:var(--primary);color:#fff;border-color:var(--primary)">
+        <i class="ti ti-printer"></i> Imprimir
+      </button>
     </div>
   </div>
 
@@ -449,120 +452,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 
   <!-- FIX A: wrapper con scroll -->
   <div class="cal-scroll-wrapper">
-    <div class="week-scroll-inner" id="cal-container"><div style="display:grid;grid-template-columns:56px repeat(5,1fr);
-    background:var(--primary);border-radius:var(--radius) var(--radius) 0 0;overflow:hidden">
-    <div style="background:var(--primary-dk)"></div><div style="padding:10px 6px;text-align:center;color:#fff;
-      border-left:1px solid rgba(255,255,255,.15);">
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;opacity:.85">Lun</div>
-      <div style="font-size:20px;font-weight:800;line-height:1.2;margin-top:2px">8</div>
-      
-    </div><div style="padding:10px 6px;text-align:center;color:#fff;
-      border-left:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.18)">
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;opacity:.85">Mar</div>
-      <div style="font-size:20px;font-weight:800;line-height:1.2;margin-top:2px">9</div>
-      <div style="width:5px;height:5px;border-radius:50%;background:#6effd6;margin:3px auto 0"></div>
-    </div><div style="padding:10px 6px;text-align:center;color:#fff;
-      border-left:1px solid rgba(255,255,255,.15);">
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;opacity:.85">Mié</div>
-      <div style="font-size:20px;font-weight:800;line-height:1.2;margin-top:2px">10</div>
-      
-    </div><div style="padding:10px 6px;text-align:center;color:#fff;
-      border-left:1px solid rgba(255,255,255,.15);">
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;opacity:.85">Jue</div>
-      <div style="font-size:20px;font-weight:800;line-height:1.2;margin-top:2px">11</div>
-      
-    </div><div style="padding:10px 6px;text-align:center;color:#fff;
-      border-left:1px solid rgba(255,255,255,.15);">
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;opacity:.85">Vie</div>
-      <div style="font-size:20px;font-weight:800;line-height:1.2;margin-top:2px">12</div>
-      
-    </div></div><div style="display:flex;background:var(--border);
-    border-left:1px solid var(--border);border-right:1px solid var(--border);
-    border-bottom:1px solid var(--border);border-radius:0 0 var(--radius) var(--radius);overflow:hidden">
-    <div style="width:56px;flex-shrink:0;background:#f8fbfa;border-right:1px solid var(--border)"><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
-      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">7:00</div><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
-      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">8:00</div><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
-      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">9:00</div><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
-      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">10:00</div><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
-      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">11:00</div><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
-      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">12:00</div><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
-      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">13:00</div><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
-      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">14:00</div><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
-      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">15:00</div><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
-      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">16:00</div><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
-      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">17:00</div><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
-      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">18:00</div></div><div style="flex:1;display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border)"><div style="background:var(--surface);position:relative;min-height:720px"><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div></div><div style="background:#fefff8;position:relative;min-height:720px"><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div class="cal-evt hibrida" style="top:4px;" title="Excel Avanzado" onclick="abrirDetalle(&#39;d2&#39;)">
-        <span class="evt-name">Excel Avanzado</span>
-        <div class="evt-time">20hs · Prof. Sandra Ruiz</div>
-      </div></div><div style="background:var(--surface);position:relative;min-height:720px"><div style="height: 60px; border-bottom: 1px solid var(--border); position: relative; cursor: pointer; background: rgba(33, 133, 112, 0.06);" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div class="cal-evt hibrida" style="top:4px;" title="Excel Avanzado" onclick="abrirDetalle(&#39;d2&#39;)">
-        <span class="evt-name">Excel Avanzado</span>
-        <div class="evt-time">20hs · Prof. Sandra Ruiz</div>
-      </div></div><div style="background:var(--surface);position:relative;min-height:720px"><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div class="cal-evt hibrida" style="top:4px;" title="Excel Avanzado" onclick="abrirDetalle(&#39;d2&#39;)">
-        <span class="evt-name">Excel Avanzado</span>
-        <div class="evt-time">20hs · Prof. Sandra Ruiz</div>
-      </div></div><div style="background:var(--surface);position:relative;min-height:720px"><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
-        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div class="cal-evt hibrida" style="top:4px;" title="Excel Avanzado" onclick="abrirDetalle(&#39;d2&#39;)">
-        <span class="evt-name">Excel Avanzado</span>
-        <div class="evt-time">20hs · Prof. Sandra Ruiz</div>
-      </div></div></div></div></div>
+    <div class="week-scroll-inner" id="cal-container"></div>
   </div>
 </section>
 
@@ -571,7 +461,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 ══════════════════════════════════ -->
 <section id="section-cursos" class="section">
   <div class="filters">
-    <input class="filter-input" type="search" id="search-q" placeholder="🔍 Buscar por nombre, docente, gerencia..." oninput="filterCursos()">
+    <input class="filter-input" type="search" id="search-q" placeholder="🔍 Buscar por nombre, docente, gerencia..." oninput="filterCursos()"/>
     <select class="filter-input" id="filter-mod" onchange="filterCursos()" style="max-width:180px">
       <option value="">Todas las modalidades</option>
       <option>Presencial</option><option>Virtual</option><option>Híbrida</option>
@@ -596,22 +486,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
       <option>Unidades Asesoras</option>
     </select>
   </div>
-  <div id="lista-cursos"><div class="curso-card hibrida" onclick="abrirDetalle(&#39;d2&#39;)">
-      <div class="curso-card-header">
-        <div class="curso-name">Excel Avanzado</div>
-        <span class="badge hibrida">Híbrida</span>
-      </div>
-      <div class="curso-meta">
-        <span><i class="ti ti-user"></i>Prof. Sandra Ruiz</span>
-        <span><i class="ti ti-building"></i>UTN Córdoba</span>
-        <span><i class="ti ti-sitemap"></i>Gerencia de RR.HH.</span>
-        <span><i class="ti ti-calendar"></i>2026-06-09 → 2026-06-13</span>
-        <span><i class="ti ti-clock"></i>20 hs</span>
-        <span><i class="ti ti-users"></i>3 participantes</span>
-        <span><i class="ti ti-door"></i>Aula 3 — Informática (25 personas)</span>
-        <span><i class="ti ti-id-badge"></i>RR.HH.: Lic. Ana Sosa</span>
-      </div>
-    </div></div>
+  <div id="lista-cursos"></div>
 </section>
 
 <!-- ══════════════════════════════════
@@ -622,10 +497,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
     <div class="fsec">Información general</div>
     <div class="fgrid">
       <div class="fg full"><label>Nombre de la capacitación *</label>
-        <input id="n-nombre" placeholder="Ej: Seguridad en Alta Tensión"></div>
-      <div class="fg"><label>Fecha de inicio *</label><input type="date" id="n-inicio"></div>
-      <div class="fg"><label>Fecha de fin *</label><input type="date" id="n-fin"></div>
-      <div class="fg"><label>Duración (horas) *</label><input type="number" id="n-horas" min="1" placeholder="Ej: 16"></div>
+        <input id="n-nombre" placeholder="Ej: Seguridad en Alta Tensión"/></div>
+      <div class="fg"><label>Fecha de inicio *</label><input type="date" id="n-inicio"/></div>
+      <div class="fg"><label>Fecha de fin *</label><input type="date" id="n-fin"/></div>
+      <div class="fg"><label>Duración (horas) *</label><input type="number" id="n-horas" min="1" placeholder="Ej: 16"/></div>
       <div class="fg"><label>Modalidad</label>
         <select id="n-modal">
           <option>Presencial</option><option>Virtual</option><option>Híbrida</option>
@@ -635,9 +510,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 
     <div class="fsec">Responsables</div>
     <div class="fgrid">
-      <div class="fg"><label>Docente / Instructor *</label><input id="n-docente" placeholder="Nombre completo"></div>
-      <div class="fg"><label>Responsable RR.HH.</label><input id="n-rrhh" placeholder="Nombre del responsable"></div>
-      <div class="fg"><label>Institución que dicta</label><input id="n-inst" placeholder="Ej: UTN, EPEC interno..."></div>
+      <div class="fg"><label>Docente / Instructor *</label><input id="n-docente" placeholder="Nombre completo"/></div>
+      <div class="fg"><label>Responsable RR.HH.</label><input id="n-rrhh" placeholder="Nombre del responsable"/></div>
+      <div class="fg"><label>Institución que dicta</label><input id="n-inst" placeholder="Ej: UTN, EPEC interno..."/></div>
       <div class="fg"><label>Gerencia requirente *</label>
         <select id="n-ger">
           <option value="">Seleccionar...</option>
@@ -672,14 +547,17 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
           <option>Aula Informática (18 personas)</option>
         </select>
       </div>
-      <div class="fg"><label>Cupo máximo</label><input type="number" id="n-cupo" min="1" placeholder="Ej: 20"></div>
+      <div class="fg"><label>Cupo máximo</label><input type="number" id="n-cupo" min="1" placeholder="Ej: 20"/></div>
     </div>
 
     <div class="fsec">Participantes</div>
     <div class="fgrid">
-      <div class="fg full"><label>Listado de participantes (uno por línea o separados por coma)</label>
-        <textarea id="n-partic" rows="4" placeholder="Juan Pérez
-María García, Carlos López"></textarea>
+      <div class="fg full">
+        <label>Listado de participantes — ingresá <strong>un participante por línea</strong> (Apellido, Nombre)</label>
+        <textarea id="n-partic" rows="6" placeholder="García Juan&#10;Pérez María&#10;López Carlos&#10;Martínez Ana"></textarea>
+        <span style="font-size:11px;color:var(--muted);margin-top:3px;display:block">
+          <i class="ti ti-info-circle"></i> Escribí cada participante en una línea nueva. Formato sugerido: Apellido Nombre
+        </span>
       </div>
     </div>
 
@@ -704,10 +582,10 @@ María García, Carlos López"></textarea>
 <section id="section-reportes" class="section">
   <div class="rpf">
     <div class="period-btns">
-      <button class="pb active" onclick="setPeriod(&#39;diario&#39;,this)">Diario</button>
-      <button class="pb" onclick="setPeriod(&#39;semanal&#39;,this)">Semanal</button>
-      <button class="pb" onclick="setPeriod(&#39;quincenal&#39;,this)">Quincenal</button>
-      <button class="pb" onclick="setPeriod(&#39;mensual&#39;,this)">Mensual</button>
+      <button class="pb active" onclick="setPeriod('diario',this)">Diario</button>
+      <button class="pb" onclick="setPeriod('semanal',this)">Semanal</button>
+      <button class="pb" onclick="setPeriod('quincenal',this)">Quincenal</button>
+      <button class="pb" onclick="setPeriod('mensual',this)">Mensual</button>
     </div>
     <select class="filter-input" id="rep-ger" onchange="renderReporte()" style="max-width:260px">
       <option value="">Todas las gerencias</option>
@@ -779,7 +657,7 @@ María García, Carlos López"></textarea>
 ══════════════════════════════════ -->
 <div class="overlay" id="modal-detalle">
   <div class="modal" id="modal-detalle-inner">
-    <button class="modal-close" onclick="closeModal(&#39;modal-detalle&#39;)">×</button>
+    <button class="modal-close" onclick="closeModal('modal-detalle')">&times;</button>
     <h2 id="md-titulo"></h2>
     <div class="detail-grid" id="md-fields"></div>
     <div class="partic-box" id="md-partic"></div>
@@ -803,21 +681,21 @@ María García, Carlos López"></textarea>
 <!-- FIX D: Modal de edición -->
 <div class="overlay" id="modal-edicion">
   <div class="modal edit-modal">
-    <button class="modal-close" onclick="closeModal(&#39;modal-edicion&#39;)">×</button>
+    <button class="modal-close" onclick="closeModal('modal-edicion')">&times;</button>
     <h2>✏️ Editar capacitación</h2>
     <div class="fgrid">
-      <div class="fg full"><label>Nombre *</label><input id="e-nombre"></div>
-      <div class="fg"><label>Fecha inicio *</label><input type="date" id="e-inicio"></div>
-      <div class="fg"><label>Fecha fin *</label><input type="date" id="e-fin"></div>
-      <div class="fg"><label>Horas</label><input type="number" id="e-horas" min="1"></div>
+      <div class="fg full"><label>Nombre *</label><input id="e-nombre"/></div>
+      <div class="fg"><label>Fecha inicio *</label><input type="date" id="e-inicio"/></div>
+      <div class="fg"><label>Fecha fin *</label><input type="date" id="e-fin"/></div>
+      <div class="fg"><label>Horas</label><input type="number" id="e-horas" min="1"/></div>
       <div class="fg"><label>Modalidad</label>
         <select id="e-modal">
           <option>Presencial</option><option>Virtual</option><option>Híbrida</option>
         </select>
       </div>
-      <div class="fg"><label>Docente</label><input id="e-docente"></div>
-      <div class="fg"><label>Responsable RR.HH.</label><input id="e-rrhh"></div>
-      <div class="fg"><label>Institución</label><input id="e-inst"></div>
+      <div class="fg"><label>Docente</label><input id="e-docente"/></div>
+      <div class="fg"><label>Responsable RR.HH.</label><input id="e-rrhh"/></div>
+      <div class="fg"><label>Institución</label><input id="e-inst"/></div>
       <div class="fg"><label>Gerencia</label>
         <select id="e-ger">
           <option value="">Seleccionar...</option>
@@ -852,9 +730,13 @@ María García, Carlos López"></textarea>
           <option>Aula Informática (18 personas)</option>
         </select>
       </div>
-      <div class="fg"><label>Cupo máximo</label><input type="number" id="e-cupo" min="1"></div>
-      <div class="fg full"><label>Participantes</label>
-        <textarea id="e-partic" rows="4"></textarea>
+      <div class="fg"><label>Cupo máximo</label><input type="number" id="e-cupo" min="1"/></div>
+      <div class="fg full">
+        <label>Participantes — uno por línea (Apellido Nombre)</label>
+        <textarea id="e-partic" rows="6" placeholder="García Juan&#10;Pérez María&#10;López Carlos"></textarea>
+        <span style="font-size:11px;color:var(--muted);margin-top:3px;display:block">
+          <i class="ti ti-info-circle"></i> Un participante por línea. No uses comas para separar participantes.
+        </span>
       </div>
       <div class="fg full"><label>Novedades</label>
         <textarea id="e-novedad" rows="3"></textarea>
@@ -862,7 +744,7 @@ María García, Carlos López"></textarea>
     </div>
     <div style="display:flex;gap:10px;margin-top:1rem">
       <button class="btn-p" onclick="guardarEdicion()"><i class="ti ti-device-floppy"></i> Guardar cambios</button>
-      <button class="btn-d" onclick="closeModal(&#39;modal-edicion&#39;)">Cancelar</button>
+      <button class="btn-d" onclick="closeModal('modal-edicion')">Cancelar</button>
     </div>
     <div id="edit-msg" style="margin-top:8px;font-size:13px;min-height:18px;font-weight:500"></div>
   </div>
@@ -871,15 +753,15 @@ María García, Carlos López"></textarea>
 <!-- MODAL RESERVA AULA -->
 <div class="overlay" id="modal-reserva">
   <div class="modal res-modal">
-    <button class="modal-close" onclick="closeModal(&#39;modal-reserva&#39;)">×</button>
+    <button class="modal-close" onclick="closeModal('modal-reserva')">&times;</button>
     <h2 id="res-aula-nombre">Reservar Aula</h2>
     <div class="res-fgrid" style="margin-bottom:1rem">
-      <div class="fg"><label>Curso</label><input id="res-curso" placeholder="Nombre del curso"></div>
-      <div class="fg"><label>Responsable</label><input id="res-resp" placeholder="Nombre"></div>
-      <div class="fg"><label>Fecha inicio</label><input type="date" id="res-inicio"></div>
-      <div class="fg"><label>Fecha fin</label><input type="date" id="res-fin"></div>
-      <div class="fg"><label>Hora inicio</label><input type="time" id="res-hora-ini" value="08:00"></div>
-      <div class="fg"><label>Hora fin</label><input type="time" id="res-hora-fin" value="17:00"></div>
+      <div class="fg"><label>Curso</label><input id="res-curso" placeholder="Nombre del curso"/></div>
+      <div class="fg"><label>Responsable</label><input id="res-resp" placeholder="Nombre"/></div>
+      <div class="fg"><label>Fecha inicio</label><input type="date" id="res-inicio"/></div>
+      <div class="fg"><label>Fecha fin</label><input type="date" id="res-fin"/></div>
+      <div class="fg"><label>Hora inicio</label><input type="time" id="res-hora-ini" value="08:00"/></div>
+      <div class="fg"><label>Hora fin</label><input type="time" id="res-hora-fin" value="17:00"/></div>
     </div>
     <div style="margin-bottom:1rem">
       <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:8px">
@@ -903,8 +785,8 @@ María García, Carlos López"></textarea>
 <div class="toast" id="toast"></div>
 
 <footer class="footer">
-  <strong>EPEC SAU</strong> · Centro de Formación Profesional © 2026 ·
-  <span id="sync-msg">Sync: 11:16:49</span>
+  <strong>EPEC SAU</strong> · Centro de Formación Profesional &copy; 2026 ·
+  <span id="sync-msg">Sistema activo</span>
 </footer>
 
 <!-- FIREBASE -->
@@ -1017,6 +899,193 @@ function navCal(d){
 }
 
 /* ══════════════════════════════════════
+   IMPRIMIR CALENDARIO
+══════════════════════════════════════ */
+function imprimirCalendario(){
+  const titulo = document.getElementById('cal-title').textContent;
+  const esSemana = _view === 'semana';
+  const fecha = new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
+
+  // ── Construir filas de la tabla según vista ──
+  let tablaHTML = '';
+
+  if(esSemana){
+    // Vista semanal: tabla con días como columnas y cursos como filas
+    const dias = getDiasLaborablesDelRango(_curDate);
+    const cabecera = dias.map(d=>`<th>${DIAS_LAB[d.getDay()-1]}<br><span style="font-size:16px;font-weight:800">${d.getDate()}</span></th>`).join('');
+
+    // Recopilar todos los cursos que aparecen en esta semana
+    const cursosVistos = new Map();
+    dias.forEach(dia=>{
+      const ds = toDateStr(dia);
+      (window._cursos||[]).filter(c=> ds >= c.inicio && ds <= c.fin && esLaborable(dia))
+        .forEach(c=>{ if(!cursosVistos.has(c._key)) cursosVistos.set(c._key, c); });
+    });
+
+    if(cursosVistos.size === 0){
+      tablaHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#5a7a74;font-style:italic">Sin cursos programados esta semana</td></tr>`;
+    } else {
+      cursosVistos.forEach(c=>{
+        const modColor = c.modalidad==='Presencial'?'#d0ede8':c.modalidad==='Virtual'?'#d6e4f0':'#fde8e6';
+        const modText  = c.modalidad==='Presencial'?'#0d5e4f':c.modalidad==='Virtual'?'#0a3d62':'#922b21';
+        const partic   = parsePartic(c.participantes).length;
+        // Marcar en qué días aparece
+        const celdas = dias.map(dia=>{
+          const ds = toDateStr(dia);
+          const activo = ds >= c.inicio && ds <= c.fin && esLaborable(dia);
+          return activo
+            ? `<td style="background:${modColor};text-align:center"><span style="font-size:13px;font-weight:700">✓</span></td>`
+            : `<td style="background:#f8f8f8;text-align:center;color:#ccc">–</td>`;
+        }).join('');
+        tablaHTML += `<tr>
+          <td style="font-weight:600;font-size:12px">${esc(c.nombre)}</td>
+          <td>${esc(c.docente||'—')}</td>
+          <td><span style="background:${modColor};color:${modText};padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700">${esc(c.modalidad)}</span></td>
+          <td style="text-align:center">${c.horas||0} hs</td>
+          <td style="text-align:center">${partic}</td>
+          ${celdas}
+        </tr>`;
+      });
+    }
+
+    tablaHTML = `
+      <table>
+        <thead>
+          <tr style="background:#218570;color:#fff">
+            <th style="width:22%">Capacitación</th>
+            <th style="width:14%">Docente</th>
+            <th style="width:10%">Modalidad</th>
+            <th style="width:6%;text-align:center">Hs</th>
+            <th style="width:7%;text-align:center">Partic.</th>
+            ${cabecera}
+          </tr>
+        </thead>
+        <tbody>${tablaHTML}</tbody>
+      </table>`;
+
+  } else {
+    // Vista mensual: tabla calendario clásica con celdas por día
+    const y = _curDate.getFullYear();
+    const m = _curDate.getMonth();
+    const primerDia = new Date(y, m, 1);
+    while(!esLaborable(primerDia)) primerDia.setDate(primerDia.getDate()+1);
+    const inicioGrid = new Date(primerDia);
+    inicioGrid.setDate(primerDia.getDate() - ((primerDia.getDay()+6)%7));
+
+    let celdasHTML = '';
+    for(let semana=0; semana<6; semana++){
+      let filaHTML = '';
+      let tieneContenido = false;
+      for(let dow=0; dow<5; dow++){
+        const fecha2 = new Date(inicioGrid);
+        fecha2.setDate(inicioGrid.getDate() + semana*7 + dow);
+        const otroMes = fecha2.getMonth() !== m;
+        const isHoy   = fecha2.toDateString() === new Date().toDateString();
+        const ds = toDateStr(fecha2);
+        const evts = (window._cursos||[]).filter(c=> !otroMes && ds >= c.inicio && ds <= c.fin);
+        if(!otroMes) tieneContenido = true;
+
+        const evtsHTML = evts.slice(0,3).map(c=>{
+          const modColor = c.modalidad==='Presencial'?'#d0ede8':c.modalidad==='Virtual'?'#d6e4f0':'#fde8e6';
+          const modText  = c.modalidad==='Presencial'?'#0d5e4f':c.modalidad==='Virtual'?'#0a3d62':'#922b21';
+          return `<div style="background:${modColor};color:${modText};font-size:9px;padding:2px 4px;border-radius:3px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600">${esc(c.nombre)}</div>`;
+        }).join('') + (evts.length>3 ? `<div style="font-size:9px;color:#218570;font-weight:700">+${evts.length-3} más</div>` : '');
+
+        filaHTML += `<td style="
+          vertical-align:top;padding:5px;
+          background:${isHoy?'#fffbf5':otroMes?'#f5f5f5':'#fff'};
+          ${isHoy?'outline:2px solid #c0392b;outline-offset:-2px':''}
+          opacity:${otroMes?'0.4':'1'}">
+          <div style="font-size:11px;font-weight:700;color:${isHoy?'#c0392b':'#5a7a74'};margin-bottom:4px">${fecha2.getDate()}</div>
+          ${evtsHTML}
+        </td>`;
+      }
+      if(tieneContenido) celdasHTML += `<tr>${filaHTML}</tr>`;
+    }
+
+    tablaHTML = `
+      <table>
+        <thead>
+          <tr style="background:#218570;color:#fff">
+            ${DIAS_LAB.map(d=>`<th style="text-align:center;padding:8px">${d}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>${celdasHTML}</tbody>
+      </table>`;
+  }
+
+  // ── HTML completo del PDF ──
+  const html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<title>EPEC · Calendario ${esSemana?'Semanal':'Mensual'} — ${titulo}</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#1a2e28;background:#fff;padding:16px 20px}
+  .rpt-header{background:#218570;color:#fff;padding:13px 18px;border-radius:8px;
+    margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+  .rpt-header h1{font-size:15px;font-weight:700;margin-bottom:3px}
+  .rpt-header p{font-size:10px;opacity:.85}
+  .rpt-logo{width:38px;height:38px;background:#fff;border-radius:7px;display:flex;
+    align-items:center;justify-content:center;font-size:20px;font-weight:900;
+    color:#218570;font-style:italic;flex-shrink:0}
+  .legend{display:flex;gap:16px;margin-bottom:12px;align-items:center;flex-wrap:wrap}
+  .leg{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600}
+  .leg-dot{width:10px;height:10px;border-radius:3px}
+  table{width:100%;border-collapse:collapse;font-size:11px}
+  th{background:#218570;color:#fff;padding:8px 10px;text-align:left;
+    font-size:10px;text-transform:uppercase;letter-spacing:.4px;font-weight:700}
+  td{padding:7px 8px;border:1px solid #cfe0db;vertical-align:top}
+  tr:nth-child(even) td{background:#f7fbfa}
+  .rpt-footer{margin-top:12px;padding-top:8px;border-top:1px solid #cfe0db;
+    display:flex;justify-content:space-between;font-size:9px;color:#5a7a74}
+  @media print{
+    body{padding:8px 10px}
+    @page{margin:8mm;size:A4 landscape}
+  }
+</style>
+</head>
+<body>
+
+<div class="rpt-header">
+  <div>
+    <h1>EPEC SAU · Centro de Formación Profesional</h1>
+    <p>Calendario ${esSemana?'Semanal':'Mensual'} — ${titulo} · Impreso el ${fecha}</p>
+  </div>
+  <div class="rpt-logo">E</div>
+</div>
+
+<div class="legend">
+  <span class="leg"><span class="leg-dot" style="background:#218570"></span>Presencial</span>
+  <span class="leg"><span class="leg-dot" style="background:#1a5276"></span>Virtual</span>
+  <span class="leg"><span class="leg-dot" style="background:#c0392b"></span>Híbrida</span>
+  <span style="font-size:10px;color:#5a7a74;margin-left:auto">Solo días laborables (Lun–Vie)</span>
+</div>
+
+${tablaHTML}
+
+<div class="rpt-footer">
+  <span>EPEC SAU · Centro de Formación Profesional</span>
+  <span>Calendario ${esSemana?'Semanal':'Mensual'} · ${titulo} · ${fecha}</span>
+</div>
+
+<script>
+  window.addEventListener('load', function(){
+    setTimeout(function(){ window.print(); }, 500);
+  });
+<\/script>
+</body>
+</html>`;
+
+  const win = window.open('', '_blank', 'width=1100,height=750');
+  if(!win){ alert('Permitir ventanas emergentes para imprimir'); return; }
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
+}
+
+/* ══════════════════════════════════════
    FIX C: helper — fecha es laborable?
 ══════════════════════════════════════ */
 function esLaborable(date){
@@ -1106,9 +1175,15 @@ function renderSemana(container){
         onmouseleave="this.style.background='transparent'"></div>`;
     });
 
-    // Eventos del día (FIX B: texto truncado con title)
+    // FIX 2: el evento aparece SOLO en los días laborables que están
+    // dentro del rango exacto inicio→fin del curso.
+    // Ejemplo: curso Lun 8 Jun → Jue 11 Jun NO aparece el Vie 12 Jun
     const ds = toDateStr(dia);
-    const evts = (window._cursos||[]).filter(c=>c.inicio<=ds && c.fin>=ds && esLaborable(dia));
+    const evts = (window._cursos||[]).filter(c=>{
+      if(!c.inicio || !c.fin) return false;
+      // Comparación de strings YYYY-MM-DD funciona correctamente
+      return ds >= c.inicio && ds <= c.fin && esLaborable(dia);
+    });
     evts.forEach((c,ci)=>{
       const mod = (c.modalidad||'presencial').toLowerCase().replace('í','i');
       const topPx = ci*28;
@@ -1166,7 +1241,11 @@ function renderMes(container){
       const otroMes = fecha.getMonth() !== m;
       const isHoy = fecha.toDateString()===hoy.toDateString();
       const ds = toDateStr(fecha);
-      const evts = (window._cursos||[]).filter(c=>c.inicio<=ds && c.fin>=ds);
+      // FIX 2: solo mostrar evento si la fecha exacta cae dentro del rango inicio→fin
+      const evts = (window._cursos||[]).filter(c=>{
+        if(!c.inicio || !c.fin) return false;
+        return ds >= c.inicio && ds <= c.fin;
+      });
 
       html += `<div style="background:${isHoy?'#fffbf5':otroMes?'#f7faf9':'var(--surface)'};
         min-height:100px;padding:5px;overflow:hidden;
@@ -1861,7 +1940,9 @@ function showToast(msg, tipo=''){
 
 function parsePartic(raw){
   if(!raw) return [];
-  return raw.split(/[,\n]/).map(p=>p.trim()).filter(Boolean);
+  // FIX 1: solo separar por salto de línea, NO por coma
+  // La coma puede ser parte del nombre: "García, Juan"
+  return raw.split(/\n/).map(p=>p.trim()).filter(Boolean);
 }
 
 function toDateStr(d){
@@ -1891,6 +1972,5 @@ setInterval(()=>{
 renderCalendario();
 </script>
 
-
-
-</body></html>
+</body>
+</html>
