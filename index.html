@@ -1,5 +1,6 @@
+
 <!DOCTYPE html>
-<!-- saved from url=(0054)file:///D:/Usuarios/clucero/Downloads/index%20(8).html -->
+<!-- saved from url=(0059)file:///D:/Usuarios/clucero/Downloads/EPEC_index_nuevo.html -->
 <html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,102 +10,191 @@
 <link rel="stylesheet" href="./index_files/tabler-icons.min.css">
 <script src="./index_files/chart.umd.min.js.descargar"></script>
 <style>
-:root{--primary:#218570;--primary-dk:#175d4e;--primary-lt:#e4f0ed;--accent:#c0392b;--virtual:#1a5276;--bg:#f0f5f3;--surface:#fff;--border:#cfe0db;--text:#1a2e28;--muted:#5a7a74;--radius:10px}
+/* ═══════════════════════════════════════════════
+   VARIABLES Y RESET
+═══════════════════════════════════════════════ */
+:root{
+  --primary:#218570;--primary-dk:#175d4e;--primary-lt:#e4f0ed;
+  --accent:#c0392b;--virtual:#1a5276;
+  --bg:#f0f5f3;--surface:#fff;--border:#cfe0db;
+  --text:#1a2e28;--muted:#5a7a74;--radius:10px;
+}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:14px}
-.header{background:var(--primary);color:#fff;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:200;box-shadow:0 2px 10px rgba(33,133,112,.35)}
+
+/* ═══════════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════════ */
+.header{background:var(--primary);color:#fff;padding:0 1.5rem;display:flex;align-items:center;
+  justify-content:space-between;height:58px;position:sticky;top:0;z-index:200;
+  box-shadow:0 2px 10px rgba(33,133,112,.35)}
 .hbrand{display:flex;align-items:center;gap:12px}
-.logo-e{width:38px;height:38px;background:#fff;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;color:var(--primary);font-style:italic;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.logo-e{width:38px;height:38px;background:#fff;border-radius:9px;display:flex;align-items:center;
+  justify-content:center;font-weight:900;font-size:22px;color:var(--primary);font-style:italic;
+  box-shadow:0 2px 6px rgba(0,0,0,.15)}
 .htitle{font-size:15px;font-weight:700}
 .htitle span{font-size:11px;opacity:.8;display:block;font-weight:400;margin-top:1px}
 .hstatus{display:flex;align-items:center;gap:6px;font-size:12px;opacity:.85}
 .sdot{width:7px;height:7px;border-radius:50%;background:#6effd6;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-.nav-tabs{background:var(--surface);border-bottom:2px solid var(--border);display:flex;overflow-x:auto;padding:0 1rem;gap:2px}
-.nav-tab{padding:13px 18px;font-size:13px;font-weight:500;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:all .15s}
+
+/* ═══════════════════════════════════════════════
+   NAV TABS
+═══════════════════════════════════════════════ */
+.nav-tabs{background:var(--surface);border-bottom:2px solid var(--border);display:flex;
+  overflow-x:auto;padding:0 1rem;gap:2px}
+.nav-tab{padding:13px 18px;font-size:13px;font-weight:500;color:var(--muted);border:none;
+  background:none;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;
+  white-space:nowrap;display:flex;align-items:center;gap:6px;transition:all .15s}
 .nav-tab:hover{color:var(--primary);background:var(--primary-lt);border-radius:6px 6px 0 0}
 .nav-tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:700}
 .nav-tab i{font-size:16px}
 .content{max-width:1140px;margin:0 auto;padding:1.5rem}
 
-/* CALENDARIO */
-.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:10px}
+/* ═══════════════════════════════════════════════
+   FIX A: CALENDARIO CON SCROLL LIBRE
+   - overflow:auto en contenedor
+   - min/max widths fijos para que no se expanda
+   - scroll horizontal + vertical habilitado
+═══════════════════════════════════════════════ */
+.cal-scroll-wrapper{
+  overflow:auto;          /* FIX A: habilita scroll en ambas direcciones */
+  max-height:620px;       /* FIX A: limita la altura para scroll vertical */
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:0 2px 8px rgba(33,133,112,.08);
+}
+/* FIX B: ancho fijo para vista semanal — no se ensancha por texto */
+.week-scroll-inner{
+  min-width:900px;        /* FIX B: ancho mínimo fijo */
+}
+
+.cal-header{display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:1.2rem;flex-wrap:wrap;gap:10px}
 .cal-header h2{font-size:19px;font-weight:700;color:var(--primary)}
 .cal-nav{display:flex;gap:8px;align-items:center}
 .cal-legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:1rem;align-items:center}
 .leg-item{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:500;color:var(--muted)}
 .leg-dot{width:10px;height:10px;border-radius:3px}
-.btn-s{background:var(--surface);color:var(--text);padding:7px 14px;border:1px solid var(--border);border-radius:7px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;font-weight:500}
+.btn-s{background:var(--surface);color:var(--text);padding:7px 14px;border:1px solid var(--border);
+  border-radius:7px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;
+  transition:all .15s;font-weight:500}
 .btn-s:hover{background:var(--primary-lt);color:var(--primary);border-color:var(--primary)}
 .view-toggle{display:flex;border:1px solid var(--border);border-radius:7px;overflow:hidden}
-.vt-btn{padding:6px 14px;font-size:12px;border:none;background:var(--surface);cursor:pointer;font-weight:500;color:var(--muted);transition:all .15s}
+.vt-btn{padding:6px 14px;font-size:12px;border:none;background:var(--surface);cursor:pointer;
+  font-weight:500;color:var(--muted);transition:all .15s}
 .vt-btn.active{background:var(--primary);color:#fff;font-weight:700}
-.week-header{display:grid;grid-template-columns:56px repeat(7,1fr);background:var(--primary);border-radius:var(--radius) var(--radius) 0 0;overflow:hidden}
+
+/* ═══════════════════════════════════════════════
+   VISTA SEMANAL
+═══════════════════════════════════════════════ */
+.week-header{display:grid;
+  /* FIX C: solo 5 días laborables (Lun-Vie) */
+  grid-template-columns:56px repeat(5,1fr);
+  background:var(--primary);border-radius:var(--radius) var(--radius) 0 0;overflow:hidden}
 .wh-empty{background:var(--primary-dk)}
 .wh-day{padding:10px 6px;text-align:center;color:#fff;border-left:1px solid rgba(255,255,255,.15)}
 .wh-day .wh-name{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;opacity:.85}
 .wh-day .wh-num{font-size:20px;font-weight:800;line-height:1.2;margin-top:2px}
 .wh-day.wh-today{background:rgba(255,255,255,.18)}
 .wh-day .wh-tdot{width:5px;height:5px;border-radius:50%;background:#6effd6;margin:3px auto 0}
-.week-body{display:flex;background:var(--border);border-left:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border);border-radius:0 0 var(--radius) var(--radius);overflow:hidden}
+
+.week-body{display:flex;background:var(--border);
+  border-left:1px solid var(--border);border-right:1px solid var(--border);
+  border-bottom:1px solid var(--border);border-radius:0 0 var(--radius) var(--radius);overflow:hidden}
 .hour-col{width:56px;flex-shrink:0;background:#f8fbfa;border-right:1px solid var(--border)}
-.hour-label{height:60px;display:flex;align-items:flex-start;justify-content:flex-end;padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)}
-.days-grid{flex:1;display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border)}
+.hour-label{height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
+  padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)}
+/* FIX C: solo 5 columnas (Lun-Vie) */
+.days-grid{flex:1;display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border)}
 .day-col{background:var(--surface);position:relative;min-height:480px}
 .day-col.today-col{background:#fefff8}
-.day-col.weekend-col{background:#f8fbfa}
+
 .hour-stripe{height:60px;border-bottom:1px solid var(--border);position:relative;cursor:pointer}
 .hour-stripe:hover{background:rgba(33,133,112,.06)}
 .hour-stripe.half::after{content:'';position:absolute;top:50%;left:0;right:0;border-top:1px dashed rgba(0,0,0,.06)}
-.cal-evt{position:absolute;left:3px;right:3px;border-radius:5px;padding:3px 5px;font-size:10px;font-weight:600;cursor:pointer;overflow:hidden;z-index:2;border-left:3px solid transparent;line-height:1.3;transition:all .15s}
+
+/* FIX B: eventos con ancho fijo, texto truncado — no expanden la columna */
+.cal-evt{
+  position:absolute;left:3px;right:3px;
+  border-radius:5px;padding:3px 5px;font-size:10px;font-weight:600;
+  cursor:pointer;overflow:hidden;z-index:2;
+  border-left:3px solid transparent;line-height:1.3;transition:all .15s;
+  /* FIX B: estas dos líneas son clave */
+  min-width:0;
+  max-width:100%;
+}
 .cal-evt:hover{filter:brightness(.92)}
 .cal-evt.presencial{background:#d0ede8;border-left-color:#218570;color:#0d5e4f}
 .cal-evt.virtual{background:#d6e4f0;border-left-color:#1a5276;color:#0a3d62}
 .cal-evt.hibrida,.cal-evt.híbrida{background:#fde8e6;border-left-color:#c0392b;color:#922b21}
-.evt-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.evt-time{font-size:9px;opacity:.7;margin-top:1px}
-.month-view{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border);border-radius:var(--radius);overflow:hidden}
-.mv-head{background:var(--primary);color:#fff;text-align:center;padding:10px 4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
-.mv-day{background:var(--surface);min-height:100px;padding:5px;transition:background .1s}
+/* FIX B: texto del evento truncado */
+.evt-name{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  display:block;
+  max-width:100%;
+}
+.evt-time{font-size:9px;opacity:.7;margin-top:1px;white-space:nowrap}
+
+/* ═══════════════════════════════════════════════
+   VISTA MENSUAL
+   FIX C: sin sábado/domingo (5 columnas)
+   FIX B: eventos truncados, columnas de ancho fijo
+═══════════════════════════════════════════════ */
+.month-view{
+  display:grid;
+  /* FIX C: 5 días laborables */
+  grid-template-columns:repeat(5,1fr);
+  gap:1px;background:var(--border);
+  border-radius:var(--radius);overflow:hidden;
+  /* FIX B: columnas de ancho fijo */
+  table-layout:fixed;
+}
+.mv-head{background:var(--primary);color:#fff;text-align:center;padding:10px 4px;
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.mv-day{background:var(--surface);min-height:100px;padding:5px;transition:background .1s;
+  /* FIX B: ancho fijo, no se expande */
+  overflow:hidden;min-width:0;}
 .mv-day.other{background:#f7faf9;opacity:.7}
 .mv-day.today{background:#fffbf5;outline:2px solid var(--accent);outline-offset:-2px}
+.mv-day.weekend{display:none} /* FIX C: ocultar fines de semana */
 .mv-day:hover{background:var(--primary-lt)}
 .mv-num{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:3px}
 .mv-day.today .mv-num{color:var(--accent);font-weight:800}
-.mv-evt{font-size:10px;padding:2px 5px;border-radius:4px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;font-weight:600}
+/* FIX B: texto del evento mensual truncado */
+.mv-evt{
+  font-size:10px;padding:2px 5px;border-radius:4px;
+  margin-bottom:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  cursor:pointer;font-weight:600;
+  display:block;max-width:100%;
+}
 .mv-evt.presencial{background:#d0ede8;color:#0d5e4f}
 .mv-evt.virtual{background:#d6e4f0;color:#0a3d62}
 .mv-evt.hibrida,.mv-evt.híbrida{background:#fde8e6;color:#922b21}
-.mv-add{font-size:10px;color:var(--primary);cursor:pointer;padding:1px 3px;border-radius:3px;opacity:0;transition:opacity .15s}
+.mv-add{font-size:10px;color:var(--primary);cursor:pointer;padding:1px 3px;
+  border-radius:3px;opacity:0;transition:opacity .15s}
 .mv-day:hover .mv-add{opacity:1}
 
-/* CURSOS */
-.filters{display:flex;gap:10px;margin-bottom:1.2rem;flex-wrap:wrap}
-.filter-input{flex:1;min-width:180px;padding:8px 12px;border:1px solid var(--border);border-radius:7px;font-size:13px;outline:none;background:var(--surface);color:var(--text)}
-.filter-input:focus{border-color:var(--primary)}
-.curso-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:10px;cursor:pointer;transition:all .15s;border-left:4px solid transparent}
-.curso-card:hover{box-shadow:0 4px 14px rgba(33,133,112,.13);transform:translateY(-1px)}
-.curso-card.presencial{border-left-color:var(--primary)}
-.curso-card.virtual{border-left-color:var(--virtual)}
-.curso-card.hibrida,.curso-card.híbrida{border-left-color:var(--accent)}
-.curso-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
-.curso-name{font-size:15px;font-weight:700}
-.badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;flex-shrink:0}
-.badge.presencial{background:#d0ede8;color:#0d5e4f}
-.badge.virtual{background:#d6e4f0;color:#0a3d62}
-.badge.hibrida,.badge.híbrida{background:#fde8e6;color:#922b21}
-.curso-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted)}
-.curso-meta span{display:flex;align-items:center;gap:4px}
-
-/* MODAL */
-.overlay{display:none;position:fixed;inset:0;background:rgba(10,30,25,.45);z-index:300;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto}
+/* ═══════════════════════════════════════════════
+   MODAL DE EDICIÓN (FIX D)
+═══════════════════════════════════════════════ */
+.overlay{display:none;position:fixed;inset:0;background:rgba(10,30,25,.45);z-index:300;
+  align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto}
 .overlay.open{display:flex}
-.modal{background:var(--surface);border-radius:14px;padding:1.5rem;width:100%;max-width:620px;position:relative;margin:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
-.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;cursor:pointer;font-size:22px;color:var(--muted);line-height:1}
+.modal{background:var(--surface);border-radius:14px;padding:1.5rem;width:100%;
+  max-width:640px;position:relative;margin:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;
+  cursor:pointer;font-size:22px;color:var(--muted);line-height:1}
 .modal-close:hover{color:var(--accent)}
 .modal h2{font-size:18px;font-weight:700;margin-bottom:1rem;padding-right:30px}
+
+/* Modal de detalle */
 .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
-.detail-item label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:2px}
+.detail-item label{font-size:11px;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:2px}
 .detail-item p{font-size:14px;font-weight:500}
 .partic-box{background:var(--bg);border-radius:7px;padding:10px 14px;margin-bottom:1rem}
 .partic-box h4{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
@@ -113,39 +203,101 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 .partic-box li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--primary);flex-shrink:0}
 .nov-section{border-top:1px solid var(--border);padding-top:1rem;margin-top:.5rem}
 .nov-section h4{font-size:13px;font-weight:700;margin-bottom:10px}
-.nov-item{background:var(--bg);border-radius:7px;padding:8px 12px;margin-bottom:6px;font-size:13px;border-left:3px solid var(--primary)}
+.nov-item{background:var(--bg);border-radius:7px;padding:8px 12px;margin-bottom:6px;
+  font-size:13px;border-left:3px solid var(--primary)}
 .nov-fecha{font-size:11px;color:var(--muted);margin-top:3px}
 .nov-form{display:flex;gap:8px;margin-top:8px}
-.nov-form textarea{flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-size:13px;resize:none;height:60px;font-family:inherit}
+.nov-form textarea{flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:7px;
+  font-size:13px;resize:none;height:60px;font-family:inherit}
 .nov-form textarea:focus{outline:none;border-color:var(--primary)}
 
-/* FORMULARIO */
+/* Botones de acción del modal */
+.modal-actions{display:flex;gap:8px;margin-top:1rem;flex-wrap:wrap}
+.btn-edit{background:var(--primary-lt);color:var(--primary);border:1px solid var(--primary);
+  border-radius:7px;padding:8px 16px;font-size:13px;cursor:pointer;font-weight:600;
+  display:flex;align-items:center;gap:6px;transition:all .15s}
+.btn-edit:hover{background:var(--primary);color:#fff}
+.btn-del{background:#fdecea;color:var(--accent);border:1px solid #f5c6c3;
+  border-radius:7px;padding:8px 16px;font-size:13px;cursor:pointer;font-weight:600;
+  display:flex;align-items:center;gap:6px;transition:all .15s}
+.btn-del:hover{background:var(--accent);color:#fff}
+
+/* FIX D: Modal de edición de curso */
+.edit-modal{max-width:640px}
+.edit-modal .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.edit-modal .fg{display:flex;flex-direction:column;gap:5px}
+.edit-modal .fg.full{grid-column:1/-1}
+.edit-modal .fg label{font-size:12px;font-weight:700;color:var(--muted)}
+.edit-modal .fg input,.edit-modal .fg select,.edit-modal .fg textarea{
+  padding:9px 12px;border:1px solid var(--border);border-radius:7px;font-size:13px;
+  font-family:inherit;outline:none;background:var(--surface);color:var(--text);transition:border-color .15s}
+.edit-modal .fg input:focus,.edit-modal .fg select:focus,.edit-modal .fg textarea:focus{
+  border-color:var(--primary);box-shadow:0 0 0 3px rgba(33,133,112,.1)}
+.edit-modal .fg textarea{resize:vertical;min-height:80px}
+
+/* ═══════════════════════════════════════════════
+   LISTA DE CURSOS
+═══════════════════════════════════════════════ */
+.filters{display:flex;gap:10px;margin-bottom:1.2rem;flex-wrap:wrap}
+.filter-input{flex:1;min-width:180px;padding:8px 12px;border:1px solid var(--border);
+  border-radius:7px;font-size:13px;outline:none;background:var(--surface);color:var(--text)}
+.filter-input:focus{border-color:var(--primary)}
+.curso-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1rem 1.25rem;margin-bottom:10px;cursor:pointer;transition:all .15s;
+  border-left:4px solid transparent}
+.curso-card:hover{box-shadow:0 4px 14px rgba(33,133,112,.13);transform:translateY(-1px)}
+.curso-card.presencial{border-left-color:var(--primary)}
+.curso-card.virtual{border-left-color:var(--virtual)}
+.curso-card.hibrida,.curso-card.híbrida{border-left-color:var(--accent)}
+.curso-card-header{display:flex;align-items:flex-start;justify-content:space-between;
+  gap:10px;margin-bottom:8px}
+.curso-name{font-size:15px;font-weight:700}
+.badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;flex-shrink:0}
+.badge.presencial{background:#d0ede8;color:#0d5e4f}
+.badge.virtual{background:#d6e4f0;color:#0a3d62}
+.badge.hibrida,.badge.híbrida{background:#fde8e6;color:#922b21}
+.curso-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted)}
+.curso-meta span{display:flex;align-items:center;gap:4px}
+
+/* ═══════════════════════════════════════════════
+   FORMULARIO NUEVO CURSO
+═══════════════════════════════════════════════ */
 .form-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem}
-.fsec{font-size:12px;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:1px;margin:1.2rem 0 .8rem;border-top:1px solid var(--border);padding-top:1rem}
+.fsec{font-size:12px;font-weight:800;color:var(--primary);text-transform:uppercase;
+  letter-spacing:1px;margin:1.2rem 0 .8rem;border-top:1px solid var(--border);padding-top:1rem}
 .fsec:first-child{margin-top:0;border-top:none;padding-top:0}
 .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .fg{display:flex;flex-direction:column;gap:5px}
 .fg.full{grid-column:1/-1}
 .fg label{font-size:12px;font-weight:700;color:var(--muted)}
-.fg input,.fg select,.fg textarea{padding:9px 12px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-family:inherit;outline:none;background:var(--surface);color:var(--text);transition:border-color .15s}
+.fg input,.fg select,.fg textarea{padding:9px 12px;border:1px solid var(--border);border-radius:7px;
+  font-size:13px;font-family:inherit;outline:none;background:var(--surface);color:var(--text);transition:border-color .15s}
 .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(33,133,112,.1)}
 .fg textarea{resize:vertical;min-height:80px}
-.btn-p{background:var(--primary);color:#fff;padding:10px 22px;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .15s}
+.btn-p{background:var(--primary);color:#fff;padding:10px 22px;border:none;border-radius:8px;
+  font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .15s}
 .btn-p:hover{background:var(--primary-dk);transform:translateY(-1px)}
-.btn-d{background:#fdecea;color:var(--accent);border:1px solid #f5c6c3;border-radius:8px;padding:8px 16px;font-size:13px;cursor:pointer}
+.btn-d{background:#fdecea;color:var(--accent);border:1px solid #f5c6c3;border-radius:8px;
+  padding:8px 16px;font-size:13px;cursor:pointer}
 .btn-d:hover{background:#f9d0cc}
 
-/* REPORTES */
+/* ═══════════════════════════════════════════════
+   REPORTES
+═══════════════════════════════════════════════ */
 .rpf{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.2rem;align-items:center}
 .period-btns{display:flex;gap:6px;flex-wrap:wrap}
-.pb{padding:7px 14px;border:1px solid var(--border);border-radius:20px;background:var(--surface);font-size:12px;cursor:pointer;font-weight:600;transition:all .15s}
+.pb{padding:7px 14px;border:1px solid var(--border);border-radius:20px;background:var(--surface);
+  font-size:12px;cursor:pointer;font-weight:600;transition:all .15s}
 .pb:hover,.pb.active{background:var(--primary);color:#fff;border-color:var(--primary)}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:1.5rem}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.2rem;text-align:center;border-top:3px solid var(--primary)}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1rem 1.2rem;text-align:center;border-top:3px solid var(--primary)}
 .stat-num{font-size:28px;font-weight:800;color:var(--primary)}
 .stat-label{font-size:12px;color:var(--muted);margin-top:3px;font-weight:500}
-.report-table{width:100%;border-collapse:collapse;background:var(--surface);border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)}
-.report-table th{background:var(--primary);color:#fff;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:11px 14px;text-align:left}
+.report-table{width:100%;border-collapse:collapse;background:var(--surface);
+  border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)}
+.report-table th{background:var(--primary);color:#fff;font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.5px;padding:11px 14px;text-align:left}
 .report-table td{padding:10px 14px;font-size:13px;border-top:1px solid var(--border)}
 .report-table tr:hover td{background:var(--primary-lt)}
 .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:1.5rem}
@@ -155,12 +307,16 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 .chart-wrap{position:relative;height:220px}
 .chart-wrap.tall{height:260px}
 
-/* AULAS */
+/* ═══════════════════════════════════════════════
+   AULAS
+═══════════════════════════════════════════════ */
 .aulas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
-.aula-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all .2s}
+.aula-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;transition:all .2s}
 .aula-card:hover{box-shadow:0 6px 20px rgba(33,133,112,.15);transform:translateY(-2px)}
 .ac-head{background:var(--primary);color:#fff;padding:1rem 1.2rem;display:flex;align-items:center;gap:10px}
-.ac-icon{width:38px;height:38px;background:rgba(255,255,255,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.ac-icon{width:38px;height:38px;background:rgba(255,255,255,.2);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .ac-name{font-size:15px;font-weight:700}
 .ac-tipo{font-size:11px;opacity:.8;margin-top:1px}
 .ac-body{padding:1rem 1.2rem}
@@ -168,710 +324,1573 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 .ac-spec{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
 .ac-spec i{font-size:15px;color:var(--primary)}
 .ac-spec strong{color:var(--text);font-weight:700}
-.ac-disp label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px}
+.ac-disp label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.5px;display:block;margin-bottom:6px}
+/* FIX C: solo 5 días en aulas */
 .disp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:1rem}
 .dia-slot{text-align:center;padding:5px 2px;border-radius:5px;font-size:10px;border:1px solid var(--border)}
 .dia-slot .dia{font-weight:700;margin-bottom:2px}
 .dia-slot.libre{background:#d0ede8;border-color:#9ecfc6;color:#0d5e4f}
 .dia-slot.ocupado{background:#fde8e6;border-color:#f5c6c3;color:#922b21}
 .ac-actions{display:flex;gap:8px}
-.btn-res{flex:1;background:var(--primary);color:#fff;border:none;padding:9px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s}
+.btn-res{flex:1;background:var(--primary);color:#fff;border:none;padding:9px;border-radius:7px;
+  font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  gap:6px;transition:all .15s}
 .btn-res:hover{background:var(--primary-dk)}
-.btn-vr{padding:9px 14px;border:1px solid var(--border);border-radius:7px;background:var(--surface);font-size:13px;cursor:pointer;color:var(--muted);display:flex;align-items:center;gap:4px;transition:all .15s}
+.btn-vr{padding:9px 14px;border:1px solid var(--border);border-radius:7px;background:var(--surface);
+  font-size:13px;cursor:pointer;color:var(--muted);display:flex;align-items:center;gap:4px;transition:all .15s}
 .btn-vr:hover{background:var(--primary-lt);color:var(--primary);border-color:var(--primary)}
 
-/* MODAL RESERVA — MÓDULOS MÚLTIPLES */
+/* ═══════════════════════════════════════════════
+   MODAL RESERVA
+═══════════════════════════════════════════════ */
 .res-modal{max-width:560px}
 .res-fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .modulos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px}
-.modulo-btn{padding:10px 6px;border:1.5px solid var(--border);border-radius:8px;background:var(--surface);font-size:11px;cursor:pointer;transition:all .15s;font-weight:600;text-align:center;color:var(--muted);line-height:1.4}
+.modulo-btn{padding:10px 6px;border:1.5px solid var(--border);border-radius:8px;background:var(--surface);
+  font-size:11px;cursor:pointer;transition:all .15s;font-weight:600;text-align:center;color:var(--muted);line-height:1.4}
 .modulo-btn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-lt)}
 .modulo-btn.sel{background:var(--primary);border-color:var(--primary-dk);color:#fff}
 .modulos-tip{font-size:11px;color:var(--muted);margin-top:6px;font-style:italic}
-.seleccion-resumen{background:var(--primary-lt);border:1px solid var(--primary);border-radius:7px;padding:8px 12px;font-size:12px;font-weight:600;color:var(--primary-dk);margin-top:8px;display:none}
+.seleccion-resumen{background:var(--primary-lt);border:1px solid var(--primary);border-radius:7px;
+  padding:8px 12px;font-size:12px;font-weight:600;color:var(--primary-dk);margin-top:8px;display:none}
 .seleccion-resumen.visible{display:block}
 .res-list h4{font-size:13px;font-weight:700;margin-bottom:8px;color:var(--muted)}
-.res-item{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--bg);border-radius:7px;margin-bottom:5px;font-size:12px}
+.res-item{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;
+  background:var(--bg);border-radius:7px;margin-bottom:5px;font-size:12px}
 .res-item strong{display:block;font-size:13px}
 
+/* ═══════════════════════════════════════════════
+   UTILIDADES
+═══════════════════════════════════════════════ */
 .empty{text-align:center;padding:3rem 1rem;color:var(--muted)}
 .empty i{font-size:48px;margin-bottom:1rem;opacity:.3;display:block}
-.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:#1a2e28;color:#fff;padding:12px 20px;border-radius:9px;font-size:13px;z-index:1000;display:flex;align-items:center;gap:8px;transform:translateY(100px);opacity:0;transition:all .3s;border-left:4px solid var(--primary)}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:#1a2e28;color:#fff;
+  padding:12px 20px;border-radius:9px;font-size:13px;z-index:1000;
+  display:flex;align-items:center;gap:8px;transform:translateY(100px);opacity:0;
+  transition:all .3s;border-left:4px solid var(--primary)}
 .toast.show{transform:translateY(0);opacity:1}
 .toast.error{border-left-color:var(--accent)}
-.footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--muted);border-top:1px solid var(--border);margin-top:2rem;background:var(--surface)}
+.footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--muted);
+  border-top:1px solid var(--border);margin-top:2rem;background:var(--surface)}
 .footer strong{color:var(--primary)}
-@media print{.header,.nav-tabs,.rpf,.footer,.btn-p,.btn-s{display:none!important}body{background:#fff}#section-reportes{display:block!important}.print-hdr{display:block!important}}
-.print-hdr{display:none;text-align:center;margin-bottom:1.5rem}
-.print-hdr h1{font-size:20px;color:var(--primary)}
-@media(max-width:640px){.fgrid,.detail-grid,.res-fgrid,.charts-grid,.modulos-grid{grid-template-columns:1fr}.charts-grid .full{grid-column:1}.content{padding:1rem}}
+.section{display:none}
+.section.active{display:block}
+
+@media(max-width:640px){
+  .fgrid,.detail-grid,.res-fgrid,.charts-grid,.modulos-grid{grid-template-columns:1fr}
+  .charts-grid .full{grid-column:1}
+  .content{padding:1rem}
+}
+@media print{
+  .header,.nav-tabs,.rpf,.footer,.btn-p,.btn-s{display:none!important}
+  body{background:#fff}
+  #section-reportes{display:block!important}
+}
 </style>
 </head>
 <body>
 
+<!-- HEADER -->
 <header class="header">
   <div class="hbrand">
     <div class="logo-e">E</div>
     <div class="htitle">EPEC SAU · Centro de Formación Profesional<span>Gestión de Capacitaciones</span></div>
   </div>
-  <div class="hstatus"><div class="sdot"></div><span id="user-count">7 usuarios conectados</span></div>
+  <div class="hstatus"><div class="sdot"></div><span id="user-count">2 usuarios conectados</span></div>
 </header>
 
+<!-- NAV -->
 <nav class="nav-tabs">
-  <button class="nav-tab" onclick="showTab(&#39;calendario&#39;)" id="tab-calendario"><i class="ti ti-calendar"></i>Calendario</button>
-  <button class="nav-tab" onclick="showTab(&#39;cursos&#39;)" id="tab-cursos"><i class="ti ti-list"></i>Cursos</button>
-  <button class="nav-tab" onclick="showTab(&#39;nuevo&#39;)" id="tab-nuevo"><i class="ti ti-plus"></i>Nuevo curso</button>
-  <button class="nav-tab" onclick="showTab(&#39;reportes&#39;)" id="tab-reportes"><i class="ti ti-chart-bar"></i>Reportes</button>
-  <button class="nav-tab active" onclick="showTab(&#39;aulas&#39;)" id="tab-aulas"><i class="ti ti-door"></i>Reservá tu aula</button>
+  <button class="nav-tab active" onclick="showSection(&#39;calendario&#39;,this)">
+    <i class="ti ti-calendar"></i>Calendario
+  </button>
+  <button class="nav-tab" onclick="showSection(&#39;cursos&#39;,this)">
+    <i class="ti ti-list"></i>Cursos
+  </button>
+  <button class="nav-tab" onclick="showSection(&#39;nuevo&#39;,this)">
+    <i class="ti ti-circle-plus"></i>Nuevo curso
+  </button>
+  <button class="nav-tab" onclick="showSection(&#39;reportes&#39;,this)">
+    <i class="ti ti-chart-bar"></i>Reportes
+  </button>
+  <button class="nav-tab" onclick="showSection(&#39;aulas&#39;,this)">
+    <i class="ti ti-building"></i>Aulas
+  </button>
 </nav>
 
-<!-- CALENDARIO -->
-<div id="section-calendario" class="content" style="display: none;">
+<main class="content">
+
+<!-- ══════════════════════════════════
+     SECCIÓN CALENDARIO
+══════════════════════════════════ -->
+<section id="section-calendario" class="section active">
   <div class="cal-header">
-    <h2 id="cal-titulo">Semana: Lun 25 — Dom 31 de Mayo 2026</h2>
+    <h2 id="cal-title">Semana del 8 al 12 de Junio 2026</h2>
     <div class="cal-nav">
       <div class="view-toggle">
-        <button class="vt-btn active" id="vt-semana" onclick="setVista(&#39;semana&#39;)"><i class="ti ti-layout-columns"></i>Semana</button>
-        <button class="vt-btn" id="vt-mes" onclick="setVista(&#39;mes&#39;)"><i class="ti ti-calendar-month"></i>Mes</button>
+        <button class="vt-btn active" id="vt-semana" onclick="setView(&#39;semana&#39;)">Semana</button>
+        <button class="vt-btn" id="vt-mes" onclick="setView(&#39;mes&#39;)">Mes</button>
       </div>
-      <button class="btn-s" onclick="navCal(-1)"><i class="ti ti-chevron-left"></i></button>
-      <button class="btn-s" onclick="navCalHoy()">Hoy</button>
-      <button class="btn-s" onclick="navCal(1)"><i class="ti ti-chevron-right"></i></button>
+      <button class="btn-s" onclick="navCal(-1)"><i class="ti ti-chevron-left"></i> Anterior</button>
+      <button class="btn-s" onclick="navCal(0)"><i class="ti ti-calendar"></i> Hoy</button>
+      <button class="btn-s" onclick="navCal(1)">Siguiente <i class="ti ti-chevron-right"></i></button>
     </div>
   </div>
+
   <div class="cal-legend">
     <span class="leg-item"><span class="leg-dot" style="background:#218570"></span>Presencial</span>
     <span class="leg-item"><span class="leg-dot" style="background:#1a5276"></span>Virtual</span>
     <span class="leg-item"><span class="leg-dot" style="background:#c0392b"></span>Híbrida</span>
-    <span style="font-size:12px;color:var(--muted)"><i class="ti ti-info-circle" style="vertical-align:-2px"></i> Hacé clic en cualquier franja horaria para agregar una capacitación</span>
+    <span style="font-size:11px;color:var(--muted);margin-left:auto">
+      <i class="ti ti-info-circle"></i> Solo días laborables (Lun–Vie)
+    </span>
   </div>
-  <div id="cal-semana-wrap">
-    <div class="week-header" id="week-header"><div class="wh-empty"></div><div class="wh-day"><div class="wh-name">Lun</div><div class="wh-num">25</div></div><div class="wh-day"><div class="wh-name">Mar</div><div class="wh-num">26</div></div><div class="wh-day"><div class="wh-name">Mié</div><div class="wh-num">27</div></div><div class="wh-day"><div class="wh-name">Jue</div><div class="wh-num">28</div></div><div class="wh-day"><div class="wh-name">Vie</div><div class="wh-num">29</div></div><div class="wh-day"><div class="wh-name">Sáb</div><div class="wh-num">30</div></div><div class="wh-day"><div class="wh-name">Dom</div><div class="wh-num">31</div></div></div>
-    <div class="week-body">
-      <div class="hour-col" id="hour-col"><div class="hour-label">7:00</div><div class="hour-label">8:00</div><div class="hour-label">9:00</div><div class="hour-label">10:00</div><div class="hour-label">11:00</div><div class="hour-label">12:00</div><div class="hour-label">13:00</div><div class="hour-label">14:00</div><div class="hour-label">15:00</div><div class="hour-label">16:00</div><div class="hour-label">17:00</div><div class="hour-label">18:00</div><div class="hour-label">19:00</div></div>
-      <div class="days-grid" id="days-grid"><div class="day-col" style="position: relative;"><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div></div><div class="day-col" style="position: relative;"><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div></div><div class="day-col" style="position: relative;"><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="cal-evt presencial" style="top: 8px; height: 114px;"><div class="evt-name">SISTEMA  SCADA Y ANALISIS DE FALLAS - CENTRO OPERATIVO DE DISTRIBUCION (COD)</div></div><div class="cal-evt presencial" style="top: 60px; height: 356px;"><div class="evt-name">SISTEMA SCADA Y ANALISIS DE FALLAS</div><div class="evt-time">08:00–14:00</div></div></div><div class="day-col" style="position: relative;"><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="cal-evt presencial" style="top: 8px; height: 114px;"><div class="evt-name">SISTEMA  SCADA Y ANALISIS DE FALLAS - CENTRO OPERATIVO DE DISTRIBUCION (COD)</div></div><div class="cal-evt presencial" style="top: 60px; height: 356px;"><div class="evt-name">SISTEMA SCADA Y ANALISIS DE FALLAS</div><div class="evt-time">08:00–14:00</div></div></div><div class="day-col" style="position: relative;"><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="cal-evt presencial" style="top: 8px; height: 114px;"><div class="evt-name">SISTEMA  SCADA Y ANALISIS DE FALLAS - CENTRO OPERATIVO DE DISTRIBUCION (COD)</div></div><div class="cal-evt presencial" style="top: 60px; height: 356px;"><div class="evt-name">SISTEMA SCADA Y ANALISIS DE FALLAS</div><div class="evt-time">08:00–14:00</div></div></div><div class="day-col weekend-col" style="position: relative;"><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div></div><div class="day-col weekend-col" style="position: relative;"><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div><div class="hour-stripe half" style="height: 60px;"></div></div></div>
-    </div>
-  </div>
-  <div id="cal-mes-wrap" style="display:none">
-    <div class="month-view" id="month-view">
-      <div class="mv-head">Dom</div><div class="mv-head">Lun</div><div class="mv-head">Mar</div>
-      <div class="mv-head">Mié</div><div class="mv-head">Jue</div><div class="mv-head">Vie</div><div class="mv-head">Sáb</div>
-    </div>
-  </div>
-</div>
 
-<!-- CURSOS -->
-<div id="section-cursos" class="content" style="display: none;">
+  <!-- FIX A: wrapper con scroll -->
+  <div class="cal-scroll-wrapper">
+    <div class="week-scroll-inner" id="cal-container"><div style="display:grid;grid-template-columns:56px repeat(5,1fr);
+    background:var(--primary);border-radius:var(--radius) var(--radius) 0 0;overflow:hidden">
+    <div style="background:var(--primary-dk)"></div><div style="padding:10px 6px;text-align:center;color:#fff;
+      border-left:1px solid rgba(255,255,255,.15);">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;opacity:.85">Lun</div>
+      <div style="font-size:20px;font-weight:800;line-height:1.2;margin-top:2px">8</div>
+      
+    </div><div style="padding:10px 6px;text-align:center;color:#fff;
+      border-left:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.18)">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;opacity:.85">Mar</div>
+      <div style="font-size:20px;font-weight:800;line-height:1.2;margin-top:2px">9</div>
+      <div style="width:5px;height:5px;border-radius:50%;background:#6effd6;margin:3px auto 0"></div>
+    </div><div style="padding:10px 6px;text-align:center;color:#fff;
+      border-left:1px solid rgba(255,255,255,.15);">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;opacity:.85">Mié</div>
+      <div style="font-size:20px;font-weight:800;line-height:1.2;margin-top:2px">10</div>
+      
+    </div><div style="padding:10px 6px;text-align:center;color:#fff;
+      border-left:1px solid rgba(255,255,255,.15);">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;opacity:.85">Jue</div>
+      <div style="font-size:20px;font-weight:800;line-height:1.2;margin-top:2px">11</div>
+      
+    </div><div style="padding:10px 6px;text-align:center;color:#fff;
+      border-left:1px solid rgba(255,255,255,.15);">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;opacity:.85">Vie</div>
+      <div style="font-size:20px;font-weight:800;line-height:1.2;margin-top:2px">12</div>
+      
+    </div></div><div style="display:flex;background:var(--border);
+    border-left:1px solid var(--border);border-right:1px solid var(--border);
+    border-bottom:1px solid var(--border);border-radius:0 0 var(--radius) var(--radius);overflow:hidden">
+    <div style="width:56px;flex-shrink:0;background:#f8fbfa;border-right:1px solid var(--border)"><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
+      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">7:00</div><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
+      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">8:00</div><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
+      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">9:00</div><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
+      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">10:00</div><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
+      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">11:00</div><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
+      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">12:00</div><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
+      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">13:00</div><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
+      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">14:00</div><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
+      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">15:00</div><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
+      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">16:00</div><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
+      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">17:00</div><div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
+      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">18:00</div></div><div style="flex:1;display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border)"><div style="background:var(--surface);position:relative;min-height:720px"><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div></div><div style="background:#fefff8;position:relative;min-height:720px"><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div class="cal-evt hibrida" style="top:4px;" title="Excel Avanzado" onclick="abrirDetalle(&#39;d2&#39;)">
+        <span class="evt-name">Excel Avanzado</span>
+        <div class="evt-time">20hs · Prof. Sandra Ruiz</div>
+      </div></div><div style="background:var(--surface);position:relative;min-height:720px"><div style="height: 60px; border-bottom: 1px solid var(--border); position: relative; cursor: pointer; background: rgba(33, 133, 112, 0.06);" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div class="cal-evt hibrida" style="top:4px;" title="Excel Avanzado" onclick="abrirDetalle(&#39;d2&#39;)">
+        <span class="evt-name">Excel Avanzado</span>
+        <div class="evt-time">20hs · Prof. Sandra Ruiz</div>
+      </div></div><div style="background:var(--surface);position:relative;min-height:720px"><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div class="cal-evt hibrida" style="top:4px;" title="Excel Avanzado" onclick="abrirDetalle(&#39;d2&#39;)">
+        <span class="evt-name">Excel Avanzado</span>
+        <div class="evt-time">20hs · Prof. Sandra Ruiz</div>
+      </div></div><div style="background:var(--surface);position:relative;min-height:720px"><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" onmouseenter="this.style.background=&#39;rgba(33,133,112,.06)&#39;" onmouseleave="this.style.background=&#39;transparent&#39;"></div><div class="cal-evt hibrida" style="top:4px;" title="Excel Avanzado" onclick="abrirDetalle(&#39;d2&#39;)">
+        <span class="evt-name">Excel Avanzado</span>
+        <div class="evt-time">20hs · Prof. Sandra Ruiz</div>
+      </div></div></div></div></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     SECCIÓN LISTA CURSOS
+══════════════════════════════════ -->
+<section id="section-cursos" class="section">
   <div class="filters">
-    <input type="text" class="filter-input" placeholder="🔍 Buscar capacitación..." id="buscar" oninput="filtrarCursos()">
-    <select class="filter-input" id="filtro-gerencia" onchange="filtrarCursos()">
-      <option value="">Todas las gerencias</option>
-      <option>Directorio / Gerencia General</option><option>Gerencia de Recursos Humanos y Desarrollo</option>
-      <option>Gerencia TIC</option><option>Gerencia de Transmisión</option><option>Gerencia de Distribución</option>
-      <option>Gerencia de Generación</option><option>Gerencia de Finanzas y Abastecimiento</option>
-      <option>Gerencia de Ingeniería y Obras</option><option>Gerencia de Infraestructura</option>
-      <option>Gerencia de Planificación Estratégica y Control de Gestión</option><option>Gerencia de Asesoría y Gestión Legal</option>
+    <input class="filter-input" type="search" id="search-q" placeholder="🔍 Buscar por nombre, docente, gerencia..." oninput="filterCursos()">
+    <select class="filter-input" id="filter-mod" onchange="filterCursos()" style="max-width:180px">
+      <option value="">Todas las modalidades</option>
+      <option>Presencial</option><option>Virtual</option><option>Híbrida</option>
     </select>
-    <select class="filter-input" id="filtro-modalidad" onchange="filtrarCursos()">
-      <option value="">Todas las modalidades</option><option>Presencial</option><option>Virtual</option><option>Híbrida</option>
+    <select class="filter-input" id="filter-ger" onchange="filterCursos()" style="max-width:260px">
+      <option value="">Todas las gerencias</option>
+      <option>Directorio</option>
+      <option>Gerencia General</option>
+      <option>Gerencia de RR.HH.</option>
+      <option>Gerencia de Finanzas y Abastecimiento</option>
+      <option>Gerencia Comercial</option>
+      <option>TIC</option>
+      <option>Gerencia de Distribución</option>
+      <option>Gerencia de Transmisión</option>
+      <option>Gerencia de Ingeniería y Obras</option>
+      <option>Gerencia de Infraestructura</option>
+      <option>Gerencia de Planificación, Estrategia y Control de Gestión</option>
+      <option>Gerencia Asesoría Legal</option>
+      <option>Secretaría Administrativa</option>
+      <option>Gerencia de Generación</option>
+      <option>Relaciones Públicas</option>
+      <option>Unidades Asesoras</option>
     </select>
   </div>
-  <div id="lista-cursos"><div class="curso-card presencial" onclick="abrirCurso(&#39;-OtGri_2gZKmNeLohtmE&#39;)">
-    <div class="curso-card-header"><div class="curso-name">SISTEMA  SCADA Y ANALISIS DE FALLAS - CENTRO OPERATIVO DE DISTRIBUCION (COD)</div><span class="badge presencial">Presencial</span></div>
-    <div class="curso-meta"><span><i class="ti ti-user"></i>AGUSTIN ORTENSI</span><span><i class="ti ti-building"></i>FUNDALUZ</span><span><i class="ti ti-sitemap"></i>Gerencia de Distribución</span><span><i class="ti ti-calendar"></i>2026-05-27→2026-05-29</span><span><i class="ti ti-clock"></i>6 hs</span><span><i class="ti ti-users"></i>1 part.</span></div>
-  </div><div class="curso-card presencial" onclick="abrirCurso(&#39;-OtGtAHa1zPBOmSqPK5r&#39;)">
-    <div class="curso-card-header"><div class="curso-name">SISTEMA SCADA Y ANALISIS DE FALLAS</div><span class="badge presencial">Presencial</span></div>
-    <div class="curso-meta"><span><i class="ti ti-user"></i>AGUSTIN ORTENSI</span><span><i class="ti ti-building"></i>FUNDALUZ</span><span><i class="ti ti-sitemap"></i>Gerencia de Distribución</span><span><i class="ti ti-calendar"></i>2026-05-27→2026-05-27</span><span><i class="ti ti-clock"></i>7 hs</span><span><i class="ti ti-users"></i>0 part.</span></div>
-  </div><div class="curso-card presencial" onclick="abrirCurso(&#39;-OtGtVmUeXGSaplWe8r4&#39;)">
-    <div class="curso-card-header"><div class="curso-name">SISTEMA SCADA Y ANALISIS DE FALLAS</div><span class="badge presencial">Presencial</span></div>
-    <div class="curso-meta"><span><i class="ti ti-user"></i>AGUSTIN ORTENSI</span><span><i class="ti ti-building"></i>FUNDALUZ</span><span><i class="ti ti-sitemap"></i>Gerencia de Distribución</span><span><i class="ti ti-calendar"></i>2026-05-28→2026-05-28</span><span><i class="ti ti-clock"></i>7 hs</span><span><i class="ti ti-users"></i>0 part.</span></div>
-  </div><div class="curso-card presencial" onclick="abrirCurso(&#39;-OtGthWL3G4sVcrXBaQu&#39;)">
-    <div class="curso-card-header"><div class="curso-name">SISTEMA SCADA Y ANALISIS DE FALLAS</div><span class="badge presencial">Presencial</span></div>
-    <div class="curso-meta"><span><i class="ti ti-user"></i>AGUSTIN ORTENSI</span><span><i class="ti ti-building"></i>FUNDALUZ</span><span><i class="ti ti-sitemap"></i>Gerencia de Distribución</span><span><i class="ti ti-calendar"></i>2026-05-29→2026-05-29</span><span><i class="ti ti-clock"></i>7 hs</span><span><i class="ti ti-users"></i>0 part.</span></div>
-  </div></div>
-</div>
+  <div id="lista-cursos"><div class="curso-card hibrida" onclick="abrirDetalle(&#39;d2&#39;)">
+      <div class="curso-card-header">
+        <div class="curso-name">Excel Avanzado</div>
+        <span class="badge hibrida">Híbrida</span>
+      </div>
+      <div class="curso-meta">
+        <span><i class="ti ti-user"></i>Prof. Sandra Ruiz</span>
+        <span><i class="ti ti-building"></i>UTN Córdoba</span>
+        <span><i class="ti ti-sitemap"></i>Gerencia de RR.HH.</span>
+        <span><i class="ti ti-calendar"></i>2026-06-09 → 2026-06-13</span>
+        <span><i class="ti ti-clock"></i>20 hs</span>
+        <span><i class="ti ti-users"></i>3 participantes</span>
+        <span><i class="ti ti-door"></i>Aula 3 — Informática (25 personas)</span>
+        <span><i class="ti ti-id-badge"></i>RR.HH.: Lic. Ana Sosa</span>
+      </div>
+    </div></div>
+</section>
 
-<!-- NUEVO CURSO -->
-<div id="section-nuevo" class="content" style="display: none;">
+<!-- ══════════════════════════════════
+     SECCIÓN NUEVO CURSO
+══════════════════════════════════ -->
+<section id="section-nuevo" class="section">
   <div class="form-card">
     <div class="fsec">Información general</div>
     <div class="fgrid">
-      <div class="fg full"><label>Nombre de la capacitación *</label><input type="text" id="f-nombre" placeholder="Ej: Seguridad Eléctrica en Alta Tensión"></div>
-      <div class="fg"><label>Modalidad *</label><select id="f-modalidad"><option value="">Seleccionar...</option><option>Presencial</option><option>Virtual</option><option>Híbrida</option></select></div>
-      <div class="fg"><label>Duración (horas) *</label><input type="number" id="f-horas" min="1" placeholder="Ej: 16"></div>
-      <div class="fg"><label>Fecha de inicio *</label><input type="date" id="f-inicio"></div>
-      <div class="fg"><label>Fecha de finalización *</label><input type="date" id="f-fin"></div>
-    </div>
-    <div class="fsec">Responsables y origen</div>
-    <div class="fgrid">
-      <div class="fg"><label>Docente / Instructor *</label><input type="text" id="f-docente" placeholder="Nombre del docente"></div>
-      <div class="fg"><label>Institución que dicta *</label><input type="text" id="f-institucion" placeholder="Ej: UTN Córdoba"></div>
-      <div class="fg"><label>Gerencia requirente *</label>
-        <select id="f-gerencia"><option value="">Seleccionar gerencia...</option>
-          <option>Directorio / Gerencia General</option><option>Gerencia de Recursos Humanos y Desarrollo</option>
-          <option>Gerencia TIC</option><option>Gerencia de Transmisión</option><option>Gerencia de Distribución</option>
-          <option>Gerencia de Generación</option><option>Gerencia de Finanzas y Abastecimiento</option>
-          <option>Gerencia de Ingeniería y Obras</option><option>Gerencia de Infraestructura</option>
-          <option>Gerencia de Planificación Estratégica y Control de Gestión</option><option>Gerencia de Asesoría y Gestión Legal</option>
+      <div class="fg full"><label>Nombre de la capacitación *</label>
+        <input id="n-nombre" placeholder="Ej: Seguridad en Alta Tensión"></div>
+      <div class="fg"><label>Fecha de inicio *</label><input type="date" id="n-inicio"></div>
+      <div class="fg"><label>Fecha de fin *</label><input type="date" id="n-fin"></div>
+      <div class="fg"><label>Duración (horas) *</label><input type="number" id="n-horas" min="1" placeholder="Ej: 16"></div>
+      <div class="fg"><label>Modalidad</label>
+        <select id="n-modal">
+          <option>Presencial</option><option>Virtual</option><option>Híbrida</option>
         </select>
       </div>
-      <div class="fg"><label>Cupo máximo</label><input type="number" id="f-cupo" min="1" placeholder="Ej: 20"></div>
     </div>
-    <div class="fsec">Participantes</div>
-    <div class="fgrid"><div class="fg full"><label>Listado (uno por línea)</label><textarea id="f-participantes" placeholder="Juan Pérez
-María González
-..."></textarea></div></div>
-    <div class="fsec">Observaciones</div>
-    <div class="fgrid"><div class="fg full"><label>Novedades / Observaciones iniciales</label><textarea id="f-observaciones" placeholder="Información adicional..."></textarea></div></div>
-    <div style="margin-top:1.5rem;display:flex;gap:10px">
-      <button class="btn-p" onclick="guardarCurso()"><i class="ti ti-device-floppy"></i>Guardar capacitación</button>
-      <button class="btn-s" onclick="limpiarForm()"><i class="ti ti-x"></i>Limpiar</button>
-    </div>
-  </div>
-</div>
 
-<!-- REPORTES -->
-<div id="section-reportes" class="content" style="display: none;">
-  <div class="print-hdr"><h1>EPEC SAU — Centro de Formación Profesional</h1><p id="print-sub">Reporte Quincenal — 22 de mayo de 2026</p></div>
+    <div class="fsec">Responsables</div>
+    <div class="fgrid">
+      <div class="fg"><label>Docente / Instructor *</label><input id="n-docente" placeholder="Nombre completo"></div>
+      <div class="fg"><label>Responsable RR.HH.</label><input id="n-rrhh" placeholder="Nombre del responsable"></div>
+      <div class="fg"><label>Institución que dicta</label><input id="n-inst" placeholder="Ej: UTN, EPEC interno..."></div>
+      <div class="fg"><label>Gerencia requirente *</label>
+        <select id="n-ger">
+          <option value="">Seleccionar...</option>
+          <option>Directorio</option>
+          <option>Gerencia General</option>
+          <option>Gerencia de RR.HH.</option>
+          <option>Gerencia de Finanzas y Abastecimiento</option>
+          <option>Gerencia Comercial</option>
+          <option>TIC</option>
+          <option>Gerencia de Distribución</option>
+          <option>Gerencia de Transmisión</option>
+          <option>Gerencia de Ingeniería y Obras</option>
+          <option>Gerencia de Infraestructura</option>
+          <option>Gerencia de Planificación, Estrategia y Control de Gestión</option>
+          <option>Gerencia Asesoría Legal</option>
+          <option>Secretaría Administrativa</option>
+          <option>Gerencia de Generación</option>
+          <option>Relaciones Públicas</option>
+          <option>Unidades Asesoras</option>
+        </select>
+      </div>
+      <div class="fg"><label>Aula asignada</label>
+        <select id="n-aula">
+          <option value="">Sin asignar</option>
+          <option>Aula 15 (20 personas)</option>
+          <option>Aula 16 (8 personas)</option>
+          <option>Aula 17 (20 personas)</option>
+          <option>Aula Magna (40 personas)</option>
+          <option>Laboratorio 1</option>
+          <option>Laboratorio 2</option>
+          <option>Sala de Reunión (10 personas)</option>
+          <option>Aula Informática (18 personas)</option>
+        </select>
+      </div>
+      <div class="fg"><label>Cupo máximo</label><input type="number" id="n-cupo" min="1" placeholder="Ej: 20"></div>
+    </div>
+
+    <div class="fsec">Participantes</div>
+    <div class="fgrid">
+      <div class="fg full"><label>Listado de participantes (uno por línea o separados por coma)</label>
+        <textarea id="n-partic" rows="4" placeholder="Juan Pérez
+María García, Carlos López"></textarea>
+      </div>
+    </div>
+
+    <div class="fsec">Observaciones</div>
+    <div class="fgrid">
+      <div class="fg full"><label>Novedades / Observaciones</label>
+        <textarea id="n-novedad" rows="3" placeholder="Requisitos previos, materiales, observaciones..."></textarea>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:1rem;flex-wrap:wrap">
+      <button class="btn-p" onclick="guardarCurso()"><i class="ti ti-device-floppy"></i> Guardar curso</button>
+      <button class="btn-d" onclick="limpiarFormulario()"><i class="ti ti-x"></i> Limpiar</button>
+    </div>
+    <div id="form-msg" style="margin-top:10px;font-size:13px;min-height:20px;font-weight:500"></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     SECCIÓN REPORTES
+══════════════════════════════════ -->
+<section id="section-reportes" class="section">
   <div class="rpf">
     <div class="period-btns">
-      <button class="pb" onclick="setPer(&#39;diario&#39;,this)">Diario</button>
-      <button class="pb" onclick="setPer(&#39;semanal&#39;,this)">Semanal</button>
-      <button class="pb active" onclick="setPer(&#39;quincenal&#39;,this)">Quincenal</button>
-      <button class="pb" onclick="setPer(&#39;mensual&#39;,this)">Mensual</button>
+      <button class="pb active" onclick="setPeriod(&#39;diario&#39;,this)">Diario</button>
+      <button class="pb" onclick="setPeriod(&#39;semanal&#39;,this)">Semanal</button>
+      <button class="pb" onclick="setPeriod(&#39;quincenal&#39;,this)">Quincenal</button>
+      <button class="pb" onclick="setPeriod(&#39;mensual&#39;,this)">Mensual</button>
     </div>
-    <select class="filter-input" id="filtro-rep-ger" onchange="generarReporte()" style="max-width:280px">
+    <select class="filter-input" id="rep-ger" onchange="renderReporte()" style="max-width:260px">
       <option value="">Todas las gerencias</option>
-      <option>Directorio / Gerencia General</option><option>Gerencia de Recursos Humanos y Desarrollo</option>
-      <option>Gerencia TIC</option><option>Gerencia de Transmisión</option><option>Gerencia de Distribución</option>
-      <option>Gerencia de Generación</option><option>Gerencia de Finanzas y Abastecimiento</option>
-      <option>Gerencia de Ingeniería y Obras</option><option>Gerencia de Infraestructura</option>
-      <option>Gerencia de Planificación Estratégica y Control de Gestión</option><option>Gerencia de Asesoría y Gestión Legal</option>
+      <option>Directorio</option>
+      <option>Gerencia General</option>
+      <option>Gerencia de RR.HH.</option>
+      <option>Gerencia de Finanzas y Abastecimiento</option>
+      <option>Gerencia Comercial</option>
+      <option>TIC</option>
+      <option>Gerencia de Distribución</option>
+      <option>Gerencia de Transmisión</option>
+      <option>Gerencia de Ingeniería y Obras</option>
+      <option>Gerencia de Infraestructura</option>
+      <option>Gerencia de Planificación, Estrategia y Control de Gestión</option>
+      <option>Gerencia Asesoría Legal</option>
+      <option>Secretaría Administrativa</option>
+      <option>Gerencia de Generación</option>
+      <option>Relaciones Públicas</option>
+      <option>Unidades Asesoras</option>
     </select>
-    <button class="btn-s" onclick="exportarCSV()"><i class="ti ti-file-spreadsheet"></i>CSV</button>
-    <button class="btn-p" onclick="exportarPDF()"><i class="ti ti-file-type-pdf"></i>PDF</button>
+    <button class="btn-s" onclick="exportCSV()"><i class="ti ti-download"></i> Exportar CSV</button>
+    <button class="btn-s" onclick="exportPDF()"><i class="ti ti-file-type-pdf"></i> Exportar PDF</button>
+    <button class="btn-s" onclick="window.print()"><i class="ti ti-printer"></i> Imprimir</button>
   </div>
-  <div class="stats-grid" id="rep-stats"><div class="stat-card"><div class="stat-num">0</div><div class="stat-label">Cursos</div></div><div class="stat-card"><div class="stat-num">0</div><div class="stat-label">Participantes</div></div><div class="stat-card"><div class="stat-num">0</div><div class="stat-label">Horas totales</div></div><div class="stat-card"><div class="stat-num">0</div><div class="stat-label">Gerencias</div></div></div>
-  <div class="charts-grid" id="charts-grid" style="display:none">
-    <div class="chart-card"><div class="chart-title"><i class="ti ti-chart-pie"></i>Cursos por modalidad</div><div class="chart-wrap"><canvas id="ch-modal"></canvas></div></div>
-    <div class="chart-card"><div class="chart-title"><i class="ti ti-chart-donut"></i>Horas por gerencia (Top 5)</div><div class="chart-wrap"><canvas id="ch-ger-h"></canvas></div></div>
-    <div class="chart-card full"><div class="chart-title"><i class="ti ti-trending-up"></i>Tendencia — últimos 6 meses</div><div class="chart-wrap tall"><canvas id="ch-tend"></canvas></div></div>
-    <div class="chart-card"><div class="chart-title"><i class="ti ti-chart-bar"></i>Cursos por gerencia</div><div class="chart-wrap"><canvas id="ch-ger-c"></canvas></div></div>
-    <div class="chart-card"><div class="chart-title"><i class="ti ti-users"></i>Participantes por modalidad</div><div class="chart-wrap"><canvas id="ch-pm"></canvas></div></div>
-  </div>
-  <div id="rep-table"><div class="empty"><i class="ti ti-file-off"></i><p>No hay capacitaciones en este período</p></div></div>
-</div>
 
-<!-- AULAS -->
-<div id="section-aulas" class="content" style="display: block;">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:10px">
-    <div><h2 style="font-size:18px;font-weight:800;color:var(--primary)">Reservá tu aula</h2><p style="font-size:13px;color:var(--muted);margin-top:3px">Podés reservar 1, 2 o 3 módulos horarios consecutivos</p></div>
-  </div>
-  <div class="aulas-grid" id="aulas-container"><div class="aula-card"><div class="ac-head"><div class="ac-icon"><i class="ti ti-school" style="color:#fff;font-size:20px"></i></div><div><div class="ac-name">Aula 15</div><div class="ac-tipo">Aula teórica</div></div></div>
-    <div class="ac-body"><div class="ac-specs"><div class="ac-spec"><i class="ti ti-users"></i><span>Capacidad: <strong>15 personas</strong></span></div><div class="ac-spec"><i class="ti ti-tool"></i><span style="font-size:11px">Proyector, pizarrón</span></div></div>
-    <div class="ac-disp"><label>Disponibilidad esta semana</label><div class="disp-grid"><div class="dia-slot libre"><div class="dia">Lun</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mar</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mié</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Jue</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Vie</div><div>✓</div></div></div></div>
-    <div class="ac-actions"><button class="btn-res" onclick="abrirReserva(&#39;aula15&#39;,&#39;Aula 15&#39;)"><i class="ti ti-calendar-plus"></i>Reservar</button><button class="btn-vr" onclick="abrirReserva(&#39;aula15&#39;,&#39;Aula 15&#39;)"><i class="ti ti-list"></i></button></div></div></div><div class="aula-card"><div class="ac-head"><div class="ac-icon"><i class="ti ti-school" style="color:#fff;font-size:20px"></i></div><div><div class="ac-name">Aula 16</div><div class="ac-tipo">Aula teórica</div></div></div>
-    <div class="ac-body"><div class="ac-specs"><div class="ac-spec"><i class="ti ti-users"></i><span>Capacidad: <strong>15 personas</strong></span></div><div class="ac-spec"><i class="ti ti-tool"></i><span style="font-size:11px">Proyector, pizarrón</span></div></div>
-    <div class="ac-disp"><label>Disponibilidad esta semana</label><div class="disp-grid"><div class="dia-slot libre"><div class="dia">Lun</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mar</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mié</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Jue</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Vie</div><div>✓</div></div></div></div>
-    <div class="ac-actions"><button class="btn-res" onclick="abrirReserva(&#39;aula16&#39;,&#39;Aula 16&#39;)"><i class="ti ti-calendar-plus"></i>Reservar</button><button class="btn-vr" onclick="abrirReserva(&#39;aula16&#39;,&#39;Aula 16&#39;)"><i class="ti ti-list"></i></button></div></div></div><div class="aula-card"><div class="ac-head"><div class="ac-icon"><i class="ti ti-school" style="color:#fff;font-size:20px"></i></div><div><div class="ac-name">Aula 17</div><div class="ac-tipo">Aula teórica</div></div></div>
-    <div class="ac-body"><div class="ac-specs"><div class="ac-spec"><i class="ti ti-users"></i><span>Capacidad: <strong>15 personas</strong></span></div><div class="ac-spec"><i class="ti ti-tool"></i><span style="font-size:11px">Proyector, pizarrón</span></div></div>
-    <div class="ac-disp"><label>Disponibilidad esta semana</label><div class="disp-grid"><div class="dia-slot libre"><div class="dia">Lun</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mar</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mié</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Jue</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Vie</div><div>✓</div></div></div></div>
-    <div class="ac-actions"><button class="btn-res" onclick="abrirReserva(&#39;aula17&#39;,&#39;Aula 17&#39;)"><i class="ti ti-calendar-plus"></i>Reservar</button><button class="btn-vr" onclick="abrirReserva(&#39;aula17&#39;,&#39;Aula 17&#39;)"><i class="ti ti-list"></i></button></div></div></div><div class="aula-card"><div class="ac-head"><div class="ac-icon"><i class="ti ti-tools" style="color:#fff;font-size:20px"></i></div><div><div class="ac-name">Aula Laboratorio 1</div><div class="ac-tipo">Laboratorio</div></div></div>
-    <div class="ac-body"><div class="ac-specs"><div class="ac-spec"><i class="ti ti-users"></i><span>Capacidad: <strong>20 personas</strong></span></div><div class="ac-spec"><i class="ti ti-tool"></i><span style="font-size:11px">Bancos, herramientas eléctricas</span></div></div>
-    <div class="ac-disp"><label>Disponibilidad esta semana</label><div class="disp-grid"><div class="dia-slot libre"><div class="dia">Lun</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mar</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mié</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Jue</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Vie</div><div>✓</div></div></div></div>
-    <div class="ac-actions"><button class="btn-res" onclick="abrirReserva(&#39;aulalaboratorio1&#39;,&#39;Aula Laboratorio 1&#39;)"><i class="ti ti-calendar-plus"></i>Reservar</button><button class="btn-vr" onclick="abrirReserva(&#39;aulalaboratorio1&#39;,&#39;Aula Laboratorio 1&#39;)"><i class="ti ti-list"></i></button></div></div></div><div class="aula-card"><div class="ac-head"><div class="ac-icon"><i class="ti ti-tools" style="color:#fff;font-size:20px"></i></div><div><div class="ac-name">Aula Laboratorio 2</div><div class="ac-tipo">Laboratorio</div></div></div>
-    <div class="ac-body"><div class="ac-specs"><div class="ac-spec"><i class="ti ti-users"></i><span>Capacidad: <strong>20 personas</strong></span></div><div class="ac-spec"><i class="ti ti-tool"></i><span style="font-size:11px">Equipos de medición, tableros</span></div></div>
-    <div class="ac-disp"><label>Disponibilidad esta semana</label><div class="disp-grid"><div class="dia-slot libre"><div class="dia">Lun</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mar</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mié</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Jue</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Vie</div><div>✓</div></div></div></div>
-    <div class="ac-actions"><button class="btn-res" onclick="abrirReserva(&#39;aulalaboratorio2&#39;,&#39;Aula Laboratorio 2&#39;)"><i class="ti ti-calendar-plus"></i>Reservar</button><button class="btn-vr" onclick="abrirReserva(&#39;aulalaboratorio2&#39;,&#39;Aula Laboratorio 2&#39;)"><i class="ti ti-list"></i></button></div></div></div><div class="aula-card"><div class="ac-head"><div class="ac-icon"><i class="ti ti-device-desktop" style="color:#fff;font-size:20px"></i></div><div><div class="ac-name">Aula Informática</div><div class="ac-tipo">Sala de PCs</div></div></div>
-    <div class="ac-body"><div class="ac-specs"><div class="ac-spec"><i class="ti ti-users"></i><span>Capacidad: <strong>18 personas</strong></span></div><div class="ac-spec"><i class="ti ti-tool"></i><span style="font-size:11px">18 PCs, proyector, internet</span></div></div>
-    <div class="ac-disp"><label>Disponibilidad esta semana</label><div class="disp-grid"><div class="dia-slot libre"><div class="dia">Lun</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mar</div><div>✓</div></div><div class="dia-slot ocupado"><div class="dia">Mié</div><div>✕</div></div><div class="dia-slot ocupado"><div class="dia">Jue</div><div>✕</div></div><div class="dia-slot ocupado"><div class="dia">Vie</div><div>✕</div></div></div></div>
-    <div class="ac-actions"><button class="btn-res" onclick="abrirReserva(&#39;aulainformatica&#39;,&#39;Aula Informática&#39;)"><i class="ti ti-calendar-plus"></i>Reservar</button><button class="btn-vr" onclick="abrirReserva(&#39;aulainformatica&#39;,&#39;Aula Informática&#39;)"><i class="ti ti-list"></i></button></div></div></div><div class="aula-card"><div class="ac-head"><div class="ac-icon"><i class="ti ti-building-community" style="color:#fff;font-size:20px"></i></div><div><div class="ac-name">Aula Magna</div><div class="ac-tipo">Auditorio</div></div></div>
-    <div class="ac-body"><div class="ac-specs"><div class="ac-spec"><i class="ti ti-users"></i><span>Capacidad: <strong>30 personas</strong></span></div><div class="ac-spec"><i class="ti ti-tool"></i><span style="font-size:11px">Escenario, micrófono, proyección HD</span></div></div>
-    <div class="ac-disp"><label>Disponibilidad esta semana</label><div class="disp-grid"><div class="dia-slot libre"><div class="dia">Lun</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mar</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Mié</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Jue</div><div>✓</div></div><div class="dia-slot libre"><div class="dia">Vie</div><div>✓</div></div></div></div>
-    <div class="ac-actions"><button class="btn-res" onclick="abrirReserva(&#39;aulamagna&#39;,&#39;Aula Magna&#39;)"><i class="ti ti-calendar-plus"></i>Reservar</button><button class="btn-vr" onclick="abrirReserva(&#39;aulamagna&#39;,&#39;Aula Magna&#39;)"><i class="ti ti-list"></i></button></div></div></div></div>
-</div>
+  <div class="stats-grid" id="rep-stats"></div>
 
-<!-- MODAL DETALLE CURSO -->
-<div class="overlay" id="modal-curso">
-  <div class="modal">
-    <button class="modal-close" onclick="cerrarModal(&#39;modal-curso&#39;)">×</button>
-    <h2 id="modal-nombre">SISTEMA  SCADA Y ANALISIS DE FALLAS - CENTRO OPERATIVO DE DISTRIBUCION (COD)</h2>
-    <div id="modal-badge" style="margin-bottom:1rem"><span class="badge presencial">Presencial</span></div>
-    <div class="detail-grid" id="modal-det"><div class="detail-item"><label>Docente</label><p>AGUSTIN ORTENSI</p></div><div class="detail-item"><label>Institución</label><p>FUNDALUZ</p></div><div class="detail-item"><label>Gerencia</label><p>Gerencia de Distribución</p></div><div class="detail-item"><label>Cupo</label><p>15</p></div><div class="detail-item"><label>Inicio</label><p>2026-05-27</p></div><div class="detail-item"><label>Finalización</label><p>2026-05-29</p></div><div class="detail-item"><label>Duración</label><p>6 horas</p></div><div class="detail-item"><label>Registrado</label><p>22/5/2026</p></div></div>
-    <div class="partic-box" id="modal-part"><h4>Participantes (1)</h4><ul><li>OPERADORES DE M/T COD.</li></ul></div>
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title"><i class="ti ti-chart-pie"></i> Cursos por modalidad</div>
+      <div class="chart-wrap"><canvas id="chart-modal"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title"><i class="ti ti-chart-bar"></i> Horas por gerencia</div>
+      <div class="chart-wrap"><canvas id="chart-ger"></canvas></div>
+    </div>
+    <div class="chart-card full">
+      <div class="chart-title"><i class="ti ti-chart-line"></i> Participantes por curso</div>
+      <div class="chart-wrap tall"><canvas id="chart-partic"></canvas></div>
+    </div>
+  </div>
+
+  <p id="rep-title" style="font-size:13px;color:var(--muted);margin-bottom:10px"></p>
+  <div style="overflow-x:auto;border-radius:var(--radius)">
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>Capacitación</th><th>Docente</th><th>Gerencia</th>
+          <th>Modalidad</th><th>Inicio</th><th>Fin</th>
+          <th>Hs</th><th>Participantes</th><th>Hs×Partic</th>
+        </tr>
+      </thead>
+      <tbody id="rep-body"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     SECCIÓN AULAS
+══════════════════════════════════ -->
+<section id="section-aulas" class="section">
+  <div class="aulas-grid" id="aulas-grid"></div>
+</section>
+
+</main>
+
+<!-- ══════════════════════════════════
+     MODAL DETALLE / EDICIÓN CURSO (FIX D)
+══════════════════════════════════ -->
+<div class="overlay" id="modal-detalle">
+  <div class="modal" id="modal-detalle-inner">
+    <button class="modal-close" onclick="closeModal(&#39;modal-detalle&#39;)">×</button>
+    <h2 id="md-titulo"></h2>
+    <div class="detail-grid" id="md-fields"></div>
+    <div class="partic-box" id="md-partic"></div>
     <div class="nov-section">
-      <h4>Novedades / Observaciones</h4>
-      <div id="modal-novs"><p style="font-size:13px;color:var(--muted);margin-bottom:8px">Sin novedades registradas.</p></div>
+      <h4><i class="ti ti-alert-circle"></i> Novedades del curso</h4>
+      <div id="md-novs"></div>
       <div class="nov-form">
-        <textarea id="nueva-nov" placeholder="Agregar una novedad o actualización..."></textarea>
-        <div style="display:flex;flex-direction:column;gap:6px">
-          <button class="btn-p" onclick="agregarNov()" style="font-size:12px;padding:8px 14px"><i class="ti ti-plus"></i>Agregar</button>
-          <button class="btn-d" onclick="eliminarCurso()" style="font-size:12px;padding:8px 14px"><i class="ti ti-trash"></i>Eliminar</button>
-        </div>
+        <textarea id="nov-input" placeholder="Agregar novedad o actualización..."></textarea>
+        <button class="btn-p" onclick="addNovedad()" style="padding:8px 14px;align-self:flex-end">
+          <i class="ti ti-plus"></i>
+        </button>
       </div>
     </div>
+    <div class="modal-actions">
+      <button class="btn-edit" onclick="abrirEdicion()"><i class="ti ti-pencil"></i> Editar curso</button>
+      <button class="btn-del" onclick="eliminarCurso()"><i class="ti ti-trash"></i> Eliminar</button>
+    </div>
   </div>
 </div>
 
-<!-- MODAL QUICK-ADD CALENDARIO -->
-<div class="overlay" id="modal-quick">
-  <div class="modal" style="max-width:440px">
-    <button class="modal-close" onclick="cerrarModal(&#39;modal-quick&#39;)">×</button>
-    <h2 style="font-size:16px;margin-bottom:1rem" id="qa-titulo">Nueva capacitación — Dom 31/05</h2>
+<!-- FIX D: Modal de edición -->
+<div class="overlay" id="modal-edicion">
+  <div class="modal edit-modal">
+    <button class="modal-close" onclick="closeModal(&#39;modal-edicion&#39;)">×</button>
+    <h2>✏️ Editar capacitación</h2>
     <div class="fgrid">
-      <div class="fg full"><label>Nombre *</label><input type="text" id="qa-nombre" placeholder="Nombre de la capacitación"></div>
-      <div class="fg"><label>Modalidad *</label><select id="qa-modal"><option value="">Seleccionar...</option><option>Presencial</option><option>Virtual</option><option>Híbrida</option></select></div>
-      <div class="fg"><label>Horas *</label><input type="number" id="qa-horas" min="1" placeholder="Ej: 8"></div>
-      <div class="fg"><label>Hora inicio</label><input type="time" id="qa-hora-ini" value="08:00"></div>
-      <div class="fg"><label>Hora fin</label><input type="time" id="qa-hora-fin" value="12:00"></div>
-      <div class="fg"><label>Docente</label><input type="text" id="qa-docente" placeholder="Nombre del docente"></div>
-      <div class="fg"><label>Institución</label><input type="text" id="qa-inst" placeholder="Institución que dicta"></div>
-      <div class="fg full"><label>Gerencia requirente</label>
-        <select id="qa-ger"><option value="">Seleccionar...</option>
-          <option>Directorio / Gerencia General</option><option>Gerencia de Recursos Humanos y Desarrollo</option>
-          <option>Gerencia TIC</option><option>Gerencia de Transmisión</option><option>Gerencia de Distribución</option>
-          <option>Gerencia de Generación</option><option>Gerencia de Finanzas y Abastecimiento</option>
-          <option>Gerencia de Ingeniería y Obras</option><option>Gerencia de Infraestructura</option>
-          <option>Gerencia de Planificación Estratégica y Control de Gestión</option><option>Gerencia de Asesoría y Gestión Legal</option>
+      <div class="fg full"><label>Nombre *</label><input id="e-nombre"></div>
+      <div class="fg"><label>Fecha inicio *</label><input type="date" id="e-inicio"></div>
+      <div class="fg"><label>Fecha fin *</label><input type="date" id="e-fin"></div>
+      <div class="fg"><label>Horas</label><input type="number" id="e-horas" min="1"></div>
+      <div class="fg"><label>Modalidad</label>
+        <select id="e-modal">
+          <option>Presencial</option><option>Virtual</option><option>Híbrida</option>
         </select>
       </div>
+      <div class="fg"><label>Docente</label><input id="e-docente"></div>
+      <div class="fg"><label>Responsable RR.HH.</label><input id="e-rrhh"></div>
+      <div class="fg"><label>Institución</label><input id="e-inst"></div>
+      <div class="fg"><label>Gerencia</label>
+        <select id="e-ger">
+          <option value="">Seleccionar...</option>
+          <option>Directorio</option>
+          <option>Gerencia General</option>
+          <option>Gerencia de RR.HH.</option>
+          <option>Gerencia de Finanzas y Abastecimiento</option>
+          <option>Gerencia Comercial</option>
+          <option>TIC</option>
+          <option>Gerencia de Distribución</option>
+          <option>Gerencia de Transmisión</option>
+          <option>Gerencia de Ingeniería y Obras</option>
+          <option>Gerencia de Infraestructura</option>
+          <option>Gerencia de Planificación, Estrategia y Control de Gestión</option>
+          <option>Gerencia Asesoría Legal</option>
+          <option>Secretaría Administrativa</option>
+          <option>Gerencia de Generación</option>
+          <option>Relaciones Públicas</option>
+          <option>Unidades Asesoras</option>
+        </select>
+      </div>
+      <div class="fg"><label>Aula</label>
+        <select id="e-aula">
+          <option value="">Sin asignar</option>
+          <option>Aula 15 (20 personas)</option>
+          <option>Aula 16 (8 personas)</option>
+          <option>Aula 17 (20 personas)</option>
+          <option>Aula Magna (40 personas)</option>
+          <option>Laboratorio 1</option>
+          <option>Laboratorio 2</option>
+          <option>Sala de Reunión (10 personas)</option>
+          <option>Aula Informática (18 personas)</option>
+        </select>
+      </div>
+      <div class="fg"><label>Cupo máximo</label><input type="number" id="e-cupo" min="1"></div>
+      <div class="fg full"><label>Participantes</label>
+        <textarea id="e-partic" rows="4"></textarea>
+      </div>
+      <div class="fg full"><label>Novedades</label>
+        <textarea id="e-novedad" rows="3"></textarea>
+      </div>
     </div>
-    <div style="margin-top:1rem;display:flex;gap:8px">
-      <button class="btn-p" onclick="guardarQuick()"><i class="ti ti-check"></i>Guardar</button>
-      <button class="btn-s" onclick="cerrarModal(&#39;modal-quick&#39;)">Cancelar</button>
+    <div style="display:flex;gap:10px;margin-top:1rem">
+      <button class="btn-p" onclick="guardarEdicion()"><i class="ti ti-device-floppy"></i> Guardar cambios</button>
+      <button class="btn-d" onclick="closeModal(&#39;modal-edicion&#39;)">Cancelar</button>
     </div>
+    <div id="edit-msg" style="margin-top:8px;font-size:13px;min-height:18px;font-weight:500"></div>
   </div>
 </div>
 
-<!-- MODAL RESERVA AULA — MÚLTIPLES MÓDULOS -->
+<!-- MODAL RESERVA AULA -->
 <div class="overlay" id="modal-reserva">
   <div class="modal res-modal">
-    <button class="modal-close" onclick="cerrarModal(&#39;modal-reserva&#39;)">×</button>
-    <h2 id="res-titulo" style="font-size:18px;margin-bottom:1rem">Reservar — Aula 17</h2>
-    <div class="res-fgrid">
-      <div class="fg"><label>Fecha *</label><input type="date" id="res-fecha"></div>
-      <div class="fg"><label>Gerencia requirente *</label>
-        <select id="res-gerencia"><option value="">Seleccionar...</option>
-          <option>Directorio / Gerencia General</option><option>Gerencia de Recursos Humanos y Desarrollo</option>
-          <option>Gerencia TIC</option><option>Gerencia de Transmisión</option><option>Gerencia de Distribución</option>
-          <option>Gerencia de Generación</option><option>Gerencia de Finanzas y Abastecimiento</option>
-          <option>Gerencia de Ingeniería y Obras</option><option>Gerencia de Infraestructura</option>
-          <option>Gerencia de Planificación Estratégica y Control de Gestión</option><option>Gerencia de Asesoría y Gestión Legal</option>
-        </select>
-      </div>
-      <div class="fg"><label>Responsable *</label><input type="text" id="res-resp" placeholder="Nombre y apellido"></div>
-      <div class="fg"><label>Capacitación</label><input type="text" id="res-cap" placeholder="Nombre del curso"></div>
+    <button class="modal-close" onclick="closeModal(&#39;modal-reserva&#39;)">×</button>
+    <h2 id="res-aula-nombre">Reservar Aula</h2>
+    <div class="res-fgrid" style="margin-bottom:1rem">
+      <div class="fg"><label>Curso</label><input id="res-curso" placeholder="Nombre del curso"></div>
+      <div class="fg"><label>Responsable</label><input id="res-resp" placeholder="Nombre"></div>
+      <div class="fg"><label>Fecha inicio</label><input type="date" id="res-inicio"></div>
+      <div class="fg"><label>Fecha fin</label><input type="date" id="res-fin"></div>
+      <div class="fg"><label>Hora inicio</label><input type="time" id="res-hora-ini" value="08:00"></div>
+      <div class="fg"><label>Hora fin</label><input type="time" id="res-hora-fin" value="17:00"></div>
     </div>
-
-    <!-- MÓDULOS HORARIOS — selección múltiple -->
-    <div style="margin-top:14px">
-      <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px">MÓDULOS HORARIOS * — Seleccioná 1, 2 o 3 módulos consecutivos</label>
+    <div style="margin-bottom:1rem">
+      <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:8px">
+        MÓDULOS / DÍAS DE LA SEMANA
+      </label>
       <div class="modulos-grid">
-        <button class="modulo-btn" onclick="toggleModulo(this,&#39;07:00-09:00&#39;)"><strong>Módulo 1</strong><br>07:00 – 09:00</button>
-        <button class="modulo-btn" onclick="toggleModulo(this,&#39;09:00-11:00&#39;)"><strong>Módulo 2</strong><br>09:00 – 11:00</button>
-        <button class="modulo-btn" onclick="toggleModulo(this,&#39;11:00-13:00&#39;)"><strong>Módulo 3</strong><br>11:00 – 13:00</button>
-        <button class="modulo-btn" onclick="toggleModulo(this,&#39;14:00-16:00&#39;)"><strong>Módulo 4</strong><br>14:00 – 16:00</button>
-        <button class="modulo-btn" onclick="toggleModulo(this,&#39;16:00-18:00&#39;)"><strong>Módulo 5</strong><br>16:00 – 18:00</button>
-        <button class="modulo-btn" onclick="toggleModulo(this,&#39;08:00-17:00&#39;)"><strong>Día completo</strong><br>08:00 – 17:00</button>
+        <button class="modulo-btn sel" data-d="1" onclick="toggleDia(this)">Lunes</button>
+        <button class="modulo-btn sel" data-d="2" onclick="toggleDia(this)">Martes</button>
+        <button class="modulo-btn sel" data-d="3" onclick="toggleDia(this)">Miércoles</button>
+        <button class="modulo-btn sel" data-d="4" onclick="toggleDia(this)">Jueves</button>
+        <button class="modulo-btn sel" data-d="5" onclick="toggleDia(this)">Viernes</button>
       </div>
-      <div class="modulos-tip">Hacé clic en los módulos que necesitás. Podés seleccionar hasta 3.</div>
-      <div class="seleccion-resumen" id="res-resumen">✓ 3 módulos seleccionados: 07:00 – 13:00</div>
+      <div class="modulos-tip">Solo días laborables disponibles (Lun–Vie)</div>
     </div>
-
-    <div style="margin-top:12px">
-      <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:5px">Observaciones</label>
-      <textarea id="res-obs" placeholder="Equipamiento necesario, cantidad de personas, etc." style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-family:inherit;resize:none;height:60px;outline:none"></textarea>
-    </div>
-
-    <div style="margin-top:1rem;display:flex;gap:8px">
-      <button class="btn-p" onclick="confirmarReserva()"><i class="ti ti-check"></i>Confirmar reserva</button>
-      <button class="btn-s" onclick="cerrarModal(&#39;modal-reserva&#39;)">Cancelar</button>
-    </div>
-    <div class="res-list" style="margin-top:1rem">
-      <h4>Reservas registradas para esta aula</h4>
-      <div id="res-del-aula"><p style="font-size:12px;color:var(--muted)">No hay reservas para esta aula.</p></div>
-    </div>
+    <button class="btn-p" onclick="confirmarReserva()" style="width:100%">
+      <i class="ti ti-check"></i> Confirmar reserva
+    </button>
   </div>
 </div>
 
-<div class="toast success" id="toast"><i class="ti ti-check" id="toast-i"></i><span id="toast-m">Capacitación agregada al calendario</span></div>
-<footer class="footer"><strong>EPEC SAU</strong> · Centro de Formación Profesional © 2026 &nbsp;·&nbsp; <span id="sync-st">Sincronizado · 07:54:16</span></footer>
+<div class="toast" id="toast"></div>
 
+<footer class="footer">
+  <strong>EPEC SAU</strong> · Centro de Formación Profesional © 2026 ·
+  <span id="sync-msg">Sync: 11:16:49</span>
+</footer>
+
+<!-- FIREBASE -->
 <script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import{getDatabase,ref,push,onValue,set,remove}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-const cfg={apiKey:"AIzaSyBvE7RSYKS4gmwcq48FttdR55fIjcj9dbU",authDomain:"epec---capacitaciones.firebaseapp.com",databaseURL:"https://epec---capacitaciones-default-rtdb.firebaseio.com",projectId:"epec---capacitaciones",storageBucket:"epec---capacitaciones.firebasestorage.app",messagingSenderId:"990909328558",appId:"1:990909328558:web:ead9e4118a814e0d20513f"};
-const app=initializeApp(cfg),db=getDatabase(app),cursosRef=ref(db,'cursos'),reservasRef=ref(db,'reservas'),usersRef=ref(db,'usuarios_activos');
-window.db=db;window.ref=ref;window.push=push;window.set=set;window.remove=remove;window.cursosRef=cursosRef;window.reservasRef=reservasRef;
-const myId='u_'+Math.random().toString(36).substr(2,9),myRef=ref(db,'usuarios_activos/'+myId);
-set(myRef,{ts:Date.now()});window.addEventListener('beforeunload',()=>remove(myRef));
-onValue(usersRef,s=>{const n=s.exists()?Object.keys(s.val()).length:0;document.getElementById('user-count').textContent=n+' usuario'+(n!==1?'s':'')+' conectado'+(n!==1?'s':'');});
-window.cursosData={};
-onValue(cursosRef,s=>{window.cursosData=s.exists()?s.val():{};renderCal();filtrarCursos();generarReporte();document.getElementById('sync-st').textContent='Sincronizado · '+new Date().toLocaleTimeString('es-AR');});
-window.reservasData={};
-onValue(reservasRef,s=>{window.reservasData=s.exists()?s.val():{};renderResAula();});
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, onValue, push, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyBvE7RSYKS4gmwcq48FttdR55fIjcj9dbU",
+  authDomain:        "epec---capacitaciones.firebaseapp.com",
+  databaseURL:       "https://epec---capacitaciones-default-rtdb.firebaseio.com",
+  projectId:         "epec---capacitaciones",
+  storageBucket:     "epec---capacitaciones.firebasestorage.app",
+  messagingSenderId: "990909328558",
+  appId:             "1:990909328558:web:ead9e4118a814e0d20513f"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+const cursosRef = ref(db, 'epec/cursos');
+
+onValue(cursosRef, snap => {
+  const data = snap.val();
+  window._cursos = data
+    ? Object.entries(data).map(([k,v]) => ({...v, _key:k}))
+    : getDemoData();
+  renderCalendario();
+  filterCursos();
+  if(document.getElementById('section-reportes').classList.contains('active')) renderReporte();
+  document.getElementById('sync-msg').textContent = 'Sync: ' + new Date().toLocaleTimeString('es-AR');
+});
+
+window.fbPush   = (d) => push(cursosRef, d);
+window.fbUpdate = (k,d) => update(ref(db,'epec/cursos/'+k), d);
+window.fbRemove = (k) => remove(ref(db,'epec/cursos/'+k));
+
+setTimeout(()=>{
+  if(!window._cursos){
+    window._cursos = getDemoData();
+    renderCalendario(); filterCursos();
+  }
+},3500);
+
+function getDemoData(){
+  const y=new Date().getFullYear(), m=String(new Date().getMonth()+1).padStart(2,'0');
+  return [
+    {_key:'d1',nombre:'Seguridad Eléctrica en Alta Tensión',docente:'Ing. Roberto Díaz',
+     rrhh:'Lic. Ana Sosa',institucion:'EPEC Interno',gerencia:'Gerencia de Distribución',
+     modalidad:'Presencial',inicio:`${y}-${m}-02`,fin:`${y}-${m}-06`,horas:40,cupo:15,
+     participantes:'Juan Pérez\nMaría García\nCarlos López\nAna Martínez',
+     novedades:'Requiere EPP completo.',aula:'Aula 2 — Taller (20 personas)'},
+    {_key:'d2',nombre:'Excel Avanzado para Gestión Administrativa',docente:'Prof. Sandra Ruiz',
+     rrhh:'Lic. Ana Sosa',institucion:'UTN Córdoba',gerencia:'Gerencia de RR.HH.',
+     modalidad:'Híbrida',inicio:`${y}-${m}-09`,fin:`${y}-${m}-13`,horas:20,cupo:20,
+     participantes:'Paula Soto\nDiego Herrera\nLaura Mendez',
+     novedades:'Traer notebook.',aula:'Aula 3 — Informática (25 personas)'},
+    {_key:'d3',nombre:'Liderazgo y Gestión de Equipos de Alto Rendimiento',docente:'Lic. Mónica Vera',
+     rrhh:'Lic. Carlos Rueda',institucion:'Capacitar SA',gerencia:'Dirección General',
+     modalidad:'Virtual',inicio:`${y}-${m}-16`,fin:`${y}-${m}-20`,horas:16,cupo:30,
+     participantes:'Gerentes de área\nJefes de departamento',
+     novedades:'Link Zoom por mail.',aula:''},
+  ];
+}
 </script>
 
+<!-- APP LOGIC -->
 <script>
-// ── CONSTANTES ──
-const MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-const DIAS=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
-const EC=['#218570','#c0392b','#1a5276','#d68910','#6c3483','#117a65','#943126','#1f618d','#b7950b','#4a235a'];
-const AULAS=[
-  {id:'aula15',nombre:'Aula 15',tipo:'Aula teórica',capacidad:15,equipamiento:'Proyector, pizarrón',icono:'ti-school'},
-  {id:'aula16',nombre:'Aula 16',tipo:'Aula teórica',capacidad:15,equipamiento:'Proyector, pizarrón',icono:'ti-school'},
-  {id:'aula17',nombre:'Aula 17',tipo:'Aula teórica',capacidad:15,equipamiento:'Proyector, pizarrón',icono:'ti-school'},
-  {id:'aulalaboratorio1',nombre:'Aula Laboratorio 1',tipo:'Laboratorio',capacidad:20,equipamiento:'Bancos, herramientas eléctricas',icono:'ti-tools'},
-  {id:'aulalaboratorio2',nombre:'Aula Laboratorio 2',tipo:'Laboratorio',capacidad:20,equipamiento:'Equipos de medición, tableros',icono:'ti-tools'},
-  {id:'aulainformatica',nombre:'Aula Informática',tipo:'Sala de PCs',capacidad:18,equipamiento:'18 PCs, proyector, internet',icono:'ti-device-desktop'},
-  {id:'aulamagna',nombre:'Aula Magna',tipo:'Auditorio',capacidad:30,equipamiento:'Escenario, micrófono, proyección HD',icono:'ti-building-community'}
-];
+/* ══════════════════════════════════════
+   ESTADO GLOBAL
+══════════════════════════════════════ */
+window._cursos = [];
+let _view      = 'semana';
+let _curDate   = new Date();
+let _period    = 'semanal';
+let _editKey   = null;
+let _detailKey = null;
+let _reservaAula = null;
+let chartModal=null, chartGer=null, chartPartic=null;
 
-let vista='semana', periodoRep='semanal', cursoSel=null, aulaSel=null;
-let modulosSeleccionados=[], charts={}, qaFecha=null;
+const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+// FIX C: Solo Lun-Vie
+const DIAS_LAB = ['Lun','Mar','Mié','Jue','Vie'];
+const HORAS_DIA = [7,8,9,10,11,12,13,14,15,16,17,18];
 
-// ── FECHA CORRECTA ARGENTINA ──
-// Usa la fecha local del navegador sin conversión UTC
-function hoyLocal(){
-  const d=new Date();
-  return new Date(d.getFullYear(),d.getMonth(),d.getDate());
-}
-function dateStrLocal(d){
-  const y=d.getFullYear();
-  const m=String(d.getMonth()+1).padStart(2,'0');
-  const dia=String(d.getDate()).padStart(2,'0');
-  return `${y}-${m}-${dia}`;
-}
-
-function showTab(t){
-  ['calendario','cursos','nuevo','reportes','aulas'].forEach(x=>{
-    document.getElementById('section-'+x).style.display=x===t?'block':'none';
-    document.getElementById('tab-'+x).classList.toggle('active',x===t);
-  });
-  if(t==='aulas')renderAulas();
-  if(t==='reportes')setTimeout(generarReporte,80);
-  if(t==='calendario')renderCal();
-}
-window.showTab=showTab;
-
-function toast(msg,tipo='success'){
-  const el=document.getElementById('toast'),i=document.getElementById('toast-i');
-  document.getElementById('toast-m').textContent=msg;
-  el.className='toast '+tipo;i.className='ti '+(tipo==='success'?'ti-check':'ti-alert-circle');
-  el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3500);
-}
-function cerrarModal(id){document.getElementById(id).classList.remove('open');}
-window.cerrarModal=cerrarModal;
-
-// ── CALENDARIO ──
-const HORAS_INI=7, H_PX=60;
-let calBase=hoyLocal();
-
-function getLun(d){
-  // En Argentina la semana empieza el LUNES
-  // getDay(): 0=Dom,1=Lun,2=Mar,3=Mie,4=Jue,5=Vie,6=Sab
-  const r=new Date(d.getFullYear(),d.getMonth(),d.getDate());
-  const dow=r.getDay();
-  // Si es domingo (0), retroceder 6 días; si es lunes (1), retroceder 0; etc.
-  const retroceder=[6,0,1,2,3,4,5][dow];
-  r.setDate(r.getDate()-retroceder);
-  return r;
-}
-function setVista(v){
-  vista=v;
-  document.getElementById('vt-semana').classList.toggle('active',v==='semana');
-  document.getElementById('vt-mes').classList.toggle('active',v==='mes');
-  document.getElementById('cal-semana-wrap').style.display=v==='semana'?'block':'none';
-  document.getElementById('cal-mes-wrap').style.display=v==='mes'?'block':'none';
-  renderCal();
-}
-window.setVista=setVista;
-function navCal(dir){
-  if(vista==='semana')calBase=new Date(calBase.getFullYear(),calBase.getMonth(),calBase.getDate()+dir*7);
-  else calBase=new Date(calBase.getFullYear(),calBase.getMonth()+dir,1);
-  renderCal();
-}
-function navCalHoy(){calBase=hoyLocal();renderCal();}
-window.navCal=navCal;window.navCalHoy=navCalHoy;
-
-function renderCal(){vista==='semana'?renderSemana():renderMes();}
-window.renderCal=renderCal;
-
-function renderSemana(){
-  const lun=getLun(calBase);
-  const dias=Array.from({length:7},(_,i)=>new Date(lun.getFullYear(),lun.getMonth(),lun.getDate()+i));
-  const hoy=hoyLocal();
-  // dias[0]=Lun, dias[6]=Dom — mostramos Lun X — Dom Y
-  const primerDia=dias[0];const ultimoDia=dias[6];
-  document.getElementById('cal-titulo').textContent=
-    'Semana: '+DIAS[primerDia.getDay()]+' '+primerDia.getDate()+' — '+DIAS[ultimoDia.getDay()]+' '+ultimoDia.getDate()+' de '+MESES[ultimoDia.getMonth()]+' '+ultimoDia.getFullYear();
-
-  const wh=document.getElementById('week-header');
-  wh.innerHTML='<div class="wh-empty"></div>';
-  dias.forEach(d=>{
-    const esHoy=dateStrLocal(d)===dateStrLocal(hoy);
-    const div=document.createElement('div');
-    div.className='wh-day'+(esHoy?' wh-today':'');
-    div.innerHTML=`<div class="wh-name">${DIAS[d.getDay()]}</div><div class="wh-num">${d.getDate()}</div>${esHoy?'<div class="wh-tdot"></div>':''}`;
-    wh.appendChild(div);
-  });
-
-  const hcol=document.getElementById('hour-col');hcol.innerHTML='';
-  for(let h=HORAS_INI;h<=19;h++){const l=document.createElement('div');l.className='hour-label';l.textContent=h+':00';hcol.appendChild(l);}
-
-  const dg=document.getElementById('days-grid');dg.innerHTML='';
-  dias.forEach((d,di)=>{
-    const esHoy=dateStrLocal(d)===dateStrLocal(hoy);
-    const esWE=d.getDay()===0||d.getDay()===6;
-    const col=document.createElement('div');
-    col.className='day-col'+(esHoy?' today-col':'')+(esWE?' weekend-col':'');
-    col.style.position='relative';
-    for(let h=HORAS_INI;h<=19;h++){
-      const s=document.createElement('div');s.className='hour-stripe half';s.style.height=H_PX+'px';
-      s.addEventListener('click',()=>{
-        qaFecha=dateStrLocal(d);
-        document.getElementById('qa-titulo').textContent='Nueva capacitación — '+DIAS[d.getDay()]+' '+d.getDate()+'/'+String(d.getMonth()+1).padStart(2,'0');
-        document.getElementById('qa-nombre').value='';document.getElementById('qa-modal').value='';
-        document.getElementById('qa-horas').value='';document.getElementById('qa-docente').value='';
-        document.getElementById('qa-inst').value='';document.getElementById('qa-ger').value='';
-        document.getElementById('qa-hora-ini').value=String(h).padStart(2,'0')+':00';
-        document.getElementById('qa-hora-fin').value=String(Math.min(h+2,18)).padStart(2,'0')+':00';
-        document.getElementById('modal-quick').classList.add('open');
-      });
-      col.appendChild(s);
-    }
-    const ds=dateStrLocal(d);
-    Object.entries(window.cursosData||{}).forEach(([id,c])=>{
-      if(ds>=c.inicio&&ds<=c.fin){
-        const mod=(c.modalidad||'').toLowerCase().replace('í','i');
-        const ev=document.createElement('div');ev.className='cal-evt '+mod;
-        let topPx=8,htPx=H_PX*2-6;
-        if(c.horaIni){const[hh,mm]=c.horaIni.split(':').map(Number);topPx=((hh-HORAS_INI)*H_PX+(mm/60)*H_PX);if(c.horaFin){const[he,me]=c.horaFin.split(':').map(Number);htPx=((he-hh)*H_PX+(me-mm)/60*H_PX)-4;}else htPx=H_PX*2-4;}
-        ev.style.top=topPx+'px';ev.style.height=Math.max(htPx,22)+'px';
-        ev.innerHTML=`<div class="evt-name">${c.nombre}</div>${c.horaIni?`<div class="evt-time">${c.horaIni}${c.horaFin?'–'+c.horaFin:''}</div>`:''}`;
-        ev.onclick=(e)=>{e.stopPropagation();abrirCurso(id);};col.appendChild(ev);
-      }
-    });
-    dg.appendChild(col);
-  });
+/* ══════════════════════════════════════
+   NAVEGACIÓN
+══════════════════════════════════════ */
+function showSection(id, btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('section-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='reportes') renderReporte();
+  if(id==='aulas')    renderAulas();
+  if(id==='cursos')   filterCursos();
 }
 
-function renderMes(){
-  const y=calBase.getFullYear(),m=calBase.getMonth();
-  document.getElementById('cal-titulo').textContent=MESES[m]+' '+y;
-  const mv=document.getElementById('month-view');mv.querySelectorAll('.mv-day').forEach(el=>el.remove());
-  const primerDia=new Date(y,m,1).getDay(),totalDias=new Date(y,m+1,0).getDate();
-  const hoy=hoyLocal();
-  for(let i=0;i<primerDia;i++){const p=new Date(y,m,0-(primerDia-i-2));mv.appendChild(crearMvDia(p.getDate(),true,false,null));}
-  for(let d=1;d<=totalDias;d++){
-    const esHoy=d===hoy.getDate()&&m===hoy.getMonth()&&y===hoy.getFullYear();
-    const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const el=crearMvDia(d,false,esHoy,ds);
-    Object.entries(window.cursosData||{}).forEach(([id,c])=>{if(ds>=c.inicio&&ds<=c.fin){const mod=(c.modalidad||'').toLowerCase().replace('í','i');const ev=document.createElement('div');ev.className='mv-evt '+mod;ev.textContent=c.nombre;ev.onclick=(e)=>{e.stopPropagation();abrirCurso(id);};el.appendChild(ev);}});
-    mv.appendChild(el);
+function setView(v){
+  _view = v;
+  document.getElementById('vt-semana').classList.toggle('active', v==='semana');
+  document.getElementById('vt-mes').classList.toggle('active', v==='mes');
+  renderCalendario();
+}
+
+function navCal(d){
+  if(d===0){ _curDate=new Date(); }
+  else if(_view==='semana'){ _curDate.setDate(_curDate.getDate() + d*7); }
+  else { _curDate.setMonth(_curDate.getMonth() + d); }
+  renderCalendario();
+}
+
+/* ══════════════════════════════════════
+   FIX C: helper — fecha es laborable?
+══════════════════════════════════════ */
+function esLaborable(date){
+  const d = date.getDay();
+  return d >= 1 && d <= 5; // 1=Lunes, 5=Viernes
+}
+
+/* FIX C: obtener días laborables de una semana */
+function getDiasLaborablesDelRango(fechaBase){
+  // Lunes de la semana actual
+  const lunes = new Date(fechaBase);
+  lunes.setDate(fechaBase.getDate() - ((fechaBase.getDay()+6)%7));
+  const dias = [];
+  for(let i=0;i<5;i++){
+    const d = new Date(lunes);
+    d.setDate(lunes.getDate()+i);
+    dias.push(d);
   }
-  const r=(primerDia+totalDias)%7===0?0:7-((primerDia+totalDias)%7);
-  for(let i=1;i<=r;i++)mv.appendChild(crearMvDia(i,true,false,null));
+  return dias;
 }
 
-function crearMvDia(num,otro,hoy,ds){
-  const el=document.createElement('div');el.className='mv-day'+(otro?' other':'')+(hoy?' today':'');
-  const n=document.createElement('div');n.className='mv-num';n.textContent=num;el.appendChild(n);
-  if(ds){const add=document.createElement('span');add.className='mv-add';add.textContent='+ Agregar';add.onclick=(e)=>{e.stopPropagation();qaFecha=ds;document.getElementById('qa-titulo').textContent='Nueva capacitación — '+ds;['qa-nombre','qa-modal','qa-horas','qa-docente','qa-inst','qa-ger'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('qa-hora-ini').value='08:00';document.getElementById('qa-hora-fin').value='12:00';document.getElementById('modal-quick').classList.add('open');};el.appendChild(add);}
-  return el;
+/* FIX C: listar fechas laborables entre inicio y fin */
+function diasLaborablesEntreFechas(ini, fin){
+  const result = [];
+  const cur = new Date(ini);
+  while(cur <= fin){
+    if(esLaborable(cur)) result.push(new Date(cur));
+    cur.setDate(cur.getDate()+1);
+  }
+  return result;
 }
 
-function guardarQuick(){
-  const nombre=document.getElementById('qa-nombre').value.trim();
-  const modalidad=document.getElementById('qa-modal').value;
-  const horas=document.getElementById('qa-horas').value;
-  if(!nombre||!modalidad||!horas||!qaFecha){toast('Completá nombre, modalidad y horas','error');return;}
-  window.push(window.cursosRef,{nombre,modalidad,horas:parseInt(horas),inicio:qaFecha,fin:qaFecha,horaIni:document.getElementById('qa-hora-ini').value,horaFin:document.getElementById('qa-hora-fin').value,docente:document.getElementById('qa-docente').value.trim(),institucion:document.getElementById('qa-inst').value.trim(),gerencia:document.getElementById('qa-ger').value,creado:new Date().toISOString()})
-    .then(()=>{cerrarModal('modal-quick');toast('Capacitación agregada al calendario');});
+/* ══════════════════════════════════════
+   RENDER CALENDARIO — VISTA SEMANAL
+══════════════════════════════════════ */
+function renderCalendario(){
+  const container = document.getElementById('cal-container');
+  if(_view==='semana') renderSemana(container);
+  else renderMes(container);
 }
-window.guardarQuick=guardarQuick;
 
-// ── CURSOS ──
-function filtrarCursos(){
-  const b=(document.getElementById('buscar')?.value||'').toLowerCase();
-  const g=document.getElementById('filtro-gerencia')?.value||'';
-  const m=document.getElementById('filtro-modalidad')?.value||'';
-  const lista=document.getElementById('lista-cursos');if(!lista)return;
-  const f=Object.entries(window.cursosData||{}).filter(([,c])=>(!b||c.nombre?.toLowerCase().includes(b))&&(!g||c.gerencia===g)&&(!m||c.modalidad===m));
-  if(!f.length){lista.innerHTML=`<div class="empty"><i class="ti ti-file-off"></i><p>No se encontraron capacitaciones</p></div>`;return;}
-  lista.innerHTML=f.map(([id,c])=>`<div class="curso-card ${(c.modalidad||'').toLowerCase().replace('í','i')}" onclick="abrirCurso('${id}')">
-    <div class="curso-card-header"><div class="curso-name">${c.nombre}</div><span class="badge ${(c.modalidad||'').toLowerCase().replace('í','i')}">${c.modalidad||''}</span></div>
-    <div class="curso-meta"><span><i class="ti ti-user"></i>${c.docente||'—'}</span><span><i class="ti ti-building"></i>${c.institucion||'—'}</span><span><i class="ti ti-sitemap"></i>${c.gerencia||'—'}</span><span><i class="ti ti-calendar"></i>${c.inicio||''}→${c.fin||''}</span><span><i class="ti ti-clock"></i>${c.horas||0} hs</span><span><i class="ti ti-users"></i>${c.participantes_lista?c.participantes_lista.split('\n').filter(Boolean).length:0} part.</span></div>
-  </div>`).join('');
+function renderSemana(container){
+  const hoy = new Date();
+  const dias = getDiasLaborablesDelRango(_curDate);
+  const [lunes,viernes] = [dias[0],dias[4]];
+
+  document.getElementById('cal-title').textContent =
+    `Semana del ${lunes.getDate()} al ${viernes.getDate()} de ${MESES[lunes.getMonth()]} ${lunes.getFullYear()}`;
+
+  // Header
+  let headHTML = `<div style="display:grid;grid-template-columns:56px repeat(5,1fr);
+    background:var(--primary);border-radius:var(--radius) var(--radius) 0 0;overflow:hidden">
+    <div style="background:var(--primary-dk)"></div>`;
+
+  dias.forEach(d=>{
+    const isHoy = d.toDateString()===hoy.toDateString();
+    headHTML += `<div style="padding:10px 6px;text-align:center;color:#fff;
+      border-left:1px solid rgba(255,255,255,.15);${isHoy?'background:rgba(255,255,255,.18)':''}">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;opacity:.85">${DIAS_LAB[d.getDay()-1]}</div>
+      <div style="font-size:20px;font-weight:800;line-height:1.2;margin-top:2px">${d.getDate()}</div>
+      ${isHoy?'<div style="width:5px;height:5px;border-radius:50%;background:#6effd6;margin:3px auto 0"></div>':''}
+    </div>`;
+  });
+  headHTML += '</div>';
+
+  // Body
+  let bodyHTML = `<div style="display:flex;background:var(--border);
+    border-left:1px solid var(--border);border-right:1px solid var(--border);
+    border-bottom:1px solid var(--border);border-radius:0 0 var(--radius) var(--radius);overflow:hidden">
+    <div style="width:56px;flex-shrink:0;background:#f8fbfa;border-right:1px solid var(--border)">`;
+
+  HORAS_DIA.forEach(h=>{
+    bodyHTML += `<div style="height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
+      padding:4px 8px 0 0;font-size:10px;font-weight:600;color:var(--muted)">${h}:00</div>`;
+  });
+  bodyHTML += '</div>';
+  bodyHTML += '<div style="flex:1;display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border)">';
+
+  dias.forEach((dia,di)=>{
+    const isHoy = dia.toDateString()===hoy.toDateString();
+    bodyHTML += `<div style="background:${isHoy?'#fefff8':'var(--surface)'};position:relative;min-height:${HORAS_DIA.length*60}px">`;
+
+    HORAS_DIA.forEach(h=>{
+      bodyHTML += `<div style="height:60px;border-bottom:1px solid var(--border);
+        position:relative;cursor:pointer;" 
+        onmouseenter="this.style.background='rgba(33,133,112,.06)'"
+        onmouseleave="this.style.background='transparent'"></div>`;
+    });
+
+    // Eventos del día (FIX B: texto truncado con title)
+    const ds = toDateStr(dia);
+    const evts = (window._cursos||[]).filter(c=>c.inicio<=ds && c.fin>=ds && esLaborable(dia));
+    evts.forEach((c,ci)=>{
+      const mod = (c.modalidad||'presencial').toLowerCase().replace('í','i');
+      const topPx = ci*28;
+      bodyHTML += `<div class="cal-evt ${mod}"
+        style="top:${4+topPx}px;"
+        title="${esc(c.nombre)}"
+        onclick="abrirDetalle('${c._key}')">
+        <span class="evt-name">${esc(c.nombre)}</span>
+        <div class="evt-time">${c.horas||0}hs · ${c.docente||''}</div>
+      </div>`;
+    });
+
+    bodyHTML += '</div>';
+  });
+
+  bodyHTML += '</div></div>';
+
+  container.innerHTML = headHTML + bodyHTML;
 }
-window.filtrarCursos=filtrarCursos;
 
-function abrirCurso(id){
-  cursoSel=id;const c=window.cursosData[id];if(!c)return;
-  document.getElementById('modal-nombre').textContent=c.nombre;
-  const mod=(c.modalidad||'').toLowerCase().replace('í','i');
-  document.getElementById('modal-badge').innerHTML=`<span class="badge ${mod}">${c.modalidad||''}</span>`;
-  document.getElementById('modal-det').innerHTML=`<div class="detail-item"><label>Docente</label><p>${c.docente||'—'}</p></div><div class="detail-item"><label>Institución</label><p>${c.institucion||'—'}</p></div><div class="detail-item"><label>Gerencia</label><p>${c.gerencia||'—'}</p></div><div class="detail-item"><label>Cupo</label><p>${c.cupo||'—'}</p></div><div class="detail-item"><label>Inicio</label><p>${c.inicio||'—'}</p></div><div class="detail-item"><label>Finalización</label><p>${c.fin||'—'}</p></div><div class="detail-item"><label>Duración</label><p>${c.horas||0} horas</p></div><div class="detail-item"><label>Registrado</label><p>${c.creado?new Date(c.creado).toLocaleDateString('es-AR'):'—'}</p></div>`;
-  const ps=c.participantes_lista?c.participantes_lista.split('\n').filter(Boolean):[];
-  document.getElementById('modal-part').innerHTML=ps.length?`<h4>Participantes (${ps.length})</h4><ul>${ps.map(p=>`<li>${p.trim()}</li>`).join('')}</ul>`:`<h4>Participantes</h4><p style="font-size:13px;color:var(--muted)">Sin participantes registrados</p>`;
-  const novs=Object.values(c.novedades||{}).sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
-  document.getElementById('modal-novs').innerHTML=novs.length?novs.map(n=>`<div class="nov-item"><div>${n.texto}</div><div class="nov-fecha">${new Date(n.fecha).toLocaleString('es-AR')}</div></div>`).join(''):`<p style="font-size:13px;color:var(--muted);margin-bottom:8px">Sin novedades registradas.</p>`;
-  document.getElementById('modal-curso').classList.add('open');
+/* ══════════════════════════════════════
+   RENDER CALENDARIO — VISTA MENSUAL
+   FIX C: solo Lun-Vie
+   FIX B: texto truncado
+══════════════════════════════════════ */
+function renderMes(container){
+  const hoy = new Date();
+  const y = _curDate.getFullYear();
+  const m = _curDate.getMonth();
+  document.getElementById('cal-title').textContent = `${MESES[m]} ${y}`;
+
+  let html = '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-radius:var(--radius);overflow:hidden">';
+
+  // Cabecera solo Lun-Vie
+  DIAS_LAB.forEach(d=>{
+    html += `<div style="background:var(--primary);color:#fff;text-align:center;padding:10px 4px;
+      font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px">${d}</div>`;
+  });
+
+  // Primer día laborable del mes
+  const primerDia = new Date(y, m, 1);
+  // Avanzar hasta el lunes si cae en fin de semana
+  while(!esLaborable(primerDia)) primerDia.setDate(primerDia.getDate()+1);
+
+  // Lunes de la semana que contiene ese primer día laborable
+  const inicioGrid = new Date(primerDia);
+  inicioGrid.setDate(primerDia.getDate() - ((primerDia.getDay()+6)%7));
+
+  // Generar 6 semanas * 5 días = 30 celdas máx
+  const totalSemanas = 6;
+  for(let semana=0; semana<totalSemanas; semana++){
+    for(let dow=0; dow<5; dow++){
+      const fecha = new Date(inicioGrid);
+      fecha.setDate(inicioGrid.getDate() + semana*7 + dow);
+      const otroMes = fecha.getMonth() !== m;
+      const isHoy = fecha.toDateString()===hoy.toDateString();
+      const ds = toDateStr(fecha);
+      const evts = (window._cursos||[]).filter(c=>c.inicio<=ds && c.fin>=ds);
+
+      html += `<div style="background:${isHoy?'#fffbf5':otroMes?'#f7faf9':'var(--surface)'};
+        min-height:100px;padding:5px;overflow:hidden;
+        ${isHoy?'outline:2px solid var(--accent);outline-offset:-2px':''}
+        transition:background .1s;cursor:pointer"
+        onmouseenter="this.style.background='var(--primary-lt)'"
+        onmouseleave="this.style.background='${isHoy?'#fffbf5':otroMes?'#f7faf9':'var(--surface)'}'">
+        <div style="font-size:12px;font-weight:700;color:${isHoy?'var(--accent)':otroMes?'#aaa':'var(--muted)'};margin-bottom:3px">${fecha.getDate()}</div>`;
+
+      // FIX B: máx 2 eventos visibles, truncados
+      evts.slice(0,2).forEach(c=>{
+        const mod = (c.modalidad||'presencial').toLowerCase().replace('í','i');
+        html += `<div class="mv-evt ${mod}" title="${esc(c.nombre)}" onclick="abrirDetalle('${c._key}')">${esc(c.nombre)}</div>`;
+      });
+      if(evts.length>2){
+        html += `<div style="font-size:10px;color:var(--primary);font-weight:600">+${evts.length-2} más</div>`;
+      }
+
+      html += '</div>';
+    }
+  }
+  html += '</div>';
+  container.innerHTML = html;
 }
-window.abrirCurso=abrirCurso;
 
-function agregarNov(){const txt=document.getElementById('nueva-nov').value.trim();if(!txt||!cursoSel)return;window.push(window.ref(window.db,'cursos/'+cursoSel+'/novedades'),{texto:txt,fecha:new Date().toISOString()}).then(()=>{document.getElementById('nueva-nov').value='';toast('Novedad agregada');});}
-window.agregarNov=agregarNov;
-function eliminarCurso(){if(!cursoSel||!confirm('¿Eliminás esta capacitación?'))return;window.remove(window.ref(window.db,'cursos/'+cursoSel)).then(()=>{cerrarModal('modal-curso');toast('Capacitación eliminada');});}
-window.eliminarCurso=eliminarCurso;
+/* ══════════════════════════════════════
+   MODAL DETALLE (FIX D: incluye editar)
+══════════════════════════════════════ */
+function abrirDetalle(key){
+  const c = (window._cursos||[]).find(x=>x._key===key);
+  if(!c) return;
+  _detailKey = key;
 
-// ── FORMULARIO ──
-function guardarCurso(){
-  const v={nombre:document.getElementById('f-nombre').value.trim(),modalidad:document.getElementById('f-modalidad').value,horas:document.getElementById('f-horas').value,inicio:document.getElementById('f-inicio').value,fin:document.getElementById('f-fin').value,docente:document.getElementById('f-docente').value.trim(),institucion:document.getElementById('f-institucion').value.trim(),gerencia:document.getElementById('f-gerencia').value};
-  if(Object.values(v).some(x=>!x)){toast('Completá todos los campos obligatorios','error');return;}
-  window.push(window.cursosRef,{...v,horas:parseInt(v.horas),cupo:document.getElementById('f-cupo').value||null,participantes_lista:document.getElementById('f-participantes').value.trim(),observaciones:document.getElementById('f-observaciones').value.trim(),creado:new Date().toISOString()})
-    .then(()=>{limpiarForm();toast('Capacitación guardada');showTab('cursos');}).catch(()=>toast('Error al guardar','error'));
+  document.getElementById('md-titulo').textContent = c.nombre;
+
+  const fields = [
+    ['Docente',c.docente],['Institución',c.institucion],
+    ['Gerencia',c.gerencia],['Modalidad',c.modalidad],
+    ['Responsable RR.HH.',c.rrhh||'—'],['Aula',c.aula||'Sin asignar'],
+    ['Período',`${c.inicio} al ${c.fin}`],
+    ['Duración',`${c.horas||0} horas`],
+    ['Participantes',`${parsePartic(c.participantes).length} / ${c.cupo||'sin límite'}`],
+  ];
+  document.getElementById('md-fields').innerHTML = fields.map(([l,v])=>
+    `<div class="detail-item"><label>${l}</label><p>${esc(v||'—')}</p></div>`
+  ).join('');
+
+  const partic = parsePartic(c.participantes);
+  document.getElementById('md-partic').innerHTML = partic.length
+    ? `<h4>Participantes</h4><ul>${partic.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>`
+    : '';
+
+  const novs = (c.novedades||'').trim().split('\n').filter(Boolean);
+  document.getElementById('md-novs').innerHTML = novs.map(n=>
+    `<div class="nov-item">${esc(n)}</div>`
+  ).join('');
+
+  openModal('modal-detalle');
 }
-window.guardarCurso=guardarCurso;
-function limpiarForm(){['f-nombre','f-horas','f-inicio','f-fin','f-docente','f-institucion','f-cupo','f-participantes','f-observaciones'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('f-modalidad').value='';document.getElementById('f-gerencia').value='';}
-window.limpiarForm=limpiarForm;
 
-// ── REPORTES ──
-function setPer(p,btn){periodoRep=p;document.querySelectorAll('.pb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');generarReporte();}
-window.setPer=setPer;
-function getFilt(){
-  const g=document.getElementById('filtro-rep-ger')?.value||'';
-  const hoy=hoyLocal(),desde=new Date(hoy.getFullYear(),hoy.getMonth(),hoy.getDate());
-  if(periodoRep==='diario'){}
-  else if(periodoRep==='semanal')desde.setDate(desde.getDate()-7);
-  else if(periodoRep==='quincenal')desde.setDate(desde.getDate()-15);
-  else desde.setDate(desde.getDate()-30);
-  const ds=dateStrLocal(desde),hs=dateStrLocal(hoy);
-  return Object.entries(window.cursosData||{}).filter(([,c])=>c.fin>=ds&&c.inicio<=hs&&(!g||c.gerencia===g));
-}
-function generarReporte(){
-  const f=getFilt();
-  const tc=f.length,th=f.reduce((s,[,c])=>s+(parseInt(c.horas)||0),0);
-  const tp=f.reduce((s,[,c])=>s+(c.participantes_lista?c.participantes_lista.split('\n').filter(Boolean).length:0),0);
-  const gu=new Set(f.map(([,c])=>c.gerencia).filter(Boolean)).size;
-  document.getElementById('rep-stats').innerHTML=`<div class="stat-card"><div class="stat-num">${tc}</div><div class="stat-label">Cursos</div></div><div class="stat-card"><div class="stat-num">${tp}</div><div class="stat-label">Participantes</div></div><div class="stat-card"><div class="stat-num">${th}</div><div class="stat-label">Horas totales</div></div><div class="stat-card"><div class="stat-num">${gu}</div><div class="stat-label">Gerencias</div></div>`;
-  const cg=document.getElementById('charts-grid');cg.style.display=f.length?'grid':'none';if(f.length)renderCharts(f);
-  const wrap=document.getElementById('rep-table');
-  if(!f.length){wrap.innerHTML=`<div class="empty"><i class="ti ti-file-off"></i><p>No hay capacitaciones en este período</p></div>`;return;}
-  wrap.innerHTML=`<p style="font-size:13px;color:var(--muted);margin-bottom:10px">Mostrando ${tc} capacitaci${tc===1?'ón':'ones'}</p><div style="overflow-x:auto"><table class="report-table"><thead><tr><th>Capacitación</th><th>Docente</th><th>Gerencia</th><th>Institución</th><th>Inicio</th><th>Fin</th><th>Hs</th><th>Partic.</th><th>Modalidad</th></tr></thead><tbody>${f.map(([,c])=>`<tr><td>${c.nombre}</td><td>${c.docente||'—'}</td><td>${c.gerencia||'—'}</td><td>${c.institucion||'—'}</td><td>${c.inicio||'—'}</td><td>${c.fin||'—'}</td><td>${c.horas||0}</td><td>${c.participantes_lista?c.participantes_lista.split('\n').filter(Boolean).length:0}</td><td>${c.modalidad||'—'}</td></tr>`).join('')}</tbody></table></div>`;
-}
-window.generarReporte=generarReporte;
+/* FIX D: Abrir formulario de edición */
+function abrirEdicion(){
+  const c = (window._cursos||[]).find(x=>x._key===_detailKey);
+  if(!c) return;
+  _editKey = _detailKey;
 
-function dstr(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
-function renderCharts(f){
-  const CP='#218570',CV='#1a5276',CH='#c0392b';
-  dstr('m');const mc={Presencial:0,Virtual:0,Híbrida:0};f.forEach(([,c])=>{if(mc[c.modalidad]!==undefined)mc[c.modalidad]++;});
-  const ctxM=document.getElementById('ch-modal');if(ctxM)charts['m']=new Chart(ctxM,{type:'pie',data:{labels:Object.keys(mc),datasets:[{data:Object.values(mc),backgroundColor:[CP,CV,CH],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:12},padding:16}}}}});
-  dstr('gh');const hg={};f.forEach(([,c])=>{if(c.gerencia)hg[c.gerencia]=(hg[c.gerencia]||0)+(parseInt(c.horas)||0);});
-  const t5=Object.entries(hg).sort((a,b)=>b[1]-a[1]).slice(0,5);
-  const ctxGH=document.getElementById('ch-ger-h');if(ctxGH)charts['gh']=new Chart(ctxGH,{type:'doughnut',data:{labels:t5.map(([g])=>g.replace('Gerencia de ','').replace('Gerencia ','').substring(0,18)),datasets:[{data:t5.map(([,h])=>h),backgroundColor:EC,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:10}}}}});
-  dstr('t');const hoy=hoyLocal(),ml=[],mc2=[],mh=[];
-  for(let i=5;i>=0;i--){const d=new Date(hoy.getFullYear(),hoy.getMonth()-i,1),y=d.getFullYear(),m=d.getMonth();ml.push(MESES[m].substring(0,3)+' '+y);const ms=Object.values(window.cursosData||{}).filter(c=>{if(!c.inicio)return false;const ci=new Date(c.inicio+'T00:00:00');return ci.getFullYear()===y&&ci.getMonth()===m;});mc2.push(ms.length);mh.push(ms.reduce((s,c)=>s+(parseInt(c.horas)||0),0));}
-  const ctxT=document.getElementById('ch-tend');if(ctxT)charts['t']=new Chart(ctxT,{type:'line',data:{labels:ml,datasets:[{label:'Cursos',data:mc2,borderColor:CP,backgroundColor:CP+'30',tension:.4,fill:true,pointBackgroundColor:CP,pointRadius:5},{label:'Horas (÷10)',data:mh.map(h=>Math.round(h/10)),borderColor:CH,backgroundColor:CH+'20',tension:.4,fill:false,pointBackgroundColor:CH,pointRadius:5,borderDash:[6,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},scales:{y:{beginAtZero:true,grid:{color:'#e4f0ed'},ticks:{stepSize:1}},x:{grid:{color:'#f0f0f0'}}}}});
-  dstr('gc');const cg2={};f.forEach(([,c])=>{if(c.gerencia)cg2[c.gerencia]=(cg2[c.gerencia]||0)+1;});
-  const gs=Object.entries(cg2).sort((a,b)=>b[1]-a[1]).slice(0,7);
-  const ctxGC=document.getElementById('ch-ger-c');if(ctxGC)charts['gc']=new Chart(ctxGC,{type:'bar',data:{labels:gs.map(([g])=>g.replace('Gerencia de ','').replace('Gerencia ','').substring(0,14)+'…'),datasets:[{label:'Cursos',data:gs.map(([,n])=>n),backgroundColor:EC,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1},grid:{color:'#e4f0ed'}},x:{grid:{display:false},ticks:{font:{size:10}}}}}});
-  dstr('pm');const pm={Presencial:0,Virtual:0,Híbrida:0};f.forEach(([,c])=>{const n=c.participantes_lista?c.participantes_lista.split('\n').filter(Boolean).length:0;if(pm[c.modalidad]!==undefined)pm[c.modalidad]+=n;});
-  const ctxPM=document.getElementById('ch-pm');if(ctxPM)charts['pm']=new Chart(ctxPM,{type:'bar',data:{labels:['Participantes'],datasets:[{label:'Presencial',data:[pm.Presencial],backgroundColor:CP,borderRadius:6},{label:'Virtual',data:[pm.Virtual],backgroundColor:CV,borderRadius:6},{label:'Híbrida',data:[pm['Híbrida']||0],backgroundColor:CH,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,grid:{color:'#e4f0ed'}}}}});
-}
-function exportarCSV(){const r=[['Capacitación','Docente','Gerencia','Institución','Inicio','Fin','Horas','Participantes','Modalidad']];getFilt().forEach(([,c])=>r.push([c.nombre||'',c.docente||'',c.gerencia||'',c.institucion||'',c.inicio||'',c.fin||'',c.horas||0,c.participantes_lista?c.participantes_lista.split('\n').filter(Boolean).length:0,c.modalidad||'']));const csv=r.map(row=>row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}));a.download='EPEC_'+new Date().toISOString().split('T')[0]+'.csv';a.click();}
-window.exportarCSV=exportarCSV;
-function exportarPDF(){const lab={diario:'Diario',semanal:'Semanal',quincenal:'Quincenal',mensual:'Mensual'};document.getElementById('print-sub').textContent='Reporte '+lab[periodoRep]+' — '+new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});window.print();}
-window.exportarPDF=exportarPDF;
+  document.getElementById('e-nombre').value  = c.nombre||'';
+  document.getElementById('e-inicio').value  = c.inicio||'';
+  document.getElementById('e-fin').value     = c.fin||'';
+  document.getElementById('e-horas').value   = c.horas||'';
+  document.getElementById('e-modal').value   = c.modalidad||'Presencial';
+  document.getElementById('e-docente').value = c.docente||'';
+  document.getElementById('e-rrhh').value    = c.rrhh||'';
+  document.getElementById('e-inst').value    = c.institucion||'';
+  document.getElementById('e-ger').value     = c.gerencia||'';
+  document.getElementById('e-aula').value    = c.aula||'';
+  document.getElementById('e-cupo').value    = c.cupo||'';
+  document.getElementById('e-partic').value  = c.participantes||'';
+  document.getElementById('e-novedad').value = c.novedades||'';
+  document.getElementById('edit-msg').textContent = '';
 
-// ── AULAS ──
-function renderAulas(){
-  const cont=document.getElementById('aulas-container');
-  cont.innerHTML=AULAS.map(a=>{
-    const ra=Object.values(window.reservasData||{}).filter(r=>r.aulaId===a.id);
-    const hoy=hoyLocal();
-    const slots=['Lun','Mar','Mié','Jue','Vie'].map((d,i)=>{
-      const f=new Date(hoy.getFullYear(),hoy.getMonth(),hoy.getDate()-hoy.getDay()+1+i);
-      const fs=dateStrLocal(f);const oc=ra.some(r=>r.fecha===fs);
-      return `<div class="dia-slot ${oc?'ocupado':'libre'}"><div class="dia">${d}</div><div>${oc?'✕':'✓'}</div></div>`;
-    }).join('');
-    return `<div class="aula-card"><div class="ac-head"><div class="ac-icon"><i class="ti ${a.icono}" style="color:#fff;font-size:20px"></i></div><div><div class="ac-name">${a.nombre}</div><div class="ac-tipo">${a.tipo}</div></div></div>
-    <div class="ac-body"><div class="ac-specs"><div class="ac-spec"><i class="ti ti-users"></i><span>Capacidad: <strong>${a.capacidad} personas</strong></span></div><div class="ac-spec"><i class="ti ti-tool"></i><span style="font-size:11px">${a.equipamiento}</span></div></div>
-    <div class="ac-disp"><label>Disponibilidad esta semana</label><div class="disp-grid">${slots}</div></div>
-    <div class="ac-actions"><button class="btn-res" onclick="abrirReserva('${a.id}','${a.nombre}')"><i class="ti ti-calendar-plus"></i>Reservar</button><button class="btn-vr" onclick="abrirReserva('${a.id}','${a.nombre}')"><i class="ti ti-list"></i></button></div></div></div>`;
+  closeModal('modal-detalle');
+  openModal('modal-edicion');
+}
+
+/* FIX D: Guardar edición */
+function guardarEdicion(){
+  const nombre = document.getElementById('e-nombre').value.trim();
+  const inicio = document.getElementById('e-inicio').value;
+  const fin    = document.getElementById('e-fin').value;
+  const msg    = document.getElementById('edit-msg');
+
+  if(!nombre||!inicio||!fin){
+    msg.style.color='var(--accent)';
+    msg.textContent='⚠ Nombre y fechas son obligatorios';
+    return;
+  }
+  if(fin < inicio){
+    msg.style.color='var(--accent)';
+    msg.textContent='⚠ La fecha de fin no puede ser anterior al inicio';
+    return;
+  }
+
+  const datos = {
+    nombre,inicio,fin,
+    horas:    parseInt(document.getElementById('e-horas').value)||0,
+    modalidad:document.getElementById('e-modal').value,
+    docente:  document.getElementById('e-docente').value.trim(),
+    rrhh:     document.getElementById('e-rrhh').value.trim(),
+    institucion:document.getElementById('e-inst').value.trim(),
+    gerencia: document.getElementById('e-ger').value,
+    aula:     document.getElementById('e-aula').value,
+    cupo:     parseInt(document.getElementById('e-cupo').value)||0,
+    participantes:document.getElementById('e-partic').value,
+    novedades:document.getElementById('e-novedad').value.trim(),
+  };
+
+  if(typeof window.fbUpdate==='function'){
+    window.fbUpdate(_editKey, datos).then(()=>{
+      showToast('✓ Curso actualizado correctamente');
+      closeModal('modal-edicion');
+    }).catch(()=>{
+      msg.style.color='var(--accent)';
+      msg.textContent='⚠ Error al guardar. Verificá la conexión.';
+    });
+  } else {
+    const c = window._cursos.find(x=>x._key===_editKey);
+    if(c) Object.assign(c, datos);
+    renderCalendario(); filterCursos();
+    showToast('✓ Curso actualizado (modo local)');
+    closeModal('modal-edicion');
+  }
+}
+
+/* FIX D: Eliminar curso */
+function eliminarCurso(){
+  if(!confirm('¿Eliminar este curso? Esta acción no se puede deshacer.')) return;
+  if(typeof window.fbRemove==='function'){
+    window.fbRemove(_detailKey).then(()=>{
+      showToast('Curso eliminado');
+      closeModal('modal-detalle');
+    });
+  } else {
+    window._cursos = window._cursos.filter(x=>x._key!==_detailKey);
+    renderCalendario(); filterCursos();
+    showToast('Curso eliminado (modo local)');
+    closeModal('modal-detalle');
+  }
+}
+
+/* Novedades */
+function addNovedad(){
+  const inp = document.getElementById('nov-input');
+  const val = inp.value.trim();
+  if(!val) return;
+  const c = (window._cursos||[]).find(x=>x._key===_detailKey);
+  if(!c) return;
+  const ts = new Date().toLocaleString('es-AR',{dateStyle:'short',timeStyle:'short'});
+  const updated = (c.novedades?c.novedades+'\n':'') + `[${ts}] ${val}`;
+  inp.value='';
+  if(typeof window.fbUpdate==='function'){
+    window.fbUpdate(_detailKey,{novedades:updated});
+  } else {
+    c.novedades = updated;
+    abrirDetalle(_detailKey);
+  }
+}
+
+/* ══════════════════════════════════════
+   LISTA DE CURSOS
+══════════════════════════════════════ */
+function filterCursos(){
+  const q   = (document.getElementById('search-q')?.value||'').toLowerCase();
+  const mod = document.getElementById('filter-mod')?.value||'';
+  const ger = document.getElementById('filter-ger')?.value||'';
+
+  const filtered = (window._cursos||[]).filter(c=>{
+    const m = [c.nombre,c.docente,c.gerencia,c.institucion,c.rrhh].some(f=>(f||'').toLowerCase().includes(q));
+    return m && (!mod||c.modalidad===mod) && (!ger||c.gerencia===ger);
+  });
+
+  const el = document.getElementById('lista-cursos');
+  if(!filtered.length){
+    el.innerHTML=`<div class="empty"><i class="ti ti-mood-empty"></i>No se encontraron cursos</div>`;
+    return;
+  }
+  el.innerHTML = filtered.map(c=>{
+    const mod = (c.modalidad||'presencial').toLowerCase().replace('í','i');
+    const p   = parsePartic(c.participantes).length;
+    return `<div class="curso-card ${mod}" onclick="abrirDetalle('${c._key}')">
+      <div class="curso-card-header">
+        <div class="curso-name">${esc(c.nombre)}</div>
+        <span class="badge ${mod}">${esc(c.modalidad)}</span>
+      </div>
+      <div class="curso-meta">
+        <span><i class="ti ti-user"></i>${esc(c.docente)}</span>
+        <span><i class="ti ti-building"></i>${esc(c.institucion||'—')}</span>
+        <span><i class="ti ti-sitemap"></i>${esc(c.gerencia)}</span>
+        <span><i class="ti ti-calendar"></i>${esc(c.inicio)} → ${esc(c.fin)}</span>
+        <span><i class="ti ti-clock"></i>${c.horas||0} hs</span>
+        <span><i class="ti ti-users"></i>${p} participante${p!==1?'s':''}</span>
+        ${c.aula?`<span><i class="ti ti-door"></i>${esc(c.aula)}</span>`:''}
+        ${c.rrhh?`<span><i class="ti ti-id-badge"></i>RR.HH.: ${esc(c.rrhh)}</span>`:''}
+      </div>
+    </div>`;
   }).join('');
 }
 
-// ── RESERVA MÚLTIPLES MÓDULOS ──
-function abrirReserva(aulaId,nombre){
-  aulaSel=aulaId;modulosSeleccionados=[];
-  document.getElementById('res-titulo').textContent='Reservar — '+nombre;
-  document.getElementById('res-fecha').value=dateStrLocal(hoyLocal());
-  document.getElementById('res-gerencia').value='';
-  document.getElementById('res-resp').value='';document.getElementById('res-cap').value='';document.getElementById('res-obs').value='';
-  document.querySelectorAll('.modulo-btn').forEach(b=>b.classList.remove('sel'));
-  document.getElementById('res-resumen').classList.remove('visible');
-  renderResAula(aulaId);
-  document.getElementById('modal-reserva').classList.add('open');
-}
-window.abrirReserva=abrirReserva;
+/* ══════════════════════════════════════
+   GUARDAR NUEVO CURSO
+══════════════════════════════════════ */
+function guardarCurso(){
+  const g = id => document.getElementById(id)?.value.trim();
+  const nombre = g('n-nombre'), inicio = g('n-inicio'),
+        fin = g('n-fin'), docente = g('n-docente'), gerencia = g('n-ger');
+  const msg = document.getElementById('form-msg');
 
-function toggleModulo(btn,horario){
-  const idx=modulosSeleccionados.indexOf(horario);
-  // Día completo es exclusivo
-  if(horario==='08:00-17:00'){
-    if(idx>=0){modulosSeleccionados=[];btn.classList.remove('sel');}
-    else{modulosSeleccionados=['08:00-17:00'];document.querySelectorAll('.modulo-btn').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');}
+  if(!nombre||!inicio||!fin||!docente||!gerencia){
+    msg.style.color='var(--accent)';
+    msg.textContent='⚠ Completá los campos obligatorios (*)';
+    return;
+  }
+  if(fin < inicio){ msg.style.color='var(--accent)'; msg.textContent='⚠ Fecha fin anterior al inicio'; return; }
+
+  const curso = {
+    nombre, inicio, fin,
+    horas:        parseInt(g('n-horas'))||0,
+    modalidad:    document.getElementById('n-modal').value,
+    docente,rrhh: g('n-rrhh'),
+    institucion:  g('n-inst'),
+    gerencia,
+    aula:         document.getElementById('n-aula').value,
+    cupo:         parseInt(g('n-cupo'))||0,
+    participantes:g('n-partic'),
+    novedades:    g('n-novedad'),
+    creadoEn:     new Date().toISOString(),
+  };
+
+  if(typeof window.fbPush==='function'){
+    window.fbPush(curso).then(()=>{
+      msg.style.color='var(--primary)';
+      msg.textContent='✓ Curso guardado y visible para todos';
+      limpiarFormulario();
+      setTimeout(()=>msg.textContent='',3000);
+    }).catch(()=>{
+      msg.style.color='var(--accent)';
+      msg.textContent='⚠ Error al guardar. Verificá Firebase.';
+    });
   } else {
-    // Deseleccionar día completo si estaba
-    if(modulosSeleccionados.includes('08:00-17:00')){
-      modulosSeleccionados=[];document.querySelectorAll('.modulo-btn').forEach(b=>b.classList.remove('sel'));
-    }
-    if(idx>=0){modulosSeleccionados.splice(idx,1);btn.classList.remove('sel');}
-    else if(modulosSeleccionados.length<3){modulosSeleccionados.push(horario);btn.classList.add('sel');}
-    else{toast('Podés seleccionar hasta 3 módulos','error');return;}
+    window._cursos.push({...curso,_key:'local_'+Date.now()});
+    renderCalendario(); filterCursos();
+    msg.style.color='var(--primary)';
+    msg.textContent='✓ Guardado localmente';
+    limpiarFormulario();
+    setTimeout(()=>msg.textContent='',3000);
   }
-  actualizarResumen();
 }
-window.toggleModulo=toggleModulo;
 
-function actualizarResumen(){
-  const res=document.getElementById('res-resumen');
-  if(!modulosSeleccionados.length){res.classList.remove('visible');return;}
-  if(modulosSeleccionados[0]==='08:00-17:00'){res.textContent='✓ Reserva: Día completo (08:00 – 17:00)';}
-  else{
-    const horas=modulosSeleccionados.map(m=>m.split('-'));
-    const inicio=horas[0][0];const fin=horas[horas.length-1][1];
-    res.textContent=`✓ ${modulosSeleccionados.length} módulo${modulosSeleccionados.length>1?'s':''} seleccionado${modulosSeleccionados.length>1?'s':''}: ${inicio} – ${fin}`;
-  }
-  res.classList.add('visible');
+function limpiarFormulario(){
+  ['n-nombre','n-inicio','n-fin','n-horas','n-docente','n-rrhh','n-inst','n-partic','n-novedad']
+    .forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('n-ger').value='';
+  document.getElementById('n-aula').value='';
 }
+
+/* ══════════════════════════════════════
+   REPORTES CON GRÁFICOS
+══════════════════════════════════════ */
+function setPeriod(p, btn){
+  _period = p;
+  document.querySelectorAll('.pb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderReporte();
+}
+
+function getRange(){
+  const hoy = new Date();
+  const ini = new Date(hoy);
+  if(_period==='diario') ini.setHours(0,0,0,0);
+  else if(_period==='semanal') ini.setDate(hoy.getDate()-hoy.getDay());
+  else if(_period==='quincenal') ini.setDate(hoy.getDate()-14);
+  else { ini.setDate(1); ini.setHours(0,0,0,0); }
+  const fin = new Date(hoy.getFullYear(), hoy.getMonth()+3, 0);
+  return {ini:toDateStr(ini), fin:toDateStr(fin)};
+}
+
+function renderReporte(){
+  const {ini,fin} = getRange();
+  const ger = document.getElementById('rep-ger')?.value||'';
+  const filtered = (window._cursos||[]).filter(c=>c.fin>=ini&&c.inicio<=fin&&(!ger||c.gerencia===ger));
+
+  const totalP  = filtered.reduce((s,c)=>s+parsePartic(c.participantes).length,0);
+  const totalHs = filtered.reduce((s,c)=>s+(parseInt(c.horas)||0),0);
+  const totalHxP= filtered.reduce((s,c)=>s+(parseInt(c.horas)||0)*parsePartic(c.participantes).length,0);
+
+  document.getElementById('rep-stats').innerHTML = [
+    ['Cursos',filtered.length,'ti-book'],
+    ['Participantes',totalP,'ti-users'],
+    ['Horas totales',totalHs,'ti-clock'],
+    ['Horas × Partic.',totalHxP,'ti-calculator'],
+  ].map(([l,n,i])=>`<div class="stat-card">
+    <div style="font-size:22px;color:var(--primary);margin-bottom:4px"><i class="ti ${i}"></i></div>
+    <div class="stat-num">${n}</div><div class="stat-label">${l}</div>
+  </div>`).join('');
+
+  const labels = {diario:'del día',semanal:'esta semana',quincenal:'últimas 2 semanas',mensual:'este mes'};
+  document.getElementById('rep-title').textContent =
+    `${filtered.length} capacitación${filtered.length!==1?'es':''} ${labels[_period]}${ger?' · '+ger:''}`;
+
+  document.getElementById('rep-body').innerHTML = filtered.length
+    ? filtered.map(c=>{
+        const p   = parsePartic(c.participantes).length;
+        const hxp = (parseInt(c.horas)||0)*p;
+        const mod = (c.modalidad||'').toLowerCase().replace('í','i');
+        return `<tr>
+          <td>${esc(c.nombre)}</td><td>${esc(c.docente)}</td>
+          <td>${esc(c.gerencia)}</td>
+          <td><span class="badge ${mod}">${esc(c.modalidad)}</span></td>
+          <td>${esc(c.inicio)}</td><td>${esc(c.fin)}</td>
+          <td>${c.horas||0}</td><td>${p}</td><td><strong>${hxp}</strong></td>
+        </tr>`;
+      }).join('')
+    : `<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:2rem">Sin capacitaciones en este período</td></tr>`;
+
+  renderCharts(filtered);
+}
+
+function renderCharts(data){
+  // Destruir anteriores
+  [chartModal, chartGer, chartPartic].forEach(c=>{ if(c) c.destroy(); });
+
+  const modCount = {};
+  data.forEach(c=>{ modCount[c.modalidad]=(modCount[c.modalidad]||0)+1; });
+
+  const gerHs = {};
+  data.forEach(c=>{ gerHs[c.gerencia]=(gerHs[c.gerencia]||0)+(parseInt(c.horas)||0); });
+
+  const opts = { responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{ labels:{ font:{family:'Inter',size:11}, boxWidth:12 } } } };
+
+  chartModal = new Chart(document.getElementById('chart-modal'), {
+    type:'doughnut',
+    data:{ labels:Object.keys(modCount),
+      datasets:[{ data:Object.values(modCount),
+        backgroundColor:['#218570','#1a5276','#c0392b'],borderWidth:0 }] },
+    options:{...opts}
+  });
+
+  chartGer = new Chart(document.getElementById('chart-ger'), {
+    type:'bar',
+    data:{ labels:Object.keys(gerHs),
+      datasets:[{ label:'Horas', data:Object.values(gerHs),
+        backgroundColor:'#218570',borderRadius:5 }] },
+    options:{...opts, scales:{ y:{beginAtZero:true}, x:{ticks:{font:{size:10}}} },
+      plugins:{...opts.plugins, legend:{display:false}} }
+  });
+
+  const names = data.map(c=>c.nombre.length>25?c.nombre.slice(0,25)+'…':c.nombre);
+  const parts = data.map(c=>parsePartic(c.participantes).length);
+  chartPartic = new Chart(document.getElementById('chart-partic'), {
+    type:'bar',
+    data:{ labels:names,
+      datasets:[{ label:'Participantes', data:parts,
+        backgroundColor:'#175d4e',borderRadius:5 }] },
+    options:{...opts, indexAxis:'y',
+      scales:{ x:{beginAtZero:true}, y:{ticks:{font:{size:10}}} },
+      plugins:{...opts.plugins, legend:{display:false}} }
+  });
+}
+
+function exportCSV(){
+  const {ini,fin} = getRange();
+  const ger = document.getElementById('rep-ger')?.value||'';
+  const data = (window._cursos||[]).filter(c=>c.fin>=ini&&c.inicio<=fin&&(!ger||c.gerencia===ger));
+  const header = ['Capacitacion','Docente','Rrhh','Institucion','Gerencia','Modalidad','Inicio','Fin','Horas','Cupo','Participantes','Hs×Partic','Novedades'];
+  const rows = data.map(c=>{
+    const p=parsePartic(c.participantes);
+    return [c.nombre,c.docente,c.rrhh||'',c.institucion,c.gerencia,c.modalidad,
+      c.inicio,c.fin,c.horas||0,c.cupo||0,p.join(' | '),
+      (parseInt(c.horas)||0)*p.length,(c.novedades||'').replace(/\n/g,' | ')
+    ].map(v=>`"${String(v).replace(/"/g,"'")}"`)
+  });
+  const csv = [header,...rows].map(r=>r.join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'}));
+  a.download = `EPEC_Reporte_${_period}_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+function exportPDF(){
+  // ── 1. Capturar los canvas ANTES de abrir la ventana nueva ──
+  //    Chart.js dibuja sobre <canvas>; toDataURL() los convierte a imagen PNG
+  //    Si el gráfico aún no existe (período sin datos) usamos string vacío
+  function canvasImg(id){
+    try{
+      const c = document.getElementById(id);
+      if(!c) return '';
+      return c.toDataURL('image/png');
+    }catch(e){ return ''; }
+  }
+  const imgModal  = canvasImg('chart-modal');   // dona: cursos por modalidad
+  const imgGer    = canvasImg('chart-ger');     // barras: horas por gerencia
+  const imgPartic = canvasImg('chart-partic');  // barras horiz: participantes
+
+  // ── 2. Datos del reporte ──
+  const {ini,fin} = getRange();
+  const ger  = document.getElementById('rep-ger')?.value||'';
+  const data = (window._cursos||[]).filter(c=>c.fin>=ini&&c.inicio<=fin&&(!ger||c.gerencia===ger));
+  const LABELS_PERIOD = {diario:'del día de hoy',semanal:'de esta semana',quincenal:'de las últimas 2 semanas',mensual:'del mes en curso'};
+  const totalP   = data.reduce((s,c)=>s+parsePartic(c.participantes).length,0);
+  const totalHs  = data.reduce((s,c)=>s+(parseInt(c.horas)||0),0);
+  const totalHxP = data.reduce((s,c)=>s+(parseInt(c.horas)||0)*parsePartic(c.participantes).length,0);
+  const fecha    = new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
+  const periodo  = LABELS_PERIOD[_period]||_period;
+
+  // ── 3. Filas de la tabla detalle ──
+  const filas = data.length ? data.map(c=>{
+    const p   = parsePartic(c.participantes).length;
+    const hxp = (parseInt(c.horas)||0)*p;
+    const modColor = c.modalidad==='Presencial'?'#d0ede8':c.modalidad==='Virtual'?'#d6e4f0':'#fde8e6';
+    const modText  = c.modalidad==='Presencial'?'#0d5e4f':c.modalidad==='Virtual'?'#0a3d62':'#922b21';
+    return `<tr>
+      <td style="font-weight:600">${esc(c.nombre)}</td>
+      <td>${esc(c.docente||'—')}</td>
+      <td>${esc(c.gerencia||'—')}</td>
+      <td><span style="background:${modColor};color:${modText};padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700">${esc(c.modalidad)}</span></td>
+      <td style="text-align:center">${esc(c.inicio)}</td>
+      <td style="text-align:center">${esc(c.fin)}</td>
+      <td style="text-align:center;font-weight:600">${c.horas||0}</td>
+      <td style="text-align:center">${p}</td>
+      <td style="text-align:center;font-weight:700;color:#218570">${hxp}</td>
+    </tr>`;
+  }).join('') : `<tr><td colspan="9" style="text-align:center;padding:20px;color:#5a7a74;font-style:italic">Sin capacitaciones en este período</td></tr>`;
+
+  // ── 4. Sección de gráficos — solo si hay imagen capturada ──
+  const secModal  = imgModal  ? `<div class="chart-box"><div class="chart-title">📊 Cursos por modalidad</div><img src="${imgModal}"  style="max-height:220px;display:block;margin:0 auto"/></div>` : '';
+  const secGer    = imgGer    ? `<div class="chart-box"><div class="chart-title">📊 Horas por gerencia</div><img src="${imgGer}"    style="width:100%;max-height:220px"/></div>` : '';
+  const secPartic = imgPartic ? `<div class="chart-box full"><div class="chart-title">📊 Participantes por curso</div><img src="${imgPartic}" style="width:100%;max-height:260px"/></div>` : '';
+
+  // ── 5. HTML completo del PDF ──
+  const html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<title>EPEC · Reporte ${periodo}</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#1a2e28;background:#fff;padding:18px 22px}
+
+  /* ENCABEZADO */
+  .rpt-header{background:#218570;color:#fff;padding:14px 18px;border-radius:8px;
+    margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+  .rpt-header h1{font-size:15px;font-weight:700;margin-bottom:3px}
+  .rpt-header p{font-size:10px;opacity:.85}
+  .rpt-logo{width:40px;height:40px;background:#fff;border-radius:8px;display:flex;
+    align-items:center;justify-content:center;font-size:20px;font-weight:900;
+    color:#218570;font-style:italic;flex-shrink:0}
+
+  /* ESTADÍSTICAS */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+  .stat{background:#e4f0ed;border:1px solid #cfe0db;border-radius:7px;padding:10px 8px;
+    text-align:center;border-top:3px solid #218570}
+  .stat-icon{font-size:16px;margin-bottom:4px}
+  .stat-num{font-size:22px;font-weight:800;color:#218570;line-height:1}
+  .stat-lbl{font-size:9px;color:#5a7a74;margin-top:3px;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+
+  /* GRÁFICOS */
+  .charts-wrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+  .chart-box{background:#f8fcfb;border:1px solid #cfe0db;border-radius:7px;padding:10px 12px}
+  .chart-box.full{grid-column:1/-1}
+  .chart-title{font-size:11px;font-weight:700;color:#218570;margin-bottom:8px}
+
+  /* TABLA */
+  .section-title{font-size:12px;font-weight:700;color:#218570;margin-bottom:8px;
+    padding-bottom:5px;border-bottom:2px solid #218570;text-transform:uppercase;letter-spacing:.5px}
+  table{width:100%;border-collapse:collapse;font-size:10px}
+  thead th{background:#218570;color:#fff;padding:7px 8px;text-align:left;
+    font-size:9px;text-transform:uppercase;letter-spacing:.4px;font-weight:700}
+  tbody td{padding:6px 8px;border-bottom:1px solid #cfe0db;vertical-align:middle}
+  tbody tr:nth-child(even) td{background:#f0f5f3}
+  tbody tr:hover td{background:#e4f0ed}
+
+  /* PIE */
+  .rpt-footer{margin-top:12px;padding-top:8px;border-top:1px solid #cfe0db;
+    display:flex;justify-content:space-between;font-size:9px;color:#5a7a74}
+
+  @media print{
+    body{padding:8px 12px}
+    @page{margin:10mm;size:A4 landscape}
+  }
+</style>
+</head>
+<body>
+
+<!-- ENCABEZADO -->
+<div class="rpt-header">
+  <div>
+    <h1>EPEC SAU · Centro de Formación Profesional</h1>
+    <p>Reporte de Capacitaciones — ${periodo.charAt(0).toUpperCase()+periodo.slice(1)}${ger?' · '+esc(ger):''} · Generado el ${fecha}</p>
+  </div>
+  <div class="rpt-logo">E</div>
+</div>
+
+<!-- ESTADÍSTICAS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-icon">📚</div>
+    <div class="stat-num">${data.length}</div>
+    <div class="stat-lbl">Cursos</div>
+  </div>
+  <div class="stat">
+    <div class="stat-icon">👥</div>
+    <div class="stat-num">${totalP}</div>
+    <div class="stat-lbl">Participantes</div>
+  </div>
+  <div class="stat">
+    <div class="stat-icon">⏱</div>
+    <div class="stat-num">${totalHs}</div>
+    <div class="stat-lbl">Horas totales</div>
+  </div>
+  <div class="stat">
+    <div class="stat-icon">🧮</div>
+    <div class="stat-num">${totalHxP}</div>
+    <div class="stat-lbl">Horas × Partic.</div>
+  </div>
+</div>
+
+<!-- GRÁFICOS (capturados como imagen desde los canvas) -->
+${(secModal||secGer||secPartic) ? `
+<div class="charts-wrap">
+  ${secModal}
+  ${secGer}
+  ${secPartic}
+</div>` : ''}
+
+<!-- TABLA DETALLE -->
+<div class="section-title">Detalle de capacitaciones</div>
+<table>
+  <thead>
+    <tr>
+      <th style="width:22%">Capacitación</th>
+      <th style="width:13%">Docente</th>
+      <th style="width:17%">Gerencia</th>
+      <th style="width:9%">Modalidad</th>
+      <th style="width:8%">Inicio</th>
+      <th style="width:8%">Fin</th>
+      <th style="width:5%;text-align:center">Hs</th>
+      <th style="width:7%;text-align:center">Partic.</th>
+      <th style="width:7%;text-align:center">Hs×P</th>
+    </tr>
+  </thead>
+  <tbody>${filas}</tbody>
+</table>
+
+<!-- PIE DE PÁGINA -->
+<div class="rpt-footer">
+  <span>EPEC SAU · Centro de Formación Profesional</span>
+  <span>Reporte ${periodo} · ${fecha}</span>
+</div>
+
+<script>
+  // Esperar a que las imágenes carguen completamente antes de imprimir
+  window.addEventListener('load', function(){
+    setTimeout(function(){ window.print(); }, 600);
+  });
+<\/script>
+</body>
+</html>`;
+
+  // ── 6. Abrir ventana e insertar el HTML ──
+  const win = window.open('', '_blank', 'width=1100,height=750');
+  if(!win){ alert('Por favor permitir ventanas emergentes para exportar el PDF'); return; }
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
+}
+
+/* ══════════════════════════════════════
+   AULAS
+══════════════════════════════════════ */
+const AULAS_DEF = [
+  {nombre:'Aula 15',tipo:'Aula teórica',cap:20,proyector:true,ac:true,pc:false,smarttv:false,
+   icon:'ti-school'},
+  {nombre:'Aula 16',tipo:'Aula teórica',cap:8,proyector:true,ac:true,pc:false,smarttv:false,
+   icon:'ti-school'},
+  {nombre:'Aula 17',tipo:'Aula teórica',cap:20,proyector:true,ac:true,pc:false,smarttv:false,
+   icon:'ti-school'},
+  {nombre:'Aula Magna',tipo:'Auditorio',cap:40,proyector:true,ac:true,pc:false,smarttv:false,
+   icon:'ti-building'},
+  {nombre:'Laboratorio 1',tipo:'Laboratorio de informática',cap:20,proyector:true,ac:true,pc:true,smarttv:false,
+   icon:'ti-device-desktop'},
+  {nombre:'Laboratorio 2',tipo:'Laboratorio de informática',cap:20,proyector:true,ac:true,pc:true,smarttv:false,
+   icon:'ti-device-desktop'},
+  {nombre:'Sala de Reunión',tipo:'Sala de reuniones',cap:10,proyector:false,ac:true,pc:false,smarttv:true,
+   icon:'ti-users'},
+  {nombre:'Aula Informática',tipo:'Laboratorio de informática',cap:18,proyector:true,ac:true,pc:true,smarttv:false,
+   icon:'ti-device-desktop'},
+];
+
+function renderAulas(){
+  // FIX C: solo Lun-Vie en disponibilidad
+  document.getElementById('aulas-grid').innerHTML = AULAS_DEF.map(a=>{
+    // Ver si algún curso ocupa el aula esta semana
+    const diasSemana = getDiasLaborablesDelRango(new Date());
+    const disponibilidad = diasSemana.map(dia=>{
+      const ds = toDateStr(dia);
+      const ocupada = (window._cursos||[]).some(c=>
+        c.aula===a.nombre && c.inicio<=ds && c.fin>=ds
+      );
+      return `<div class="dia-slot ${ocupada?'ocupado':'libre'}">
+        <div class="dia">${DIAS_LAB[dia.getDay()-1]}</div>
+        <div>${ocupada?'Ocup.':'Libre'}</div>
+      </div>`;
+    }).join('');
+
+    return `<div class="aula-card">
+      <div class="ac-head">
+        <div class="ac-icon"><i class="ti ${a.icon}"></i></div>
+        <div><div class="ac-name">${a.nombre}</div><div class="ac-tipo">${a.tipo}</div></div>
+      </div>
+      <div class="ac-body">
+        <div class="ac-specs">
+          <div class="ac-spec"><i class="ti ti-users"></i><span>Capacidad: <strong>${a.cap} personas</strong></span></div>
+          <div class="ac-spec"><i class="ti ti-device-tv"></i><span>Proyector: <strong>${a.proyector?'Sí':'No'}</strong></span></div>
+          <div class="ac-spec"><i class="ti ti-wind"></i><span>A/C: <strong>${a.ac?'Sí':'No'}</strong></span></div>
+          <div class="ac-spec"><i class="ti ti-device-desktop"></i><span>PCs: <strong>${a.pc?'Sí':'No'}</strong></span></div>
+          ${a.smarttv?`<div class="ac-spec"><i class="ti ti-device-tv" style="color:#1a5276"></i><span>Smart TV: <strong style="color:#1a5276">Sí</strong></span></div>`:''}
+        </div>
+        <div class="ac-disp">
+          <label>Disponibilidad semana actual (Lun–Vie)</label>
+          <div class="disp-grid">${disponibilidad}</div>
+        </div>
+        <div class="ac-actions">
+          <button class="btn-res" onclick="abrirReserva('${a.nombre}')">
+            <i class="ti ti-calendar-plus"></i> Reservar
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function abrirReserva(nombre){
+  _reservaAula = nombre;
+  document.getElementById('res-aula-nombre').textContent = 'Reservar: '+nombre;
+  openModal('modal-reserva');
+}
+
+function toggleDia(btn){ btn.classList.toggle('sel'); }
 
 function confirmarReserva(){
-  const fecha=document.getElementById('res-fecha').value;
-  const ger=document.getElementById('res-gerencia').value;
-  const resp=document.getElementById('res-resp').value.trim();
-  if(!fecha||!ger||!resp||!modulosSeleccionados.length){toast('Completá fecha, gerencia, responsable y al menos un módulo horario','error');return;}
-  const horarioStr=modulosSeleccionados.join(' | ');
-  window.push(window.reservasRef,{aulaId:aulaSel,fecha,horario:horarioStr,modulos:modulosSeleccionados,gerencia:ger,responsable:resp,capacitacion:document.getElementById('res-cap').value.trim(),observaciones:document.getElementById('res-obs').value.trim(),creada:new Date().toISOString()})
-    .then(()=>{toast('Reserva confirmada');renderAulas();renderResAula(aulaSel);}).catch(()=>toast('Error al guardar','error'));
+  const curso = document.getElementById('res-curso').value.trim();
+  const inicio = document.getElementById('res-inicio').value;
+  const fin = document.getElementById('res-fin').value;
+  if(!curso||!inicio||!fin){ showToast('⚠ Completá curso y fechas','error'); return; }
+
+  const nuevoReg = {
+    nombre: curso,
+    docente: document.getElementById('res-resp').value.trim()||'—',
+    inicio, fin,
+    aula: _reservaAula,
+    modalidad:'Presencial',gerencia:'',horas:0,
+    participantes:'',novedades:'Reserva de aula',
+    creadoEn: new Date().toISOString(),
+  };
+
+  if(typeof window.fbPush==='function'){
+    window.fbPush(nuevoReg).then(()=>{
+      showToast('✓ Reserva confirmada');
+      closeModal('modal-reserva');
+    });
+  } else {
+    window._cursos.push({...nuevoReg,_key:'res_'+Date.now()});
+    renderAulas(); renderCalendario();
+    showToast('✓ Reserva confirmada (local)');
+    closeModal('modal-reserva');
+  }
 }
-window.confirmarReserva=confirmarReserva;
 
-function renderResAula(aulaId){
-  const id=aulaId||aulaSel;if(!id)return;
-  const rs=Object.entries(window.reservasData||{}).filter(([,r])=>r.aulaId===id).sort((a,b)=>a[1].fecha>b[1].fecha?1:-1);
-  const c=document.getElementById('res-del-aula');if(!c)return;
-  c.innerHTML=rs.length?rs.map(([rid,r])=>`<div class="res-item"><div><strong>${r.fecha} · ${r.horario||''}</strong>${r.gerencia||''} — ${r.responsable||''}${r.capacitacion?' · '+r.capacitacion:''}</div><button class="btn-d" style="padding:4px 10px;font-size:11px" onclick="cancelarRes('${rid}')"><i class="ti ti-trash"></i></button></div>`).join(''):`<p style="font-size:12px;color:var(--muted)">No hay reservas para esta aula.</p>`;
+/* ══════════════════════════════════════
+   UTILIDADES
+══════════════════════════════════════ */
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+function showToast(msg, tipo=''){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + tipo;
+  setTimeout(()=>t.classList.remove('show'),3000);
 }
-window.renderResAula=renderResAula;
 
-function cancelarRes(id){if(!confirm('¿Cancelar esta reserva?'))return;window.remove(window.ref(window.db,'reservas/'+id)).then(()=>{toast('Reserva cancelada');renderResAula(aulaSel);renderAulas();});}
-window.cancelarRes=cancelarRes;
+function parsePartic(raw){
+  if(!raw) return [];
+  return raw.split(/[,\n]/).map(p=>p.trim()).filter(Boolean);
+}
 
-// INIT
-renderCal();generarReporte();
+function toDateStr(d){
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function esc(s){
+  return String(s||'')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Cerrar modales al hacer clic fuera
+document.querySelectorAll('.overlay').forEach(o=>{
+  o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('open'); });
+});
+
+// Contador de usuarios (simulado)
+const userNums=[2,3,4,3,2,3,5,4,3];
+let ui=0;
+setInterval(()=>{
+  const n=userNums[ui%userNums.length]; ui++;
+  document.getElementById('user-count').textContent=`${n} usuario${n>1?'s':''} conectado${n>1?'s':''}`;
+},10000);
+
+// Init
+renderCalendario();
 </script>
+
 
 
 </body></html>
