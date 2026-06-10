@@ -545,6 +545,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
           <option>Laboratorio 2</option>
           <option>Sala de Reunión (10 personas)</option>
           <option>Aula Informática (18 personas)</option>
+          <option>Aula Externa</option>
+          <option>Aula Virtual / Híbrida</option>
         </select>
       </div>
       <div class="fg"><label>Cupo máximo</label><input type="number" id="n-cupo" min="1" placeholder="Ej: 20"/></div>
@@ -728,6 +730,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
           <option>Laboratorio 2</option>
           <option>Sala de Reunión (10 personas)</option>
           <option>Aula Informática (18 personas)</option>
+          <option>Aula Externa</option>
+          <option>Aula Virtual / Híbrida</option>
         </select>
       </div>
       <div class="fg"><label>Cupo máximo</label><input type="number" id="e-cupo" min="1"/></div>
@@ -918,7 +922,7 @@ function imprimirCalendario(){
     const cursosVistos = new Map();
     dias.forEach(dia=>{
       const ds = toDateStr(dia);
-      (window._cursos||[]).filter(c=> ds >= c.inicio && ds <= c.fin && esLaborable(dia))
+      (window._cursos||[]).filter(c=> c.tipo==='reserva' && ds >= c.inicio && ds <= c.fin && esLaborable(dia))
         .forEach(c=>{ if(!cursosVistos.has(c._key)) cursosVistos.set(c._key, c); });
     });
 
@@ -982,7 +986,7 @@ function imprimirCalendario(){
         const otroMes = fecha2.getMonth() !== m;
         const isHoy   = fecha2.toDateString() === new Date().toDateString();
         const ds = toDateStr(fecha2);
-        const evts = (window._cursos||[]).filter(c=> !otroMes && ds >= c.inicio && ds <= c.fin);
+        const evts = (window._cursos||[]).filter(c=> c.tipo==='reserva' && !otroMes && ds >= c.inicio && ds <= c.fin);
         if(!otroMes) tieneContenido = true;
 
         const evtsHTML = evts.slice(0,3).map(c=>{
@@ -1175,13 +1179,12 @@ function renderSemana(container){
         onmouseleave="this.style.background='transparent'"></div>`;
     });
 
-    // FIX 2: el evento aparece SOLO en los días laborables que están
-    // dentro del rango exacto inicio→fin del curso.
-    // Ejemplo: curso Lun 8 Jun → Jue 11 Jun NO aparece el Vie 12 Jun
+    // FIX 1+4: el calendario SOLO muestra reservas de aula (tipo='reserva')
+    // Los cursos cargados en "Nuevo curso" (tipo='curso') NO aparecen acá
     const ds = toDateStr(dia);
     const evts = (window._cursos||[]).filter(c=>{
       if(!c.inicio || !c.fin) return false;
-      // Comparación de strings YYYY-MM-DD funciona correctamente
+      if(c.tipo !== 'reserva') return false;  // solo reservas de aula
       return ds >= c.inicio && ds <= c.fin && esLaborable(dia);
     });
     evts.forEach((c,ci)=>{
@@ -1241,9 +1244,10 @@ function renderMes(container){
       const otroMes = fecha.getMonth() !== m;
       const isHoy = fecha.toDateString()===hoy.toDateString();
       const ds = toDateStr(fecha);
-      // FIX 2: solo mostrar evento si la fecha exacta cae dentro del rango inicio→fin
+      // FIX 1+4: solo reservas de aula aparecen en el calendario mensual
       const evts = (window._cursos||[]).filter(c=>{
         if(!c.inicio || !c.fin) return false;
+        if(c.tipo !== 'reserva') return false;
         return ds >= c.inicio && ds <= c.fin;
       });
 
@@ -1481,6 +1485,7 @@ function guardarCurso(){
     cupo:         parseInt(g('n-cupo'))||0,
     participantes:g('n-partic'),
     novedades:    g('n-novedad'),
+    tipo:         'curso',   // FIX 4: cursos NO aparecen en el calendario
     creadoEn:     new Date().toISOString(),
   };
 
@@ -1843,6 +1848,10 @@ const AULAS_DEF = [
    icon:'ti-users'},
   {nombre:'Aula Informática',tipo:'Laboratorio de informática',cap:18,proyector:true,ac:true,pc:true,smarttv:false,
    icon:'ti-device-desktop'},
+  {nombre:'Aula Externa',tipo:'Aula externa / fuera del edificio',cap:0,proyector:false,ac:false,pc:false,smarttv:false,
+   icon:'ti-map-pin'},
+  {nombre:'Aula Virtual / Híbrida',tipo:'Aula virtual o híbrida',cap:0,proyector:false,ac:false,pc:false,smarttv:true,
+   icon:'ti-video'},
 ];
 
 function renderAulas(){
@@ -1853,7 +1862,7 @@ function renderAulas(){
     const disponibilidad = diasSemana.map(dia=>{
       const ds = toDateStr(dia);
       const ocupada = (window._cursos||[]).some(c=>
-        c.aula===a.nombre && c.inicio<=ds && c.fin>=ds
+        c.tipo==='reserva' && c.aula===a.nombre && c.inicio<=ds && c.fin>=ds
       );
       return `<div class="dia-slot ${ocupada?'ocupado':'libre'}">
         <div class="dia">${DIAS_LAB[dia.getDay()-1]}</div>
@@ -1902,6 +1911,7 @@ function confirmarReserva(){
   const fin = document.getElementById('res-fin').value;
   if(!curso||!inicio||!fin){ showToast('⚠ Completá curso y fechas','error'); return; }
 
+  // FIX 1: tipo='reserva' — solo estos aparecen en el calendario
   const nuevoReg = {
     nombre: curso,
     docente: document.getElementById('res-resp').value.trim()||'—',
@@ -1909,12 +1919,13 @@ function confirmarReserva(){
     aula: _reservaAula,
     modalidad:'Presencial',gerencia:'',horas:0,
     participantes:'',novedades:'Reserva de aula',
+    tipo: 'reserva',   // ← clave: solo reservas van al calendario
     creadoEn: new Date().toISOString(),
   };
 
   if(typeof window.fbPush==='function'){
     window.fbPush(nuevoReg).then(()=>{
-      showToast('✓ Reserva confirmada');
+      showToast('✓ Reserva confirmada — aparece en el calendario');
       closeModal('modal-reserva');
     });
   } else {
