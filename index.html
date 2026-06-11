@@ -908,189 +908,103 @@ function navCal(d){
 function imprimirCalendario(){
   const titulo = document.getElementById('cal-title').textContent;
   const esSemana = _view === 'semana';
-  const fecha = new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
+  const fecha = new Date().toLocaleDateString('es-AR');
 
-  // ── Construir filas de la tabla según vista ──
-  let tablaHTML = '';
+  // Construir HTML de la tabla
+  var tablaHTML = '';
+  var estilosTabla = '';
 
   if(esSemana){
-    // Vista semanal: tabla con días como columnas y cursos como filas
-    const dias = getDiasLaborablesDelRango(_curDate);
-    const cabecera = dias.map(d=>`<th>${DIAS_LAB[d.getDay()-1]}<br><span style="font-size:16px;font-weight:800">${d.getDate()}</span></th>`).join('');
+    var dias = getDiasLaborablesDelRango(_curDate);
+    var cabecera = dias.map(function(d){
+      return '<th style="text-align:center;padding:8px">' + DIAS_LAB[d.getDay()-1] + '<br><span style="font-size:18px;font-weight:800">' + d.getDate() + '</span></th>';
+    }).join('');
 
-    // Recopilar todos los cursos que aparecen en esta semana
-    const cursosVistos = new Map();
-    dias.forEach(dia=>{
-      const ds = toDateStr(dia);
-      (window._cursos||[]).filter(c=> c.tipo==='reserva' && ds >= c.inicio && ds <= c.fin && esLaborable(dia))
-        .forEach(c=>{ if(!cursosVistos.has(c._key)) cursosVistos.set(c._key, c); });
+    var cursosVistos = new Map();
+    dias.forEach(function(dia){
+      var ds = toDateStr(dia);
+      (window._cursos||[]).filter(function(c){ return c.tipo==='reserva' && ds >= c.inicio && ds <= c.fin && esLaborable(dia); })
+        .forEach(function(c){ if(!cursosVistos.has(c._key)) cursosVistos.set(c._key, c); });
     });
 
+    var filas = '';
     if(cursosVistos.size === 0){
-      tablaHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#5a7a74;font-style:italic">Sin cursos programados esta semana</td></tr>`;
+      filas = '<tr><td colspan="' + (5 + dias.length) + '" style="text-align:center;padding:30px;color:#5a7a74">Sin reservas programadas esta semana</td></tr>';
     } else {
-      cursosVistos.forEach(c=>{
-        const modColor = c.modalidad==='Presencial'?'#d0ede8':c.modalidad==='Virtual'?'#d6e4f0':'#fde8e6';
-        const modText  = c.modalidad==='Presencial'?'#0d5e4f':c.modalidad==='Virtual'?'#0a3d62':'#922b21';
-        const partic   = parsePartic(c.participantes).length;
-        // Marcar en qué días aparece
-        const celdas = dias.map(dia=>{
-          const ds = toDateStr(dia);
-          const activo = ds >= c.inicio && ds <= c.fin && esLaborable(dia);
-          return activo
-            ? `<td style="background:${modColor};text-align:center"><span style="font-size:13px;font-weight:700">✓</span></td>`
-            : `<td style="background:#f8f8f8;text-align:center;color:#ccc">–</td>`;
+      cursosVistos.forEach(function(c){
+        var partic = parsePartic(c.participantes).length;
+        var celdas = dias.map(function(dia){
+          var ds = toDateStr(dia);
+          var activo = ds >= c.inicio && ds <= c.fin;
+          return activo ? '<td style="background:#d0ede8;text-align:center;font-weight:700">✓</td>'
+                        : '<td style="background:#f8f8f8;text-align:center;color:#ccc">–</td>';
         }).join('');
-        tablaHTML += `<tr>
-          <td style="font-weight:600;font-size:12px">${esc(c.nombre)}</td>
-          <td>${esc(c.docente||'—')}</td>
-          <td><span style="background:${modColor};color:${modText};padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700">${esc(c.modalidad)}</span></td>
-          <td style="text-align:center">${c.horas||0} hs</td>
-          <td style="text-align:center">${partic}</td>
-          ${celdas}
-        </tr>`;
+        filas += '<tr><td style="font-weight:600">' + esc(c.nombre) + '</td><td>' + esc(c.docente||'—') + '</td><td>' + esc(c.aula||'—') + '</td><td style="text-align:center">' + (c.horas||0) + 'hs</td>' + celdas + '</tr>';
       });
     }
 
-    tablaHTML = `
-      <table>
-        <thead>
-          <tr style="background:#218570;color:#fff">
-            <th style="width:22%">Capacitación</th>
-            <th style="width:14%">Docente</th>
-            <th style="width:10%">Modalidad</th>
-            <th style="width:6%;text-align:center">Hs</th>
-            <th style="width:7%;text-align:center">Partic.</th>
-            ${cabecera}
-          </tr>
-        </thead>
-        <tbody>${tablaHTML}</tbody>
-      </table>`;
+    tablaHTML = '<table style="width:100%;border-collapse:collapse;font-size:11px"><thead><tr style="background:#218570;color:#fff"><th style="padding:8px">Reserva</th><th>Responsable</th><th>Aula</th><th style="text-align:center">Hs</th>' + cabecera + '</tr></thead><tbody>' + filas + '</tbody></table>';
 
   } else {
-    // Vista mensual: tabla calendario clásica con celdas por día
-    const y = _curDate.getFullYear();
-    const m = _curDate.getMonth();
-    const primerDia = new Date(y, m, 1);
+    var y = _curDate.getFullYear();
+    var m = _curDate.getMonth();
+    var primerDia = new Date(y, m, 1);
     while(!esLaborable(primerDia)) primerDia.setDate(primerDia.getDate()+1);
-    const inicioGrid = new Date(primerDia);
+    var inicioGrid = new Date(primerDia);
     inicioGrid.setDate(primerDia.getDate() - ((primerDia.getDay()+6)%7));
 
-    let celdasHTML = '';
-    for(let semana=0; semana<6; semana++){
-      let filaHTML = '';
-      let tieneContenido = false;
-      for(let dow=0; dow<5; dow++){
-        const fecha2 = new Date(inicioGrid);
+    var hoy2 = new Date();
+    var celdasHTML = '';
+    for(var semana=0; semana<6; semana++){
+      var filaHTML = '';
+      var tieneContenido = false;
+      for(var dow=0; dow<5; dow++){
+        var fecha2 = new Date(inicioGrid);
         fecha2.setDate(inicioGrid.getDate() + semana*7 + dow);
-        const otroMes = fecha2.getMonth() !== m;
-        const isHoy   = fecha2.toDateString() === new Date().toDateString();
-        const ds = toDateStr(fecha2);
-        const evts = (window._cursos||[]).filter(c=> c.tipo==='reserva' && !otroMes && ds >= c.inicio && ds <= c.fin);
+        var otroMes = fecha2.getMonth() !== m;
+        var isHoy2 = fecha2.toDateString() === hoy2.toDateString();
+        var ds2 = toDateStr(fecha2);
+        var evts2 = (window._cursos||[]).filter(function(c){ return c.tipo==='reserva' && !otroMes && ds2 >= c.inicio && ds2 <= c.fin; });
         if(!otroMes) tieneContenido = true;
-
-        const evtsHTML = evts.slice(0,3).map(c=>{
-          const modColor = c.modalidad==='Presencial'?'#d0ede8':c.modalidad==='Virtual'?'#d6e4f0':'#fde8e6';
-          const modText  = c.modalidad==='Presencial'?'#0d5e4f':c.modalidad==='Virtual'?'#0a3d62':'#922b21';
-          return `<div style="background:${modColor};color:${modText};font-size:9px;padding:2px 4px;border-radius:3px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600">${esc(c.nombre)}</div>`;
-        }).join('') + (evts.length>3 ? `<div style="font-size:9px;color:#218570;font-weight:700">+${evts.length-3} más</div>` : '');
-
-        filaHTML += `<td style="
-          vertical-align:top;padding:5px;
-          background:${isHoy?'#fffbf5':otroMes?'#f5f5f5':'#fff'};
-          ${isHoy?'outline:2px solid #c0392b;outline-offset:-2px':''}
-          opacity:${otroMes?'0.4':'1'}">
-          <div style="font-size:11px;font-weight:700;color:${isHoy?'#c0392b':'#5a7a74'};margin-bottom:4px">${fecha2.getDate()}</div>
-          ${evtsHTML}
-        </td>`;
+        var evtsHTML = evts2.slice(0,3).map(function(c){
+          return '<div style="background:#d0ede8;color:#0d5e4f;font-size:9px;padding:2px 4px;border-radius:3px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600">' + esc(c.nombre) + '</div>';
+        }).join('') + (evts2.length>3 ? '<div style="font-size:9px;color:#218570;font-weight:700">+' + (evts2.length-3) + ' más</div>' : '');
+        filaHTML += '<td style="vertical-align:top;padding:5px;border:1px solid #cfe0db;background:' + (isHoy2?'#fffbf5':otroMes?'#f5f5f5':'#fff') + ';opacity:' + (otroMes?'0.4':'1') + '"><div style="font-size:11px;font-weight:700;color:' + (isHoy2?'#c0392b':'#5a7a74') + ';margin-bottom:4px">' + fecha2.getDate() + '</div>' + evtsHTML + '</td>';
       }
-      if(tieneContenido) celdasHTML += `<tr>${filaHTML}</tr>`;
+      if(tieneContenido) celdasHTML += '<tr>' + filaHTML + '</tr>';
     }
-
-    tablaHTML = `
-      <table>
-        <thead>
-          <tr style="background:#218570;color:#fff">
-            ${DIAS_LAB.map(d=>`<th style="text-align:center;padding:8px">${d}</th>`).join('')}
-          </tr>
-        </thead>
-        <tbody>${celdasHTML}</tbody>
-      </table>`;
+    tablaHTML = '<table style="width:100%;border-collapse:collapse;font-size:11px"><thead><tr style="background:#218570;color:#fff">' + DIAS_LAB.map(function(d){ return '<th style="text-align:center;padding:8px">' + d + '</th>'; }).join('') + '</tr></thead><tbody>' + celdasHTML + '</tbody></table>';
   }
 
-  // ── HTML completo del PDF ──
-  const html = `<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8"/>
-<title>EPEC · Calendario ${esSemana?'Semanal':'Mensual'} — ${titulo}</title>
-<style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#1a2e28;background:#fff;padding:16px 20px}
-  .rpt-header{background:#218570;color:#fff;padding:13px 18px;border-radius:8px;
-    margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
-  .rpt-header h1{font-size:15px;font-weight:700;margin-bottom:3px}
-  .rpt-header p{font-size:10px;opacity:.85}
-  .rpt-logo{width:38px;height:38px;background:#fff;border-radius:7px;display:flex;
-    align-items:center;justify-content:center;font-size:20px;font-weight:900;
-    color:#218570;font-style:italic;flex-shrink:0}
-  .legend{display:flex;gap:16px;margin-bottom:12px;align-items:center;flex-wrap:wrap}
-  .leg{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600}
-  .leg-dot{width:10px;height:10px;border-radius:3px}
-  table{width:100%;border-collapse:collapse;font-size:11px}
-  th{background:#218570;color:#fff;padding:8px 10px;text-align:left;
-    font-size:10px;text-transform:uppercase;letter-spacing:.4px;font-weight:700}
-  td{padding:7px 8px;border:1px solid #cfe0db;vertical-align:top}
-  tr:nth-child(even) td{background:#f7fbfa}
-  .rpt-footer{margin-top:12px;padding-top:8px;border-top:1px solid #cfe0db;
-    display:flex;justify-content:space-between;font-size:9px;color:#5a7a74}
-  @media print{
-    body{padding:8px 10px}
-    @page{margin:8mm;size:A4 landscape}
-  }
-</style>
-</head>
-<body>
-
-<div class="rpt-header">
-  <div>
-    <h1>EPEC SAU · Centro de Formación Profesional</h1>
-    <p>Calendario ${esSemana?'Semanal':'Mensual'} — ${titulo} · Impreso el ${fecha}</p>
-  </div>
-  <div class="rpt-logo">E</div>
-</div>
-
-<div class="legend">
-  <span class="leg"><span class="leg-dot" style="background:#218570"></span>Presencial</span>
-  <span class="leg"><span class="leg-dot" style="background:#1a5276"></span>Virtual</span>
-  <span class="leg"><span class="leg-dot" style="background:#c0392b"></span>Híbrida</span>
-  <span style="font-size:10px;color:#5a7a74;margin-left:auto">Solo días laborables (Lun–Vie)</span>
-</div>
-
-${tablaHTML}
-
-<div class="rpt-footer">
-  <span>EPEC SAU · Centro de Formación Profesional</span>
-  <span>Calendario ${esSemana?'Semanal':'Mensual'} · ${titulo} · ${fecha}</span>
-</div>
-
-<script>
-  window.addEventListener('load', function(){
-    setTimeout(function(){ window.print(); }, 500);
-  });
-<\/script>
-</body>
-</html>`;
-
-  const win = window.open('', '_blank', 'width=1100,height=750');
+  // Abrir ventana de impresión
+  var win = window.open('', '_blank', 'width=1100,height=750');
   if(!win){ alert('Permitir ventanas emergentes para imprimir'); return; }
+  var html = '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">'
+    + '<title>EPEC Calendario ' + (esSemana?'Semanal':'Mensual') + '</title>'
+    + '<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;font-size:11px;padding:16px}'
+    + '.hdr{background:#218570;color:#fff;padding:13px 18px;border-radius:8px;margin-bottom:14px;display:flex;justify-content:space-between}'
+    + '.hdr h1{font-size:15px;font-weight:700}.hdr p{font-size:10px;opacity:.85}'
+    + '.logo{width:36px;height:36px;background:#fff;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#218570;font-style:italic}'
+    + 'th{background:#218570;color:#fff;padding:8px;text-align:left;font-size:10px}'
+    + 'td{padding:7px 8px;border:1px solid #cfe0db}'
+    + 'tr:nth-child(even) td{background:#f7fbfa}'
+    + '.ftr{margin-top:12px;font-size:9px;color:#5a7a74;display:flex;justify-content:space-between;border-top:1px solid #cfe0db;padding-top:8px}'
+    + '@media print{@page{margin:8mm;size:A4 landscape}}</style></head><body>'
+    + '<div class="hdr"><div><h1>EPEC SAU · Centro de Formación Profesional</h1>'
+    + '<p>Calendario ' + (esSemana?'Semanal':'Mensual') + ' — ' + titulo + ' · ' + fecha + '</p></div>'
+    + '<div class="logo">E</div></div>'
+    + tablaHTML
+    + '<div class="ftr"><span>EPEC SAU · Centro de Formación Profesional</span><span>' + titulo + ' · ' + fecha + '</span></div>'
+    + '</body></html>';
   win.document.open();
   win.document.write(html);
   win.document.close();
+  win.onload = function(){ setTimeout(function(){ win.print(); }, 400); };
+  setTimeout(function(){ try{ win.print(); }catch(e){} }, 700);
 }
 
 /* ══════════════════════════════════════
-   FIX C: helper — fecha es laborable?
+   HELPER — fecha es laborable?
 ══════════════════════════════════════ */
 function esLaborable(date){
   const d = date.getDay();
@@ -1179,12 +1093,13 @@ function renderSemana(container){
         onmouseleave="this.style.background='transparent'"></div>`;
     });
 
-    // FIX 1+4: el calendario SOLO muestra reservas de aula (tipo='reserva')
-    // Los cursos cargados en "Nuevo curso" (tipo='curso') NO aparecen acá
+    // FIX 2: el evento aparece SOLO en los días laborables que están
+    // dentro del rango exacto inicio→fin del curso.
+    // Ejemplo: curso Lun 8 Jun → Jue 11 Jun NO aparece el Vie 12 Jun
     const ds = toDateStr(dia);
     const evts = (window._cursos||[]).filter(c=>{
       if(!c.inicio || !c.fin) return false;
-      if(c.tipo !== 'reserva') return false;  // solo reservas de aula
+      if(c.tipo !== 'reserva') return false;
       return ds >= c.inicio && ds <= c.fin && esLaborable(dia);
     });
     evts.forEach((c,ci)=>{
@@ -1244,7 +1159,7 @@ function renderMes(container){
       const otroMes = fecha.getMonth() !== m;
       const isHoy = fecha.toDateString()===hoy.toDateString();
       const ds = toDateStr(fecha);
-      // FIX 1+4: solo reservas de aula aparecen en el calendario mensual
+      // FIX 2: solo mostrar evento si la fecha exacta cae dentro del rango inicio→fin
       const evts = (window._cursos||[]).filter(c=>{
         if(!c.inicio || !c.fin) return false;
         if(c.tipo !== 'reserva') return false;
@@ -1427,7 +1342,6 @@ function filterCursos(){
   const ger = document.getElementById('filter-ger')?.value||'';
 
   const filtered = (window._cursos||[]).filter(c=>{
-    // Solo mostrar cursos cargados desde "Nuevo curso" — NO reservas de aula
     if(c.tipo === 'reserva') return false;
     const m = [c.nombre,c.docente,c.gerencia,c.institucion,c.rrhh].some(f=>(f||'').toLowerCase().includes(q));
     return m && (!mod||c.modalidad===mod) && (!ger||c.gerencia===ger);
@@ -1487,7 +1401,7 @@ function guardarCurso(){
     cupo:         parseInt(g('n-cupo'))||0,
     participantes:g('n-partic'),
     novedades:    g('n-novedad'),
-    tipo:         'curso',   // FIX 4: cursos NO aparecen en el calendario
+    tipo:         'curso',
     creadoEn:     new Date().toISOString(),
   };
 
@@ -1542,7 +1456,7 @@ function getRange(){
 function renderReporte(){
   const {ini,fin} = getRange();
   const ger = document.getElementById('rep-ger')?.value||'';
-  const filtered = (window._cursos||[]).filter(c=>c.fin>=ini&&c.inicio<=fin&&(!ger||c.gerencia===ger));
+  const filtered = (window._cursos||[]).filter(c=>c.tipo==='curso'&&c.fin>=ini&&c.inicio<=fin&&(!ger||c.gerencia===ger));
 
   const totalP  = filtered.reduce((s,c)=>s+parsePartic(c.participantes).length,0);
   const totalHs = filtered.reduce((s,c)=>s+(parseInt(c.horas)||0),0);
@@ -1626,7 +1540,7 @@ function renderCharts(data){
 function exportCSV(){
   const {ini,fin} = getRange();
   const ger = document.getElementById('rep-ger')?.value||'';
-  const data = (window._cursos||[]).filter(c=>c.fin>=ini&&c.inicio<=fin&&(!ger||c.gerencia===ger));
+  const data = (window._cursos||[]).filter(c=>c.tipo==='curso'&&c.fin>=ini&&c.inicio<=fin&&(!ger||c.gerencia===ger));
   const header = ['Capacitacion','Docente','Rrhh','Institucion','Gerencia','Modalidad','Inicio','Fin','Horas','Cupo','Participantes','Hs×Partic','Novedades'];
   const rows = data.map(c=>{
     const p=parsePartic(c.participantes);
@@ -1660,7 +1574,7 @@ function exportPDF(){
   // ── 2. Datos del reporte ──
   const {ini,fin} = getRange();
   const ger  = document.getElementById('rep-ger')?.value||'';
-  const data = (window._cursos||[]).filter(c=>c.fin>=ini&&c.inicio<=fin&&(!ger||c.gerencia===ger));
+  const data = (window._cursos||[]).filter(c=>c.tipo==='curso'&&c.fin>=ini&&c.inicio<=fin&&(!ger||c.gerencia===ger));
   const LABELS_PERIOD = {diario:'del día de hoy',semanal:'de esta semana',quincenal:'de las últimas 2 semanas',mensual:'del mes en curso'};
   const totalP   = data.reduce((s,c)=>s+parsePartic(c.participantes).length,0);
   const totalHs  = data.reduce((s,c)=>s+(parseInt(c.horas)||0),0);
@@ -1813,21 +1727,16 @@ ${(secModal||secGer||secPartic) ? `
   <span>Reporte ${periodo} · ${fecha}</span>
 </div>
 
-<script>
-  // Esperar a que las imágenes carguen completamente antes de imprimir
-  window.addEventListener('load', function(){
-    setTimeout(function(){ window.print(); }, 600);
-  });
-<\/script>
 </body>
 </html>`;
 
-  // ── 6. Abrir ventana e insertar el HTML ──
-  const win = window.open('', '_blank', 'width=1100,height=750');
-  if(!win){ alert('Por favor permitir ventanas emergentes para exportar el PDF'); return; }
-  win.document.open();
-  win.document.write(html);
-  win.document.close();
+  var win2 = window.open('', '_blank', 'width=1100,height=750');
+  if(!win2){ alert('Permitir ventanas emergentes para exportar el PDF'); return; }
+  win2.document.open();
+  win2.document.write(html);
+  win2.document.close();
+  win2.onload = function(){ setTimeout(function(){ win2.print(); }, 600); };
+  setTimeout(function(){ try{ win2.print(); }catch(e){} }, 900);
 }
 
 /* ══════════════════════════════════════
@@ -1913,7 +1822,6 @@ function confirmarReserva(){
   const fin = document.getElementById('res-fin').value;
   if(!curso||!inicio||!fin){ showToast('⚠ Completá curso y fechas','error'); return; }
 
-  // FIX 1: tipo='reserva' — solo estos aparecen en el calendario
   const nuevoReg = {
     nombre: curso,
     docente: document.getElementById('res-resp').value.trim()||'—',
@@ -1921,13 +1829,13 @@ function confirmarReserva(){
     aula: _reservaAula,
     modalidad:'Presencial',gerencia:'',horas:0,
     participantes:'',novedades:'Reserva de aula',
-    tipo: 'reserva',   // ← clave: solo reservas van al calendario
+    tipo: 'reserva',
     creadoEn: new Date().toISOString(),
   };
 
   if(typeof window.fbPush==='function'){
     window.fbPush(nuevoReg).then(()=>{
-      showToast('✓ Reserva confirmada — aparece en el calendario');
+      showToast('✓ Reserva confirmada');
       closeModal('modal-reserva');
     });
   } else {
