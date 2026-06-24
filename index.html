@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -1327,3 +1328,115 @@ function confirmarReserva(){
     closeModal('modal-reserva');
   }
 }
+
+/* ─── IMPRIMIR CALENDARIO ─────────────────────── */
+function imprimirCalendario(){
+  const titulo = document.getElementById('cal-title').textContent;
+  const esSemana = _view === 'semana';
+  const fecha = new Date().toLocaleDateString('es-AR');
+  var tablaHTML = '';
+  if(esSemana){
+    var dias = getDiasLaborablesDelRango(_curDate);
+    var cabecera = dias.map(function(d){
+      return '<th style="text-align:center;padding:8px">'+DIAS_LAB[d.getDay()-1]+'<br><span style="font-size:18px;font-weight:800">'+d.getDate()+'</span></th>';
+    }).join('');
+    var mapa = {};
+    dias.forEach(function(dia){
+      var ds = toDateStr(dia);
+      (window._cursos||[]).filter(function(c){ return c.inicio && c.fin && ds>=c.inicio && ds<=c.fin && esLaborable(dia); })
+        .forEach(function(c){ if(!mapa[c._key]) mapa[c._key]=c; });
+    });
+    var keys = Object.keys(mapa);
+    var filas = '';
+    if(!keys.length){
+      filas = '<tr><td colspan="'+(4+dias.length)+'" style="text-align:center;padding:30px;color:#5a7a74">Sin actividades esta semana</td></tr>';
+    } else {
+      keys.forEach(function(k){
+        var c = mapa[k];
+        var p = parsePartic(c.participantes).length;
+        var celdas = dias.map(function(dia){
+          var ds = toDateStr(dia);
+          var activo = ds >= c.inicio && ds <= c.fin;
+          return activo ? '<td style="background:#d0ede8;text-align:center;font-weight:700">✓</td>'
+                        : '<td style="background:#f8f8f8;text-align:center;color:#ccc">–</td>';
+        }).join('');
+        filas += '<tr><td style="font-weight:600">'+esc(c.nombre)+'</td><td>'+esc(c.docente||'—')+'</td><td>'+esc(c.aula||'—')+'</td><td style="text-align:center">'+(c.horas||0)+'hs</td>'+celdas+'</tr>';
+      });
+    }
+    tablaHTML = '<table style="width:100%;border-collapse:collapse;font-size:11px"><thead><tr style="background:#218570;color:#fff"><th style="padding:8px">Actividad</th><th>Responsable</th><th>Aula</th><th style="text-align:center">Hs</th>'+cabecera+'</tr></thead><tbody>'+filas+'</tbody></table>';
+  } else {
+    var y=_curDate.getFullYear(), m=_curDate.getMonth();
+    var primerDia=new Date(y,m,1);
+    while(!esLaborable(primerDia)) primerDia.setDate(primerDia.getDate()+1);
+    var inicioGrid=new Date(primerDia);
+    inicioGrid.setDate(primerDia.getDate()-((primerDia.getDay()+6)%7));
+    var hoy2=new Date(), celdasHTML='';
+    for(var s=0;s<6;s++){
+      var filaHTML='', ok=false;
+      for(var dow=0;dow<5;dow++){
+        var f=new Date(inicioGrid); f.setDate(inicioGrid.getDate()+s*7+dow);
+        var otro=f.getMonth()!==m;
+        var isHoy2=f.toDateString()===hoy2.toDateString();
+        var ds2=toDateStr(f);
+        var evts2=(window._cursos||[]).filter(function(c){ return c.inicio&&c.fin&&ds2>=c.inicio&&ds2<=c.fin; });
+        if(!otro) ok=true;
+        var ehtml=evts2.slice(0,3).map(function(c){ return '<div style="background:#d0ede8;color:#0d5e4f;font-size:9px;padding:2px 4px;border-radius:3px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600">'+esc(c.nombre)+'</div>'; }).join('')+(evts2.length>3?'<div style="font-size:9px;color:#218570;font-weight:700">+'+(evts2.length-3)+' más</div>':'');
+        filaHTML+='<td style="vertical-align:top;padding:5px;border:1px solid #cfe0db;background:'+(isHoy2?'#fffbf5':otro?'#f5f5f5':'#fff')+';opacity:'+(otro?'0.4':'1')+'"><div style="font-size:11px;font-weight:700;color:'+(isHoy2?'#c0392b':'#5a7a74')+';margin-bottom:4px">'+f.getDate()+'</div>'+ehtml+'</td>';
+      }
+      if(ok) celdasHTML+='<tr>'+filaHTML+'</tr>';
+    }
+    tablaHTML='<table style="width:100%;border-collapse:collapse;font-size:11px"><thead><tr style="background:#218570;color:#fff">'+DIAS_LAB.map(function(d){ return '<th style="text-align:center;padding:8px">'+d+'</th>'; }).join('')+'</tr></thead><tbody>'+celdasHTML+'</tbody></table>';
+  }
+  var win=window.open('','_blank','width=1100,height=750');
+  if(!win){ alert('Permitir ventanas emergentes para imprimir'); return; }
+  var html='<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>EPEC Calendario</title>'
+    +'<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;font-size:11px;padding:16px}'
+    +'.hdr{background:#218570;color:#fff;padding:13px 18px;border-radius:8px;margin-bottom:14px;display:flex;justify-content:space-between}'
+    +'.hdr h1{font-size:15px;font-weight:700}.logo{width:36px;height:36px;background:#fff;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#218570;font-style:italic}'
+    +'th{background:#218570;color:#fff;padding:8px;text-align:left;font-size:10px}'
+    +'td{padding:7px 8px;border:1px solid #cfe0db}tr:nth-child(even) td{background:#f7fbfa}'
+    +'.ftr{margin-top:12px;font-size:9px;color:#5a7a74;display:flex;justify-content:space-between;border-top:1px solid #cfe0db;padding-top:8px}'
+    +'@media print{@page{margin:8mm;size:A4 landscape}}</style></head><body>'
+    +'<div class="hdr"><div><h1>EPEC SAU · Centro de Formación Profesional</h1><p>Calendario '+(esSemana?'Semanal':'Mensual')+' — '+titulo+' · '+fecha+'</p></div><div class="logo">E</div></div>'
+    +tablaHTML
+    +'<div class="ftr"><span>EPEC SAU · Centro de Formación Profesional</span><span>'+titulo+' · '+fecha+'</span></div>'
+    +'</body></html>';
+  win.document.open(); win.document.write(html); win.document.close();
+  win.onload=function(){ setTimeout(function(){ win.print(); },400); };
+  setTimeout(function(){ try{ win.print(); }catch(e){} },700);
+}
+
+/* ─── UTILIDADES ────────────────────────────── */
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+function showToast(msg, tipo=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show '+tipo;
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+function parsePartic(raw){
+  if(!raw) return [];
+  return raw.split(/\n/).map(p=>p.trim()).filter(Boolean);
+}
+
+function esc(s){
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+document.querySelectorAll('.overlay').forEach(o=>{
+  o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('open'); });
+});
+
+const userNums=[2,3,4,3,2,3,5,4,3];
+let ui=0;
+setInterval(()=>{
+  const n=userNums[ui%userNums.length]; ui++;
+  document.getElementById('user-count').textContent=n+' usuario'+(n>1?'s':'')+' conectado'+(n>1?'s':'');
+},10000);
+
+renderCalendario();
+</script>
+</body>
+</html>
