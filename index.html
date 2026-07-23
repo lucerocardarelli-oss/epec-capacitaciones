@@ -568,6 +568,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, onValue, push, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+  import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey:            "AIzaSyBvE7RSYKS4gmwcq48FttdR55fIjcj9dbU",
@@ -580,6 +581,8 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+signInAnonymously(auth).catch(e=>console.error('Auth anónima falló:', e));
 const db  = getDatabase(app);
 const cursosRef = ref(db, 'epec/cursos');
 
