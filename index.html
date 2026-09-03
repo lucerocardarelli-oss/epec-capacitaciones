@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -242,6 +241,32 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 </style>
 </head>
 <body>
+
+<!-- ===== PANTALLA DE LOGIN ===== -->
+<div id="login-overlay" style="position:fixed;inset:0;background:var(--primary-dk);z-index:9999;
+  display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;">
+  <div style="background:#fff;border-radius:14px;padding:2.2rem 2.4rem;width:100%;max-width:360px;
+    box-shadow:0 10px 40px rgba(0,0,0,.25);">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.4rem;">
+      <div class="logo-e" style="color:var(--primary)">E</div>
+      <div>
+        <div style="font-weight:700;font-size:15px;color:var(--text)">EPEC SAU</div>
+        <div style="font-size:11px;color:var(--muted)">Gestión de Capacitaciones</div>
+      </div>
+    </div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:1.2rem;">Ingresá con tu usuario para continuar.</div>
+    <input id="login-email" type="email" placeholder="Correo" autocomplete="username"
+      style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:10px;font-size:14px;">
+    <input id="login-pass" type="password" placeholder="Contraseña" autocomplete="current-password"
+      style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:14px;font-size:14px;">
+    <button id="login-btn" onclick="window.hacerLogin()"
+      style="width:100%;padding:11px;border:none;border-radius:8px;background:var(--primary);color:#fff;
+      font-weight:700;font-size:14px;cursor:pointer;">Ingresar</button>
+    <div id="login-error" style="color:#c0392b;font-size:12.5px;margin-top:10px;min-height:16px;"></div>
+  </div>
+</div>
+
+<div id="app-content" style="display:none;">
 
 <header class="header">
   <div class="hbrand">
@@ -562,13 +587,16 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 <footer class="footer">
   <strong>EPEC SAU</strong> · Centro de Formación Profesional &copy; 2026 ·
   <span id="sync-msg">Sistema activo</span>
+  · <a href="#" onclick="window.hacerLogout();return false;" style="color:inherit;text-decoration:underline;">Cerrar sesión</a>
 </footer>
+
+</div><!-- cierre #app-content -->
 
 <!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, onValue, push, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-  import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey:            "AIzaSyBvE7RSYKS4gmwcq48FttdR55fIjcj9dbU",
@@ -580,22 +608,59 @@ const firebaseConfig = {
   appId:             "1:990909328558:web:ead9e4118a814e0d20513f"
 };
 
-const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-signInAnonymously(auth).catch(e=>console.error('Auth anónima falló:', e));
-const db  = getDatabase(app);
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getDatabase(app);
 const cursosRef = ref(db, 'epec/cursos');
+let listenerActivo = false;
 
-onValue(cursosRef, snap => {
-  const data = snap.val();
-  window._cursos = data
-    ? Object.entries(data).map(([k,v]) => ({...v, _key:k}))
-    : getDemoData();
-  renderCalendario();
-  filterCursos();
-  if(document.getElementById('section-reportes').classList.contains('active')) renderReporte();
-  if(document.getElementById('section-aulas').classList.contains('active')) renderAulas();
-  document.getElementById('sync-msg').textContent = 'Sync: ' + new Date().toLocaleTimeString('es-AR');
+// --- LOGIN ---
+window.hacerLogin = () => {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  const errorBox = document.getElementById('login-error');
+  errorBox.textContent = '';
+  if(!email || !pass){ errorBox.textContent = 'Completá correo y contraseña.'; return; }
+  document.getElementById('login-btn').textContent = 'Ingresando...';
+  signInWithEmailAndPassword(auth, email, pass)
+    .catch(() => {
+      errorBox.textContent = 'Usuario o contraseña incorrectos.';
+      document.getElementById('login-btn').textContent = 'Ingresar';
+    });
+};
+
+window.hacerLogout = () => { signOut(auth); };
+
+document.getElementById('login-pass').addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter') window.hacerLogin();
+});
+
+// --- ESTADO DE SESIÓN: muestra login o la app según corresponda ---
+onAuthStateChanged(auth, (user) => {
+  const overlay = document.getElementById('login-overlay');
+  const contenido = document.getElementById('app-content');
+  if(user){
+    overlay.style.display = 'none';
+    contenido.style.display = 'block';
+    if(!listenerActivo){
+      listenerActivo = true;
+      onValue(cursosRef, snap => {
+        const data = snap.val();
+        window._cursos = data
+          ? Object.entries(data).map(([k,v]) => ({...v, _key:k}))
+          : getDemoData();
+        renderCalendario();
+        filterCursos();
+        if(document.getElementById('section-reportes').classList.contains('active')) renderReporte();
+        if(document.getElementById('section-aulas').classList.contains('active')) renderAulas();
+        document.getElementById('sync-msg').textContent = 'Sync: ' + new Date().toLocaleTimeString('es-AR');
+      });
+    }
+  } else {
+    overlay.style.display = 'flex';
+    contenido.style.display = 'none';
+    document.getElementById('login-btn').textContent = 'Ingresar';
+  }
 });
 
 window.fbPush   = (d) => push(cursosRef, d);
