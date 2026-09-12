@@ -437,8 +437,12 @@
           <select id="fact_estado"><option value="pendiente">Pendiente de pago</option><option value="pagada">Pagada</option></select>
         </div>
       </div>
-      <div class="field"><label>Link al comprobante (Drive, OneDrive, etc. — opcional)</label><input id="fact_link" placeholder="https://..."></div>
-      <button class="btn" onclick="guardarFactura()">Agregar factura</button>
+      <div class="field"><label>Link al comprobante (Drive, OneDrive, etc. — opcional, además del archivo)</label><input id="fact_link" placeholder="https://..."></div>
+      <div class="field"><label>Foto o PDF de la factura (opcional)</label>
+        <input type="file" id="fact_archivo" accept="image/*,application/pdf">
+        <div id="fact_archivoPreview" style="margin-top:6px;"></div>
+      </div>
+      <button class="btn" id="fact_guardarBtn" onclick="guardarFactura()">Agregar factura</button>
     </div>
 
     <div class="card">
@@ -452,7 +456,8 @@
             <th style="padding:6px 8px;text-align:left;">Monto</th>
             <th style="padding:6px 8px;text-align:left;">Fecha</th>
             <th style="padding:6px 8px;text-align:left;">Estado</th>
-            <th style="padding:6px 8px;"></th>
+            <th style="padding:6px 8px;text-align:center;">Archivo</th>
+            <th style="padding:6px 8px;text-align:left;">Link</th>
             <th style="padding:6px 8px;"></th>
           </tr></thead>
           <tbody id="fact_tbody"></tbody>
@@ -1651,7 +1656,15 @@ function guardarFactura(){
   if(!selectedCursoFacturas){ alert('Elegí un curso primero.'); return; }
   const monto = Number(document.getElementById('fact_monto').value);
   if(!monto || monto<=0){ alert('Cargá un monto válido.'); return; }
-  const data = {
+  const archivoInput = document.getElementById('fact_archivo');
+  const file = archivoInput.files && archivoInput.files[0];
+
+  if(file && file.size > 3*1024*1024){
+    alert('El archivo es muy pesado (más de 3 MB). Sacá la foto con menos resolución, comprimila, o subí el PDF más liviano, e intentá de nuevo. Esto es para no saturar la base de datos gratuita.');
+    return;
+  }
+
+  const base = {
     cursoId: selectedCursoFacturas,
     numero: document.getElementById('fact_numero').value.trim(),
     proveedor: document.getElementById('fact_proveedor').value.trim(),
@@ -1662,15 +1675,53 @@ function guardarFactura(){
     link: document.getElementById('fact_link').value.trim()
   };
   const id = uid()+Math.floor(Math.random()*10000);
-  if(useFirebase){
-    db.ref('convenio24/facturas/'+id).set(data).catch(e=>alert('Error al guardar: '+e.message));
-  }else{
-    facturas[id] = data;
-    persist();
-    renderFacturasTabla();
-    renderPresupuestoTabla();
+  const btn = document.getElementById('fact_guardarBtn');
+
+  function limpiarFormulario(){
+    ['fact_numero','fact_proveedor','fact_concepto','fact_monto','fact_fecha','fact_link'].forEach(f=>document.getElementById(f).value='');
+    archivoInput.value = '';
+    document.getElementById('fact_archivoPreview').innerHTML = '';
+    btn.disabled = false;
+    btn.textContent = 'Agregar factura';
   }
-  ['fact_numero','fact_proveedor','fact_concepto','fact_monto','fact_fecha','fact_link'].forEach(f=>document.getElementById(f).value='');
+
+  if(!file){
+    if(useFirebase){
+      db.ref('convenio24/facturas/'+id).set(base).catch(e=>alert('Error al guardar: '+e.message));
+    }else{
+      facturas[id] = base;
+      persist();
+      renderFacturasTabla();
+      renderPresupuestoTabla();
+    }
+    limpiarFormulario();
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Guardando archivo…';
+
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    const data = Object.assign({}, base, {archivoData:reader.result, archivoNombre:file.name, archivoTipo:file.type});
+    if(useFirebase){
+      db.ref('convenio24/facturas/'+id).set(data)
+        .then(limpiarFormulario)
+        .catch(e=>{
+          alert('No se pudo guardar el archivo: '+e.message);
+          btn.disabled = false;
+          btn.textContent = 'Agregar factura';
+        });
+    }else{
+      facturas[id] = data;
+      persist();
+      renderFacturasTabla();
+      renderPresupuestoTabla();
+      limpiarFormulario();
+    }
+  };
+  reader.onerror = ()=>{ alert('No se pudo leer el archivo.'); btn.disabled=false; btn.textContent='Agregar factura'; };
+  reader.readAsDataURL(file);
 }
 
 function eliminarFactura(id){
@@ -1696,12 +1747,20 @@ function renderFacturasTabla(){
   const lista = Object.entries(facturas).filter(([id,f])=>f.cursoId===selectedCursoFacturas)
     .sort((a,b)=>new Date(b[1].fecha||0)-new Date(a[1].fecha||0));
   if(lista.length===0){
-    tbody.innerHTML = '<tr><td colspan="8" style="padding:12px;text-align:center;color:var(--text-muted);">Sin facturas cargadas para este curso.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" style="padding:12px;text-align:center;color:var(--text-muted);">Sin facturas cargadas para este curso.</td></tr>';
     return;
   }
   tbody.innerHTML = lista.map(([id,f])=>{
     const estColor = f.estado==='pagada' ? 'var(--green)' : 'var(--amber)';
     const estLabel = f.estado==='pagada' ? 'Pagada' : 'Pendiente';
+    const archivoSrc = f.archivoUrl || f.archivoData || '';
+    let archivoCell = '—';
+    if(archivoSrc){
+      const esImagen = (f.archivoTipo||'').startsWith('image/');
+      archivoCell = esImagen
+        ? `<a href="${archivoSrc}" target="_blank" rel="noopener"><img src="${archivoSrc}" style="width:36px;height:36px;object-fit:cover;border-radius:4px;border:1px solid var(--border);"></a>`
+        : `<a href="${archivoSrc}" target="_blank" rel="noopener">📄 Ver PDF</a>`;
+    }
     return `<tr>
       <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${f.numero||'—'}</td>
       <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${f.proveedor||'—'}</td>
@@ -1709,7 +1768,8 @@ function renderFacturasTabla(){
       <td style="padding:6px 8px;border-bottom:1px solid var(--border);">$${Number(f.monto).toLocaleString('es-AR')}</td>
       <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${f.fecha?fmtDate(f.fecha):'—'}</td>
       <td style="padding:6px 8px;border-bottom:1px solid var(--border);color:${estColor};font-weight:600;">${estLabel}</td>
-      <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${f.link?`<a href="${f.link}" target="_blank" rel="noopener">Ver</a>`:'—'}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;">${archivoCell}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${f.link?`<a href="${f.link}" target="_blank" rel="noopener">Link</a>`:'—'}</td>
       <td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:right;"><button class="btn danger small" onclick="eliminarFactura('${id}')">Quitar</button></td>
     </tr>`;
   }).join('');
