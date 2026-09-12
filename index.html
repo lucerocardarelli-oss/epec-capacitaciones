@@ -759,7 +759,7 @@ function populateCourseSelect(){
   const current = sel.value;
   sel.innerHTML = '<option value="">— General —</option>' +
     Object.entries(cursos).sort((a,b)=>(a[1].orden||0)-(b[1].orden||0))
-      .map(([id,c])=>`<option value="${id}">${c.orden}. ${truncate(c.nombre,50)}</option>`).join('');
+      .map(([id,c])=>`<option value="${id}">${c.orden}. ${c.nombre}</option>`).join('');
   sel.value = current;
 }
 
