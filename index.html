@@ -164,8 +164,8 @@
   <button data-tab="calendario" class="active">📅 Calendario</button>
   <button data-tab="todo">✅ To Do</button>
   <button data-tab="alumnos">👥 Alumnos y Docentes</button>
-  <button data-tab="asistencia">🗓️ Asistencia</button>
-  <button data-tab="evaluaciones">📝 Evaluaciones</button>
+  <button data-tab="alumnos" data-anchor="sec-asistencia">🗓️ Asistencia</button>
+  <button data-tab="alumnos" data-anchor="sec-evaluaciones">📝 Evaluaciones</button>
   <button data-tab="indicadores">📊 Indicadores</button>
   <button data-tab="encuesta">🙂 Encuesta</button>
   <button data-tab="logistica">🚚 Logística</button>
@@ -218,29 +218,58 @@
     </div>
   </section>
 
-  <!-- PLACEHOLDERS FASE 2 -->
+  <!-- ALUMNOS, DOCENTES, ASISTENCIA Y EVALUACIONES (unificado) -->
   <section class="panel" id="panel-alumnos">
-    <div class="placeholder">
-      <h3>👥 Alumnos y Docentes — Fase 2</h3>
-      <p>Próximo módulo a construir:</p>
-      <ul>
-        <li>Listado editable de alumnos por curso (agregar / quitar), con datos migrados del Convenio 24 y Tablero Visual.</li>
-        <li>Docente/instructor asignado por curso, editable.</li>
-        <li>Asistencia por día y por hora de capacitación — presente en verde, ausente en rojo.</li>
-        <li>Resultado de evaluación por alumno: nota, aprobado/reprobado, en el mismo listado.</li>
-      </ul>
+    <div class="banner info">Seleccioná un curso para gestionar su docente, el listado de alumnos, la asistencia por clase y las evaluaciones — todo en un mismo lugar.</div>
+    <div class="card">
+      <div class="field" style="max-width:560px;">
+        <label>Curso</label>
+        <select id="al_curso" onchange="onSelectCursoAlumnos()"></select>
+      </div>
+      <div class="field" style="max-width:560px;margin-top:6px;">
+        <label>Docente / instructor asignado</label>
+        <div style="display:flex;gap:8px;">
+          <input id="al_docente" placeholder="Nombre del docente">
+          <button class="btn small" onclick="saveDocenteAlumnos()">Guardar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:10px;">
+        <h2 style="margin:0;">👥 Alumnos, asistencia y evaluación</h2>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <input id="al_nuevoNombre" placeholder="Nombre del alumno" style="padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:.8rem;">
+          <button class="btn small" onclick="agregarAlumno()">+ Alumno</button>
+          <input type="date" id="al_nuevaFecha" style="padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:.78rem;">
+          <input id="al_nuevaHora" placeholder="Horario (ej: 08 a 12 hs)" style="padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:.78rem;width:150px;">
+          <button class="btn small secondary" onclick="agregarSesion()">+ Clase</button>
+        </div>
+      </div>
+      <p id="sec-asistencia" style="font-size:.75rem;color:var(--text-muted);margin:0 0 10px;">Hacé clic en cada celda de asistencia para pasar de sin marcar → <span style="color:#1f8a5f;font-weight:700;">Presente</span> → <span style="color:#c0392b;font-weight:700;">Ausente</span>. La columna Nota calcula el estado automáticamente (aprobado desde 6).</p>
+      <div style="overflow-x:auto;border:1px solid var(--border);border-radius:8px;">
+        <table style="width:100%;border-collapse:collapse;font-size:.76rem;min-width:600px;">
+          <thead id="al_thead"></thead>
+          <tbody id="al_tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card" id="sec-evaluaciones">
+      <h2 style="margin:0 0 10px;">📝 Resumen de evaluación del curso</h2>
+      <div id="al_evalResumen" style="display:flex;gap:14px;flex-wrap:wrap;"></div>
     </div>
   </section>
   <section class="panel" id="panel-asistencia">
     <div class="placeholder">
-      <h3>🗓️ Asistencia — Fase 2</h3>
-      <p>Se integrará junto con el listado de Alumnos y Docentes (misma grilla, editable por día/hora).</p>
+      <h3>🗓️ Ya integrada</h3>
+      <p>La asistencia se gestiona junto con el listado en la pestaña "Alumnos y Docentes" — seleccioná un curso ahí.</p>
     </div>
   </section>
   <section class="panel" id="panel-evaluaciones">
     <div class="placeholder">
-      <h3>📝 Evaluaciones — Fase 2</h3>
-      <p>Nota, aprobado/reprobado por alumno, integrado al listado de Alumnos y Docentes.</p>
+      <h3>📝 Ya integrada</h3>
+      <p>Las evaluaciones se gestionan junto con el listado en la pestaña "Alumnos y Docentes" — seleccioná un curso ahí.</p>
     </div>
   </section>
   <section class="panel" id="panel-indicadores">
@@ -538,12 +567,19 @@ const seedCursos = [
 let cursos = {};
 let tareas = {};
 let usuarios = {};
+let alumnos = {};      // { id: {cursoId, nombre} }
+let sesiones = {};     // { id: {cursoId, fecha, hora} }
+let asistencia = {};   // { "alumnoId__sesionId": "P" | "A" }
+let selectedCursoAlumnos = null;
 
 async function initLocalMode(){
   const data = loadLocal();
   cursos = data.cursos || {};
   tareas = data.tareas || {};
   usuarios = data.usuarios || {};
+  alumnos = data.alumnos || {};
+  sesiones = data.sesiones || {};
+  asistencia = data.asistencia || {};
   if(Object.keys(cursos).length === 0){
     seedCursos.forEach((c,i)=>{ cursos["c"+i] = c; });
   }
@@ -583,12 +619,24 @@ function initFirebaseListeners(){
     renderUsuarios();
     if(currentUser) document.getElementById('currentUserLabel').textContent = (usuarios[currentUser]&&usuarios[currentUser].nombre)||currentUser;
   });
+  db.ref('convenio24/alumnos').on('value', snap=>{
+    alumnos = snap.val() || {};
+    renderAlumnosTabla();
+  });
+  db.ref('convenio24/sesiones').on('value', snap=>{
+    sesiones = snap.val() || {};
+    renderAlumnosTabla();
+  });
+  db.ref('convenio24/asistencia').on('value', snap=>{
+    asistencia = snap.val() || {};
+    renderAlumnosTabla();
+  });
   initSession();
 }
 
 function persist(){
   if(useFirebase) return; // firebase writes happen directly per-action
-  saveLocal({cursos, tareas, usuarios});
+  saveLocal({cursos, tareas, usuarios, alumnos, sesiones, asistencia});
 }
 
 /* ============ HELPERS ============ */
@@ -866,6 +914,223 @@ document.querySelectorAll('.kanban-col').forEach(col=>{
   col.addEventListener('dragleave', ()=>col.classList.remove('dragover'));
 });
 
+/* ============ ALUMNOS, DOCENTES, ASISTENCIA Y EVALUACIONES ============ */
+function populateCursoAlumnosSelect(){
+  const sel = document.getElementById('al_curso');
+  if(!sel) return;
+  const current = sel.value || selectedCursoAlumnos;
+  sel.innerHTML = Object.entries(cursos).sort((a,b)=>(a[1].orden||0)-(b[1].orden||0))
+    .map(([id,c])=>`<option value="${id}">${c.orden}. ${c.nombre}</option>`).join('');
+  if(current && cursos[current]){
+    sel.value = current;
+  }
+  selectedCursoAlumnos = sel.value || null;
+}
+
+function onSelectCursoAlumnos(){
+  selectedCursoAlumnos = document.getElementById('al_curso').value;
+  const c = cursos[selectedCursoAlumnos];
+  document.getElementById('al_docente').value = (c && c.docente) || '';
+  renderAlumnosTabla();
+}
+
+function saveDocenteAlumnos(){
+  if(!selectedCursoAlumnos){ alert('Elegí un curso primero.'); return; }
+  const val = document.getElementById('al_docente').value.trim();
+  if(useFirebase){
+    db.ref('convenio24/cursos/'+selectedCursoAlumnos+'/docente').set(val).catch(e=>alert('Error al guardar: '+e.message));
+  }else{
+    cursos[selectedCursoAlumnos].docente = val;
+    persist();
+    renderGantt();
+  }
+}
+
+function agregarAlumno(){
+  if(!selectedCursoAlumnos){ alert('Elegí un curso primero.'); return; }
+  const nombre = document.getElementById('al_nuevoNombre').value.trim();
+  if(!nombre){ alert('Escribí el nombre del alumno.'); return; }
+  const id = uid();
+  const data = { cursoId: selectedCursoAlumnos, nombre, nota:null };
+  if(useFirebase){
+    db.ref('convenio24/alumnos/'+id).set(data).catch(e=>alert('Error al guardar: '+e.message));
+  }else{
+    alumnos[id] = data;
+    persist();
+    renderAlumnosTabla();
+  }
+  document.getElementById('al_nuevoNombre').value = '';
+}
+
+function eliminarAlumno(id){
+  if(!confirm('¿Quitar a este alumno del listado? También se borra su asistencia y nota cargadas.')) return;
+  const clavesAsistencia = Object.keys(asistencia).filter(k=>k.startsWith(id+'__'));
+  if(useFirebase){
+    const updates = {};
+    updates['convenio24/alumnos/'+id] = null;
+    clavesAsistencia.forEach(k=>{ updates['convenio24/asistencia/'+k] = null; });
+    db.ref().update(updates).catch(e=>alert('Error al eliminar: '+e.message));
+  }else{
+    delete alumnos[id];
+    clavesAsistencia.forEach(k=>delete asistencia[k]);
+    persist();
+    renderAlumnosTabla();
+  }
+}
+
+function agregarSesion(){
+  if(!selectedCursoAlumnos){ alert('Elegí un curso primero.'); return; }
+  const fecha = document.getElementById('al_nuevaFecha').value;
+  const hora = document.getElementById('al_nuevaHora').value.trim();
+  if(!fecha){ alert('Elegí la fecha de la clase.'); return; }
+  const id = uid();
+  const data = { cursoId: selectedCursoAlumnos, fecha, hora };
+  if(useFirebase){
+    db.ref('convenio24/sesiones/'+id).set(data).catch(e=>alert('Error al guardar: '+e.message));
+  }else{
+    sesiones[id] = data;
+    persist();
+    renderAlumnosTabla();
+  }
+  document.getElementById('al_nuevaHora').value = '';
+}
+
+function eliminarSesion(id){
+  if(!confirm('¿Eliminar esta clase del cronograma de asistencia? Se borran las marcas asociadas.')) return;
+  const claves = Object.keys(asistencia).filter(k=>k.endsWith('__'+id));
+  if(useFirebase){
+    const updates = {};
+    updates['convenio24/sesiones/'+id] = null;
+    claves.forEach(k=>{ updates['convenio24/asistencia/'+k] = null; });
+    db.ref().update(updates).catch(e=>alert('Error al eliminar: '+e.message));
+  }else{
+    delete sesiones[id];
+    claves.forEach(k=>delete asistencia[k]);
+    persist();
+    renderAlumnosTabla();
+  }
+}
+
+function toggleAsistencia(alumnoId, sesionId){
+  const key = alumnoId+'__'+sesionId;
+  const actual = asistencia[key];
+  const siguiente = actual === 'P' ? 'A' : (actual === 'A' ? null : 'P');
+  if(useFirebase){
+    db.ref('convenio24/asistencia/'+key).set(siguiente);
+  }else{
+    if(siguiente===null) delete asistencia[key]; else asistencia[key] = siguiente;
+    persist();
+    renderAlumnosTabla();
+  }
+}
+
+function guardarNota(alumnoId, valor){
+  const nota = valor === '' ? null : Number(valor);
+  if(useFirebase){
+    db.ref('convenio24/alumnos/'+alumnoId+'/nota').set(nota);
+  }else{
+    alumnos[alumnoId].nota = nota;
+    persist();
+    renderAlumnosTabla();
+  }
+}
+
+function estadoPorNota(nota){
+  if(nota === null || nota === undefined || nota === '') return {label:'Pendiente', color:'var(--text-muted)'};
+  return nota >= 6 ? {label:'Aprobado', color:'var(--green)'} : {label:'Reprobado', color:'var(--red)'};
+}
+
+function renderAlumnosTabla(){
+  populateCursoAlumnosSelect();
+  const thead = document.getElementById('al_thead');
+  const tbody = document.getElementById('al_tbody');
+  const resumen = document.getElementById('al_evalResumen');
+  if(!thead || !tbody) return;
+
+  if(!selectedCursoAlumnos){
+    thead.innerHTML = '';
+    tbody.innerHTML = '<tr><td style="padding:10px;color:var(--text-muted);">Elegí un curso para ver su listado.</td></tr>';
+    if(resumen) resumen.innerHTML = '';
+    return;
+  }
+
+  const cursoAlumnos = Object.entries(alumnos).filter(([id,a])=>a.cursoId===selectedCursoAlumnos);
+  const cursoSesiones = Object.entries(sesiones).filter(([id,s])=>s.cursoId===selectedCursoAlumnos)
+    .sort((a,b)=>new Date(a[1].fecha)-new Date(b[1].fecha));
+
+  // header
+  let headHtml = '<tr style="background:var(--header);color:#fff;"><th style="padding:8px;text-align:left;min-width:160px;">Alumno</th>';
+  cursoSesiones.forEach(([sid,s])=>{
+    headHtml += `<th style="padding:6px;text-align:center;min-width:70px;font-weight:600;">
+        ${fmtDate(s.fecha)}${s.hora?'<br><span style="font-weight:400;font-size:.62rem;">'+s.hora+'</span>':''}
+        <br><a onclick="eliminarSesion('${sid}')" style="color:#ffd7d7;font-size:.62rem;cursor:pointer;">quitar</a>
+      </th>`;
+  });
+  headHtml += '<th style="padding:8px;min-width:80px;">Nota</th><th style="padding:8px;min-width:100px;">Estado</th><th style="padding:8px;"></th></tr>';
+  thead.innerHTML = headHtml;
+
+  // body
+  if(cursoAlumnos.length === 0){
+    tbody.innerHTML = `<tr><td colspan="${cursoSesiones.length+4}" style="padding:12px;text-align:center;color:var(--text-muted);">Sin alumnos cargados todavía para este curso.</td></tr>`;
+  }else{
+    tbody.innerHTML = cursoAlumnos.sort((a,b)=>a[1].nombre.localeCompare(b[1].nombre)).map(([aid,al])=>{
+      let cells = `<td style="padding:7px 8px;border-bottom:1px solid var(--border);">${al.nombre}</td>`;
+      cursoSesiones.forEach(([sid])=>{
+        const est = asistencia[aid+'__'+sid];
+        const bg = est==='P' ? '#c8e6d3' : (est==='A' ? '#f5c6c0' : '#f2f5f4');
+        const color = est==='P' ? '#0f4d2c' : (est==='A' ? '#7a1f14' : 'var(--text-muted)');
+        const label = est==='P' ? 'P' : (est==='A' ? 'A' : '–');
+        cells += `<td style="padding:0;border-bottom:1px solid var(--border);text-align:center;">
+          <div onclick="toggleAsistencia('${aid}','${sid}')" style="cursor:pointer;background:${bg};color:${color};font-weight:700;padding:8px 0;">${label}</div>
+        </td>`;
+      });
+      const est = estadoPorNota(al.nota);
+      cells += `<td style="padding:6px 8px;border-bottom:1px solid var(--border);">
+        <input type="number" min="0" max="10" step="0.1" value="${al.nota===null||al.nota===undefined?'':al.nota}" style="width:60px;padding:4px 6px;border:1px solid var(--border);border-radius:5px;font-size:.76rem;" onchange="guardarNota('${aid}', this.value)">
+      </td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);color:${est.color};font-weight:600;">${est.label}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:right;">
+        <button class="btn danger small" onclick="eliminarAlumno('${aid}')">Quitar</button>
+      </td>`;
+      return `<tr>${cells}</tr>`;
+    }).join('');
+  }
+
+  // resumen de evaluación
+  if(resumen){
+    const total = cursoAlumnos.length;
+    const aprobados = cursoAlumnos.filter(([id,a])=>a.nota!==null && a.nota!==undefined && a.nota>=6).length;
+    const reprobados = cursoAlumnos.filter(([id,a])=>a.nota!==null && a.nota!==undefined && a.nota<6).length;
+    const pendientes = total - aprobados - reprobados;
+    const notas = cursoAlumnos.map(([id,a])=>a.nota).filter(n=>n!==null && n!==undefined);
+    const promedio = notas.length ? (notas.reduce((s,n)=>s+n,0)/notas.length).toFixed(1) : '–';
+    const totalSesiones = cursoSesiones.length;
+    let asistenciaProm = '–';
+    if(totalSesiones>0 && total>0){
+      let sumaP = 0, totalMarcas = 0;
+      cursoAlumnos.forEach(([aid])=>{
+        cursoSesiones.forEach(([sid])=>{
+          const v = asistencia[aid+'__'+sid];
+          if(v){ totalMarcas++; if(v==='P') sumaP++; }
+        });
+      });
+      asistenciaProm = totalMarcas ? Math.round(sumaP/totalMarcas*100)+'%' : '–';
+    }
+    resumen.innerHTML = [
+      {n:total,l:'Alumnos'},
+      {n:totalSesiones,l:'Clases registradas'},
+      {n:aprobados,l:'Aprobados'},
+      {n:reprobados,l:'Reprobados'},
+      {n:pendientes,l:'Sin evaluar'},
+      {n:promedio,l:'Promedio de nota'},
+      {n:asistenciaProm,l:'Asistencia promedio'}
+    ].map(k=>`<div style="background:var(--bg);border-radius:8px;padding:10px 16px;min-width:110px;text-align:center;">
+      <div style="font-size:1.2rem;font-weight:700;color:var(--header-dark);">${k.n}</div>
+      <div style="font-size:.68rem;color:var(--text-muted);">${k.l}</div>
+    </div>`).join('');
+  }
+}
+
 /* ============ USUARIOS ============ */
 function openUserModal(username){
   document.getElementById('u_id').value = username || '';
@@ -958,12 +1223,19 @@ document.getElementById('tabsNav').addEventListener('click', e=>{
   btn.classList.add('active');
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  if(btn.dataset.anchor){
+    setTimeout(()=>{
+      const el = document.getElementById(btn.dataset.anchor);
+      if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+    }, 60);
+  }
 });
 
 function renderAll(){
   renderKpis();
   renderGantt();
   renderTasks();
+  renderAlumnosTabla();
 }
 
 tryInitFirebase();
