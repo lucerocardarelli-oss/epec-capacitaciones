@@ -354,21 +354,110 @@
     </div>
   </section>
   <section class="panel" id="panel-logistica">
-    <div class="placeholder">
-      <h3>🚚 Logística — Fase 2</h3>
-      <p>Planificación logística por curso: lugar, traslados, materiales, equipamiento.</p>
+    <div class="banner info">Planificación logística por curso: lugar, traslados, materiales, equipamiento y responsable.</div>
+    <div class="card">
+      <div class="field" style="max-width:560px;">
+        <label>Curso</label>
+        <select id="log_curso" onchange="onSelectCursoLogistica()"></select>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Lugar de dictado</label><input id="log_lugar"></div>
+        <div class="field"><label>Responsable de logística</label><input id="log_responsable"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Traslados / transporte</label><textarea id="log_traslados"></textarea></div>
+        <div class="field"><label>Materiales necesarios</label><textarea id="log_materiales"></textarea></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Equipamiento (proyector, PC, insumos, etc.)</label><textarea id="log_equipamiento"></textarea></div>
+        <div class="field"><label>Estado de la logística</label>
+          <select id="log_estado"><option value="pendiente">Pendiente</option><option value="gestion">En gestión</option><option value="confirmado">Confirmado</option></select>
+        </div>
+      </div>
+      <div class="field"><label>Notas</label><textarea id="log_notas"></textarea></div>
+      <button class="btn" onclick="guardarLogistica()">Guardar</button>
+    </div>
+
+    <div class="card">
+      <h2 style="margin:0 0 10px;">Estado general por curso</h2>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:.78rem;">
+          <thead><tr style="background:var(--header);color:#fff;">
+            <th style="padding:6px 8px;text-align:left;">Curso</th>
+            <th style="padding:6px 8px;text-align:left;">Lugar</th>
+            <th style="padding:6px 8px;text-align:left;">Responsable</th>
+            <th style="padding:6px 8px;text-align:left;">Estado</th>
+          </tr></thead>
+          <tbody id="log_tbody"></tbody>
+        </table>
+      </div>
     </div>
   </section>
+
   <section class="panel" id="panel-presupuesto">
-    <div class="placeholder">
-      <h3>💰 Presupuesto — Fase 2</h3>
-      <p>Seguimiento de lo presupuestado vs. lo facturado, por curso.</p>
+    <div class="banner info">Cargá el monto presupuestado por curso. El monto facturado se calcula solo, a partir de lo que cargues en la pestaña "Facturas".</div>
+    <div class="card">
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:.78rem;">
+          <thead><tr style="background:var(--header);color:#fff;">
+            <th style="padding:6px 8px;text-align:left;min-width:220px;">Curso</th>
+            <th style="padding:6px 8px;text-align:left;min-width:130px;">Presupuestado ($)</th>
+            <th style="padding:6px 8px;text-align:left;">Facturado ($)</th>
+            <th style="padding:6px 8px;text-align:left;min-width:160px;">Avance</th>
+            <th style="padding:6px 8px;text-align:left;">%</th>
+          </tr></thead>
+          <tbody id="pre_tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h2 style="margin:0 0 10px;">Totales del Convenio 24</h2>
+      <div id="pre_resumen" style="display:flex;gap:14px;flex-wrap:wrap;"></div>
     </div>
   </section>
+
   <section class="panel" id="panel-facturas">
-    <div class="placeholder">
-      <h3>🧾 Facturas — Fase 2</h3>
-      <p>Adjuntar facturas correspondientes a cada curso.</p>
+    <div class="banner info">Cargá los datos de cada factura o comprobante. Si lo tenés guardado en Google Drive, OneDrive u otro repositorio, pegá el link en "Comprobante" para acceder rápido — esta app no guarda archivos adjuntos.</div>
+    <div class="card">
+      <div class="field" style="max-width:560px;">
+        <label>Curso</label>
+        <select id="fact_curso" onchange="onSelectCursoFacturas()"></select>
+      </div>
+      <div class="row2">
+        <div class="field"><label>N° de factura / comprobante</label><input id="fact_numero"></div>
+        <div class="field"><label>Proveedor / docente</label><input id="fact_proveedor"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Concepto</label><input id="fact_concepto"></div>
+        <div class="field"><label>Monto ($)</label><input type="number" id="fact_monto" min="0" step="0.01"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Fecha</label><input type="date" id="fact_fecha"></div>
+        <div class="field"><label>Estado</label>
+          <select id="fact_estado"><option value="pendiente">Pendiente de pago</option><option value="pagada">Pagada</option></select>
+        </div>
+      </div>
+      <div class="field"><label>Link al comprobante (Drive, OneDrive, etc. — opcional)</label><input id="fact_link" placeholder="https://..."></div>
+      <button class="btn" onclick="guardarFactura()">Agregar factura</button>
+    </div>
+
+    <div class="card">
+      <h2 style="margin:0 0 10px;">Facturas del curso seleccionado</h2>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:.78rem;">
+          <thead><tr style="background:var(--header);color:#fff;">
+            <th style="padding:6px 8px;text-align:left;">N°</th>
+            <th style="padding:6px 8px;text-align:left;">Proveedor</th>
+            <th style="padding:6px 8px;text-align:left;">Concepto</th>
+            <th style="padding:6px 8px;text-align:left;">Monto</th>
+            <th style="padding:6px 8px;text-align:left;">Fecha</th>
+            <th style="padding:6px 8px;text-align:left;">Estado</th>
+            <th style="padding:6px 8px;"></th>
+            <th style="padding:6px 8px;"></th>
+          </tr></thead>
+          <tbody id="fact_tbody"></tbody>
+        </table>
+      </div>
     </div>
   </section>
   <section class="panel" id="panel-reportes">
@@ -658,8 +747,13 @@ let alumnos = {};      // { id: {cursoId, nombre} }
 let sesiones = {};     // { id: {cursoId, fecha, hora} }
 let asistencia = {};   // { "alumnoId__sesionId": "P" | "A" }
 let encuestas = {};    // { id: {cursoId, q1,q2,q3,q4, comentario} }
+let logistica = {};    // { cursoId: {lugar, responsable, traslados, materiales, equipamiento, estado, notas} }
+let presupuesto = {};  // { cursoId: {presupuestado} }
+let facturas = {};     // { id: {cursoId, numero, proveedor, concepto, monto, fecha, estado, link} }
 let selectedCursoAlumnos = null;
 let selectedCursoEncuesta = null;
+let selectedCursoLogistica = null;
+let selectedCursoFacturas = null;
 
 async function initLocalMode(){
   const data = loadLocal();
@@ -670,6 +764,9 @@ async function initLocalMode(){
   sesiones = data.sesiones || {};
   asistencia = data.asistencia || {};
   encuestas = data.encuestas || {};
+  logistica = data.logistica || {};
+  presupuesto = data.presupuesto || {};
+  facturas = data.facturas || {};
   if(Object.keys(cursos).length === 0){
     seedCursos.forEach((c,i)=>{ cursos["c"+i] = c; });
   }
@@ -726,12 +823,25 @@ function initFirebaseListeners(){
     renderEncuestaTabla();
     renderIndicadores();
   });
+  db.ref('convenio24/logistica').on('value', snap=>{
+    logistica = snap.val() || {};
+    renderLogisticaTabla();
+  });
+  db.ref('convenio24/presupuesto').on('value', snap=>{
+    presupuesto = snap.val() || {};
+    renderPresupuestoTabla();
+  });
+  db.ref('convenio24/facturas').on('value', snap=>{
+    facturas = snap.val() || {};
+    renderFacturasTabla();
+    renderPresupuestoTabla();
+  });
   initSession();
 }
 
 function persist(){
   if(useFirebase) return; // firebase writes happen directly per-action
-  saveLocal({cursos, tareas, usuarios, alumnos, sesiones, asistencia, encuestas});
+  saveLocal({cursos, tareas, usuarios, alumnos, sesiones, asistencia, encuestas, logistica, presupuesto, facturas});
 }
 
 /* ============ HELPERS ============ */
@@ -1451,6 +1561,208 @@ function renderEncuestaTabla(){
   }
 }
 
+/* ============ LOGÍSTICA ============ */
+function populateCursoLogisticaSelect(){
+  const sel = document.getElementById('log_curso');
+  if(!sel) return;
+  const current = sel.value || selectedCursoLogistica;
+  sel.innerHTML = Object.entries(cursos).sort((a,b)=>(a[1].orden||0)-(b[1].orden||0))
+    .map(([id,c])=>`<option value="${id}">${c.orden}. ${c.nombre}</option>`).join('');
+  if(current && cursos[current]) sel.value = current;
+  selectedCursoLogistica = sel.value || null;
+  onSelectCursoLogisticaFields();
+}
+
+function onSelectCursoLogistica(){
+  selectedCursoLogistica = document.getElementById('log_curso').value;
+  onSelectCursoLogisticaFields();
+}
+
+function onSelectCursoLogisticaFields(){
+  const l = logistica[selectedCursoLogistica] || {};
+  const c = cursos[selectedCursoLogistica] || {};
+  document.getElementById('log_lugar').value = l.lugar !== undefined ? l.lugar : (c.lugar||'');
+  document.getElementById('log_responsable').value = l.responsable || '';
+  document.getElementById('log_traslados').value = l.traslados || '';
+  document.getElementById('log_materiales').value = l.materiales || '';
+  document.getElementById('log_equipamiento').value = l.equipamiento || '';
+  document.getElementById('log_estado').value = l.estado || 'pendiente';
+  document.getElementById('log_notas').value = l.notas || '';
+}
+
+function guardarLogistica(){
+  if(!selectedCursoLogistica){ alert('Elegí un curso primero.'); return; }
+  const data = {
+    lugar: document.getElementById('log_lugar').value.trim(),
+    responsable: document.getElementById('log_responsable').value.trim(),
+    traslados: document.getElementById('log_traslados').value.trim(),
+    materiales: document.getElementById('log_materiales').value.trim(),
+    equipamiento: document.getElementById('log_equipamiento').value.trim(),
+    estado: document.getElementById('log_estado').value,
+    notas: document.getElementById('log_notas').value.trim()
+  };
+  if(useFirebase){
+    db.ref('convenio24/logistica/'+selectedCursoLogistica).set(data).catch(e=>alert('Error al guardar: '+e.message));
+  }else{
+    logistica[selectedCursoLogistica] = data;
+    persist();
+    renderLogisticaTabla();
+  }
+}
+
+function estadoLogisticaBadge(estado){
+  const map = {pendiente:{label:'Pendiente',color:'var(--red)'}, gestion:{label:'En gestión',color:'var(--amber)'}, confirmado:{label:'Confirmado',color:'var(--green)'}};
+  return map[estado] || {label:'Pendiente',color:'var(--red)'};
+}
+
+function renderLogisticaTabla(){
+  populateCursoLogisticaSelect();
+  const tbody = document.getElementById('log_tbody');
+  if(!tbody) return;
+  tbody.innerHTML = Object.entries(cursos).sort((a,b)=>(a[1].orden||0)-(b[1].orden||0)).map(([cid,c])=>{
+    const l = logistica[cid] || {};
+    const est = estadoLogisticaBadge(l.estado);
+    return `<tr>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${c.orden}. ${truncate(c.nombre,40)}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${l.lugar !== undefined ? l.lugar : (c.lugar||'—')}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${l.responsable||'—'}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);color:${est.color};font-weight:600;">${est.label}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ============ PRESUPUESTO Y FACTURAS ============ */
+function populateCursoFacturasSelect(){
+  const sel = document.getElementById('fact_curso');
+  if(!sel) return;
+  const current = sel.value || selectedCursoFacturas;
+  sel.innerHTML = Object.entries(cursos).sort((a,b)=>(a[1].orden||0)-(b[1].orden||0))
+    .map(([id,c])=>`<option value="${id}">${c.orden}. ${c.nombre}</option>`).join('');
+  if(current && cursos[current]) sel.value = current;
+  selectedCursoFacturas = sel.value || null;
+}
+
+function onSelectCursoFacturas(){
+  selectedCursoFacturas = document.getElementById('fact_curso').value;
+  renderFacturasTabla();
+}
+
+function guardarFactura(){
+  if(!selectedCursoFacturas){ alert('Elegí un curso primero.'); return; }
+  const monto = Number(document.getElementById('fact_monto').value);
+  if(!monto || monto<=0){ alert('Cargá un monto válido.'); return; }
+  const data = {
+    cursoId: selectedCursoFacturas,
+    numero: document.getElementById('fact_numero').value.trim(),
+    proveedor: document.getElementById('fact_proveedor').value.trim(),
+    concepto: document.getElementById('fact_concepto').value.trim(),
+    monto,
+    fecha: document.getElementById('fact_fecha').value,
+    estado: document.getElementById('fact_estado').value,
+    link: document.getElementById('fact_link').value.trim()
+  };
+  const id = uid()+Math.floor(Math.random()*10000);
+  if(useFirebase){
+    db.ref('convenio24/facturas/'+id).set(data).catch(e=>alert('Error al guardar: '+e.message));
+  }else{
+    facturas[id] = data;
+    persist();
+    renderFacturasTabla();
+    renderPresupuestoTabla();
+  }
+  ['fact_numero','fact_proveedor','fact_concepto','fact_monto','fact_fecha','fact_link'].forEach(f=>document.getElementById(f).value='');
+}
+
+function eliminarFactura(id){
+  if(!confirm('¿Eliminar esta factura?')) return;
+  if(useFirebase){
+    db.ref('convenio24/facturas/'+id).remove().catch(e=>alert('Error al eliminar: '+e.message));
+  }else{
+    delete facturas[id];
+    persist();
+    renderFacturasTabla();
+    renderPresupuestoTabla();
+  }
+}
+
+function renderFacturasTabla(){
+  populateCursoFacturasSelect();
+  const tbody = document.getElementById('fact_tbody');
+  if(!tbody) return;
+  if(!selectedCursoFacturas){
+    tbody.innerHTML = '<tr><td style="padding:10px;color:var(--text-muted);">Elegí un curso.</td></tr>';
+    return;
+  }
+  const lista = Object.entries(facturas).filter(([id,f])=>f.cursoId===selectedCursoFacturas)
+    .sort((a,b)=>new Date(b[1].fecha||0)-new Date(a[1].fecha||0));
+  if(lista.length===0){
+    tbody.innerHTML = '<tr><td colspan="8" style="padding:12px;text-align:center;color:var(--text-muted);">Sin facturas cargadas para este curso.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = lista.map(([id,f])=>{
+    const estColor = f.estado==='pagada' ? 'var(--green)' : 'var(--amber)';
+    const estLabel = f.estado==='pagada' ? 'Pagada' : 'Pendiente';
+    return `<tr>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${f.numero||'—'}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${f.proveedor||'—'}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${f.concepto||'—'}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);">$${Number(f.monto).toLocaleString('es-AR')}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${f.fecha?fmtDate(f.fecha):'—'}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);color:${estColor};font-weight:600;">${estLabel}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${f.link?`<a href="${f.link}" target="_blank" rel="noopener">Ver</a>`:'—'}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:right;"><button class="btn danger small" onclick="eliminarFactura('${id}')">Quitar</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function guardarPresupuestado(cursoId, valor){
+  const monto = Number(valor)||0;
+  if(useFirebase){
+    db.ref('convenio24/presupuesto/'+cursoId+'/presupuestado').set(monto);
+  }else{
+    presupuesto[cursoId] = Object.assign({}, presupuesto[cursoId], {presupuestado: monto});
+    persist();
+    renderPresupuestoTabla();
+  }
+}
+
+function renderPresupuestoTabla(){
+  const tbody = document.getElementById('pre_tbody');
+  const resumen = document.getElementById('pre_resumen');
+  if(!tbody) return;
+  let totalPresu = 0, totalFact = 0;
+  tbody.innerHTML = Object.entries(cursos).sort((a,b)=>(a[1].orden||0)-(b[1].orden||0)).map(([cid,c])=>{
+    const presupuestado = (presupuesto[cid] && presupuesto[cid].presupuestado) || 0;
+    const facturado = Object.values(facturas).filter(f=>f.cursoId===cid).reduce((s,f)=>s+(Number(f.monto)||0),0);
+    totalPresu += presupuestado;
+    totalFact += facturado;
+    const pct = presupuestado>0 ? Math.min(100, Math.round(facturado/presupuestado*100)) : (facturado>0 ? 100 : 0);
+    const barColor = pct>=100 ? 'var(--red)' : (pct>=75 ? 'var(--amber)' : 'var(--green)');
+    return `<tr>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${c.orden}. ${truncate(c.nombre,38)}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);">
+        <input type="number" min="0" step="1000" value="${presupuestado||''}" placeholder="0" style="width:110px;padding:4px 6px;border:1px solid var(--border);border-radius:5px;font-size:.76rem;" onchange="guardarPresupuestado('${cid}', this.value)">
+      </td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);">$${facturado.toLocaleString('es-AR')}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);">
+        <div style="background:#eef2f1;border-radius:4px;height:14px;width:130px;"><div style="background:${barColor};height:100%;border-radius:4px;width:${pct}%;"></div></div>
+      </td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);font-weight:600;">${presupuestado>0?pct+'%':'—'}</td>
+    </tr>`;
+  }).join('');
+  if(resumen){
+    const restante = totalPresu - totalFact;
+    resumen.innerHTML = [
+      {n:'$'+totalPresu.toLocaleString('es-AR'), l:'Presupuestado total'},
+      {n:'$'+totalFact.toLocaleString('es-AR'), l:'Facturado total'},
+      {n:'$'+restante.toLocaleString('es-AR'), l:'Saldo disponible'}
+    ].map(k=>`<div style="background:var(--bg);border-radius:8px;padding:10px 16px;min-width:150px;text-align:center;">
+      <div style="font-size:1.1rem;font-weight:700;color:var(--header-dark);">${k.n}</div>
+      <div style="font-size:.68rem;color:var(--text-muted);">${k.l}</div>
+    </div>`).join('');
+  }
+}
+
 /* ============ USUARIOS ============ */
 function openUserModal(username){
   document.getElementById('u_id').value = username || '';
@@ -1557,6 +1869,9 @@ function renderAll(){
   renderTasks();
   renderAlumnosTabla();
   renderEncuestaTabla();
+  renderLogisticaTabla();
+  renderPresupuestoTabla();
+  renderFacturasTabla();
   renderIndicadores();
 }
 
