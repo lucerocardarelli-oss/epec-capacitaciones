@@ -129,6 +129,13 @@
     .kanban{grid-template-columns:1fr;}
     header.top{flex-direction:column;align-items:flex-start;}
   }
+
+  .print-only{display:none;}
+  @media print{
+    body *{visibility:hidden;}
+    #enc_printArea, #enc_printArea *{visibility:visible;}
+    #enc_printArea{display:block;position:absolute;top:0;left:0;width:100%;color:#000;}
+  }
 </style>
 </head>
 <body>
@@ -278,9 +285,72 @@
     <div id="indicadoresBody"></div>
   </section>
   <section class="panel" id="panel-encuesta">
-    <div class="placeholder">
-      <h3>🙂 Encuesta de Satisfacción — Fase 2</h3>
-      <p>Formulario imprimible + carga manual de resultados por curso.</p>
+    <div class="banner info">Imprimí el formulario para entregarlo en papel al finalizar el curso, y después cargá acá los resultados para que se calculen los promedios.</div>
+    <div class="card">
+      <div class="field" style="max-width:560px;">
+        <label>Curso</label>
+        <select id="enc_curso" onchange="onSelectCursoEncuesta()"></select>
+      </div>
+      <button class="btn secondary" style="margin-top:8px;" onclick="imprimirEncuesta()">🖨️ Imprimir formulario en blanco</button>
+    </div>
+
+    <div class="card">
+      <h2 style="margin:0 0 10px;">➕ Cargar una respuesta recibida</h2>
+      <div class="row2">
+        <div class="field"><label>Contenido y utilidad del curso (1 a 5)</label>
+          <select id="enc_q1"><option value="5">5 — Excelente</option><option value="4">4 — Muy bueno</option><option value="3">3 — Bueno</option><option value="2">2 — Regular</option><option value="1">1 — Malo</option></select>
+        </div>
+        <div class="field"><label>Material didáctico (1 a 5)</label>
+          <select id="enc_q2"><option value="5">5 — Excelente</option><option value="4">4 — Muy bueno</option><option value="3">3 — Bueno</option><option value="2">2 — Regular</option><option value="1">1 — Malo</option></select>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Desempeño del docente (1 a 5)</label>
+          <select id="enc_q3"><option value="5">5 — Excelente</option><option value="4">4 — Muy bueno</option><option value="3">3 — Bueno</option><option value="2">2 — Regular</option><option value="1">1 — Malo</option></select>
+        </div>
+        <div class="field"><label>Organización y logística (1 a 5)</label>
+          <select id="enc_q4"><option value="5">5 — Excelente</option><option value="4">4 — Muy bueno</option><option value="3">3 — Bueno</option><option value="2">2 — Regular</option><option value="1">1 — Malo</option></select>
+        </div>
+      </div>
+      <div class="field"><label>Comentario (opcional)</label><textarea id="enc_comentario"></textarea></div>
+      <button class="btn" onclick="guardarEncuesta()">Guardar respuesta</button>
+    </div>
+
+    <div class="card">
+      <h2 style="margin:0 0 10px;">📊 Resultados del curso</h2>
+      <div id="enc_resumen" style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px;"></div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:.78rem;">
+          <thead><tr style="background:var(--header);color:#fff;">
+            <th style="padding:6px 8px;text-align:left;">Contenido</th>
+            <th style="padding:6px 8px;text-align:left;">Material</th>
+            <th style="padding:6px 8px;text-align:left;">Docente</th>
+            <th style="padding:6px 8px;text-align:left;">Organización</th>
+            <th style="padding:6px 8px;text-align:left;">Comentario</th>
+            <th style="padding:6px 8px;"></th>
+          </tr></thead>
+          <tbody id="enc_tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Formulario imprimible (oculto en pantalla, visible solo al imprimir) -->
+    <div id="enc_printArea" class="print-only">
+      <h1 style="margin-bottom:2px;">EPEC SAU — Encuesta de Satisfacción</h1>
+      <p id="enc_printCurso" style="font-size:.95rem;margin-top:0;"></p>
+      <p>Docente: _____________________________ &nbsp;&nbsp;&nbsp; Fecha: ____/____/______</p>
+      <p style="font-size:.85rem;">Marcá con una cruz tu valoración para cada aspecto (1 = Malo, 5 = Excelente).</p>
+      <table style="width:100%;border-collapse:collapse;margin-top:10px;">
+        <thead><tr><th style="border:1px solid #333;padding:6px;text-align:left;">Aspecto</th><th style="border:1px solid #333;padding:6px;">1</th><th style="border:1px solid #333;padding:6px;">2</th><th style="border:1px solid #333;padding:6px;">3</th><th style="border:1px solid #333;padding:6px;">4</th><th style="border:1px solid #333;padding:6px;">5</th></tr></thead>
+        <tbody>
+          <tr><td style="border:1px solid #333;padding:8px;">Contenido y utilidad del curso</td><td style="border:1px solid #333;"></td><td style="border:1px solid #333;"></td><td style="border:1px solid #333;"></td><td style="border:1px solid #333;"></td><td style="border:1px solid #333;"></td></tr>
+          <tr><td style="border:1px solid #333;padding:8px;">Material didáctico</td><td style="border:1px solid #333;"></td><td style="border:1px solid #333;"></td><td style="border:1px solid #333;"></td><td style="border:1px solid #333;"></td><td style="border:1px solid #333;"></td></tr>
+          <tr><td style="border:1px solid #333;padding:8px;">Desempeño del docente</td><td style="border:1px solid #333;"></td><td style="border:1px solid #333;"></td><td style="border:1px solid #333;"></td><td style="border:1px solid #333;"></td><td style="border:1px solid #333;"></td></tr>
+          <tr><td style="border:1px solid #333;padding:8px;">Organización y logística</td><td style="border:1px solid #333;"></td><td style="border:1px solid #333;"></td><td style="border:1px solid #333;"></td><td style="border:1px solid #333;"></td><td style="border:1px solid #333;"></td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:16px;">Comentarios / sugerencias:</p>
+      <div style="border:1px solid #333;height:90px;"></div>
     </div>
   </section>
   <section class="panel" id="panel-logistica">
@@ -587,7 +657,9 @@ let usuarios = {};
 let alumnos = {};      // { id: {cursoId, nombre} }
 let sesiones = {};     // { id: {cursoId, fecha, hora} }
 let asistencia = {};   // { "alumnoId__sesionId": "P" | "A" }
+let encuestas = {};    // { id: {cursoId, q1,q2,q3,q4, comentario} }
 let selectedCursoAlumnos = null;
+let selectedCursoEncuesta = null;
 
 async function initLocalMode(){
   const data = loadLocal();
@@ -597,6 +669,7 @@ async function initLocalMode(){
   alumnos = data.alumnos || {};
   sesiones = data.sesiones || {};
   asistencia = data.asistencia || {};
+  encuestas = data.encuestas || {};
   if(Object.keys(cursos).length === 0){
     seedCursos.forEach((c,i)=>{ cursos["c"+i] = c; });
   }
@@ -648,12 +721,17 @@ function initFirebaseListeners(){
     asistencia = snap.val() || {};
     renderAlumnosTabla();
   });
+  db.ref('convenio24/encuestas').on('value', snap=>{
+    encuestas = snap.val() || {};
+    renderEncuestaTabla();
+    renderIndicadores();
+  });
   initSession();
 }
 
 function persist(){
   if(useFirebase) return; // firebase writes happen directly per-action
-  saveLocal({cursos, tareas, usuarios, alumnos, sesiones, asistencia});
+  saveLocal({cursos, tareas, usuarios, alumnos, sesiones, asistencia, encuestas});
 }
 
 /* ============ HELPERS ============ */
@@ -1211,7 +1289,10 @@ function computeIndicadoresData(){
     const reprobados = alumnosCurso.filter(([id,a])=>a.nota!==null&&a.nota!==undefined&&a.nota<6).length;
     const evaluados = aprobados+reprobados;
     const aprobacionPct = evaluados ? Math.round(aprobados/evaluados*100) : null;
-    return {cid, orden:c.orden, nombre:c.nombre, horas:c.horas||0, asistenciaPct, promedio, aprobados, reprobados, aprobacionPct};
+    const respuestasCurso = Object.entries(encuestas).filter(([id,e])=>e.cursoId===cid).map(([id,e])=>e);
+    const valoracionCurso = respuestasCurso.length ? respuestasCurso.reduce((s,e)=>s+(e.q1+e.q2+e.q4)/3,0)/respuestasCurso.length : null;
+    const valoracionDocente = respuestasCurso.length ? respuestasCurso.reduce((s,e)=>s+e.q3,0)/respuestasCurso.length : null;
+    return {cid, orden:c.orden, nombre:c.nombre, horas:c.horas||0, asistenciaPct, promedio, aprobados, reprobados, aprobacionPct, valoracionCurso, valoracionDocente};
   });
 }
 
@@ -1240,6 +1321,8 @@ function renderIndicadores(){
     const display = d.aprobacionPct===null ? 'Sin datos' : d.aprobacionPct+'% ('+d.aprobados+'/'+(d.aprobados+d.reprobados)+')';
     return barRow(`${d.orden}. ${d.nombre}`, display, d.aprobacionPct, '#00695c', d.aprobacionPct===null);
   }).join('');
+  const valCursoHtml = data.map(d=>barRow(`${d.orden}. ${d.nombre}`, d.valoracionCurso===null?'Sin datos':d.valoracionCurso.toFixed(1)+'/5', d.valoracionCurso===null?0:(d.valoracionCurso/5)*100, '#7b1fa2', d.valoracionCurso===null)).join('');
+  const valDocenteHtml = data.map(d=>barRow(`${d.orden}. ${d.nombre}`, d.valoracionDocente===null?'Sin datos':d.valoracionDocente.toFixed(1)+'/5', d.valoracionDocente===null?0:(d.valoracionDocente/5)*100, '#c0392b', d.valoracionDocente===null)).join('');
 
   el.innerHTML = `
     <div class="card">
@@ -1258,11 +1341,114 @@ function renderIndicadores(){
       <h3>✅ % de aprobación por curso</h3>
       ${aprobHtml}
     </div>
-    <div class="card" style="border-left:4px solid var(--amber);">
-      <h3>🙂 Valoración del curso y del docente</h3>
-      <p style="font-size:.82rem;color:var(--text-muted);margin:0;">Este indicador se completa solo cuando esté cargada la <b>Encuesta de Satisfacción</b> (próximo módulo a construir).</p>
+    <div class="card">
+      <h3>🙂 Valoración del curso (encuesta)</h3>
+      ${valCursoHtml}
+    </div>
+    <div class="card">
+      <h3>🎓 Valoración del docente (encuesta)</h3>
+      ${valDocenteHtml}
     </div>
   `;
+}
+
+/* ============ ENCUESTA DE SATISFACCIÓN ============ */
+function populateCursoEncuestaSelect(){
+  const sel = document.getElementById('enc_curso');
+  if(!sel) return;
+  const current = sel.value || selectedCursoEncuesta;
+  sel.innerHTML = Object.entries(cursos).sort((a,b)=>(a[1].orden||0)-(b[1].orden||0))
+    .map(([id,c])=>`<option value="${id}">${c.orden}. ${c.nombre}</option>`).join('');
+  if(current && cursos[current]) sel.value = current;
+  selectedCursoEncuesta = sel.value || null;
+}
+
+function onSelectCursoEncuesta(){
+  selectedCursoEncuesta = document.getElementById('enc_curso').value;
+  renderEncuestaTabla();
+}
+
+function imprimirEncuesta(){
+  if(!selectedCursoEncuesta){ alert('Elegí un curso primero.'); return; }
+  const c = cursos[selectedCursoEncuesta];
+  document.getElementById('enc_printCurso').textContent = `Curso: ${c.nombre}`;
+  window.print();
+}
+
+function guardarEncuesta(){
+  if(!selectedCursoEncuesta){ alert('Elegí un curso primero.'); return; }
+  const data = {
+    cursoId: selectedCursoEncuesta,
+    q1: Number(document.getElementById('enc_q1').value),
+    q2: Number(document.getElementById('enc_q2').value),
+    q3: Number(document.getElementById('enc_q3').value),
+    q4: Number(document.getElementById('enc_q4').value),
+    comentario: document.getElementById('enc_comentario').value.trim()
+  };
+  const id = uid()+Math.floor(Math.random()*10000);
+  if(useFirebase){
+    db.ref('convenio24/encuestas/'+id).set(data).catch(e=>alert('Error al guardar: '+e.message));
+  }else{
+    encuestas[id] = data;
+    persist();
+    renderEncuestaTabla();
+    renderIndicadores();
+  }
+  document.getElementById('enc_comentario').value = '';
+}
+
+function eliminarEncuesta(id){
+  if(!confirm('¿Eliminar esta respuesta de la encuesta?')) return;
+  if(useFirebase){
+    db.ref('convenio24/encuestas/'+id).remove().catch(e=>alert('Error al eliminar: '+e.message));
+  }else{
+    delete encuestas[id];
+    persist();
+    renderEncuestaTabla();
+    renderIndicadores();
+  }
+}
+
+function calificacionATexto(n){
+  return ['','1 – Malo','2 – Regular','3 – Bueno','4 – Muy bueno','5 – Excelente'][n] || n;
+}
+
+function renderEncuestaTabla(){
+  populateCursoEncuestaSelect();
+  const tbody = document.getElementById('enc_tbody');
+  const resumen = document.getElementById('enc_resumen');
+  if(!tbody) return;
+  if(!selectedCursoEncuesta){
+    tbody.innerHTML = '<tr><td style="padding:10px;color:var(--text-muted);">Elegí un curso.</td></tr>';
+    if(resumen) resumen.innerHTML = '';
+    return;
+  }
+  const respuestas = Object.entries(encuestas).filter(([id,e])=>e.cursoId===selectedCursoEncuesta);
+  if(respuestas.length===0){
+    tbody.innerHTML = '<tr><td colspan="6" style="padding:12px;text-align:center;color:var(--text-muted);">Sin respuestas cargadas todavía para este curso.</td></tr>';
+  }else{
+    tbody.innerHTML = respuestas.map(([id,e])=>`<tr>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${calificacionATexto(e.q1)}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${calificacionATexto(e.q2)}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${calificacionATexto(e.q3)}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${calificacionATexto(e.q4)}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${e.comentario||'—'}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:right;"><button class="btn danger small" onclick="eliminarEncuesta('${id}')">Quitar</button></td>
+    </tr>`).join('');
+  }
+  if(resumen){
+    const avg = campo => respuestas.length ? (respuestas.reduce((s,[id,e])=>s+e[campo],0)/respuestas.length).toFixed(1) : '–';
+    resumen.innerHTML = [
+      {n:respuestas.length, l:'Respuestas cargadas'},
+      {n:avg('q1'), l:'Contenido'},
+      {n:avg('q2'), l:'Material didáctico'},
+      {n:avg('q3'), l:'Docente'},
+      {n:avg('q4'), l:'Organización'}
+    ].map(k=>`<div style="background:var(--bg);border-radius:8px;padding:10px 16px;min-width:110px;text-align:center;">
+      <div style="font-size:1.2rem;font-weight:700;color:var(--header-dark);">${k.n}</div>
+      <div style="font-size:.68rem;color:var(--text-muted);">${k.l}</div>
+    </div>`).join('');
+  }
 }
 
 /* ============ USUARIOS ============ */
@@ -1370,6 +1556,7 @@ function renderAll(){
   renderGantt();
   renderTasks();
   renderAlumnosTabla();
+  renderEncuestaTabla();
   renderIndicadores();
 }
 
