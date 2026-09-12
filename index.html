@@ -133,8 +133,9 @@
   .print-only{display:none;}
   @media print{
     body *{visibility:hidden;}
-    #enc_printArea, #enc_printArea *{visibility:visible;}
+    #enc_printArea, #enc_printArea *, .print-target, .print-target *{visibility:visible;}
     #enc_printArea{display:block;position:absolute;top:0;left:0;width:100%;color:#000;}
+    .print-target{position:absolute;top:0;left:0;width:100%;color:#000;}
   }
 </style>
 </head>
@@ -466,14 +467,34 @@
     </div>
   </section>
   <section class="panel" id="panel-reportes">
-    <div class="placeholder">
-      <h3>📄 Reportes — Fase 2</h3>
-      <ul>
-        <li>Reporte ejecutivo por curso y reporte consolidado de todos los cursos, exportables a PDF.</li>
-        <li>Gráficos de tendencia y mapa de calor.</li>
-        <li>Vistas por semana, quincena y mes.</li>
-      </ul>
+    <div class="banner info">Generá un reporte ejecutivo por curso o consolidado de todo el Convenio 24, con gráfico de tendencia y mapa de calor. Para descargarlo en PDF: generalo y usá el botón "Descargar PDF" — se abre el diálogo de impresión del navegador, elegí "Guardar como PDF" como destino.</div>
+    <div class="card">
+      <div class="row2">
+        <div class="field"><label>Tipo de reporte</label>
+          <select id="rep_tipo" onchange="onCambioTipoReporte()">
+            <option value="curso">Por curso</option>
+            <option value="consolidado">Consolidado (todos los cursos)</option>
+          </select>
+        </div>
+        <div class="field"><label>Agrupar tendencia por</label>
+          <select id="rep_periodo">
+            <option value="semanal">Semanal</option>
+            <option value="quincenal">Quincenal</option>
+            <option value="mensual">Mensual</option>
+          </select>
+        </div>
+      </div>
+      <div class="field" id="rep_cursoWrap" style="max-width:560px;">
+        <label>Curso</label>
+        <select id="rep_curso"></select>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn" onclick="generarReporte()">Generar reporte</button>
+        <button class="btn secondary" id="rep_printBtn" style="display:none;" onclick="window.print()">🖨️ Descargar PDF</button>
+      </div>
     </div>
+
+    <div id="reportePreview" class="print-target"></div>
   </section>
 
   <!-- USUARIOS -->
@@ -1823,6 +1844,253 @@ function renderPresupuestoTabla(){
   }
 }
 
+/* ============ REPORTES ============ */
+function onCambioTipoReporte(){
+  const tipo = document.getElementById('rep_tipo').value;
+  document.getElementById('rep_cursoWrap').style.display = tipo==='curso' ? 'block' : 'none';
+}
+
+function populateCursoReporteSelect(){
+  const sel = document.getElementById('rep_curso');
+  if(!sel) return;
+  const current = sel.value;
+  sel.innerHTML = Object.entries(cursos).sort((a,b)=>(a[1].orden||0)-(b[1].orden||0))
+    .map(([id,c])=>`<option value="${id}">${c.orden}. ${c.nombre}</option>`).join('');
+  if(current && cursos[current]) sel.value = current;
+}
+
+function computeBuckets(periodo){
+  const start = new Date(RANGE_START);
+  const end = new Date(RANGE_END);
+  const buckets = [];
+  if(periodo === 'mensual'){
+    let cur = new Date(start.getFullYear(), start.getMonth(), 1);
+    while(cur <= end){
+      const next = new Date(cur.getFullYear(), cur.getMonth()+1, 1);
+      const bStart = cur < start ? start : cur;
+      const bEndMs = Math.min(next.getTime()-86400000, end.getTime());
+      buckets.push({label: cur.toLocaleDateString('es-AR',{month:'long'}), start: bStart, end: new Date(bEndMs)});
+      cur = next;
+    }
+  }else{
+    const days = periodo==='quincenal' ? 14 : 7;
+    let cur = new Date(start);
+    let idx = 1;
+    const prefix = periodo==='quincenal' ? 'Quincena ' : 'Semana ';
+    while(cur <= end){
+      const bEndMs = Math.min(cur.getTime()+(days-1)*86400000, end.getTime());
+      buckets.push({label: prefix+idx, start: new Date(cur), end: new Date(bEndMs)});
+      cur = new Date(cur.getTime()+days*86400000);
+      idx++;
+    }
+  }
+  return buckets;
+}
+
+function heatColor(value, max){
+  if(!value) return '#eef2f1';
+  const intensity = Math.min(1, value/(max||1));
+  const r = Math.round(200 - intensity*160);
+  const g = Math.round(228 - intensity*70);
+  const b = Math.round(208 - intensity*160);
+  return `rgb(${r},${g},${b})`;
+}
+
+function reporteHeader(titulo, subtitulo){
+  const fecha = new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
+  const generadoPor = (usuarios[currentUser]&&usuarios[currentUser].nombre) || currentUser || '—';
+  return `<div class="card" style="border-top:4px solid var(--green);">
+    <div style="font-size:.75rem;color:var(--text-muted);">EPEC SAU · Convenio 24 · Reporte generado el ${fecha} por ${generadoPor}</div>
+    <h2 style="margin:6px 0 2px;color:var(--header-dark);">${titulo}</h2>
+    <div style="font-size:.85rem;color:var(--text-muted);">${subtitulo}</div>
+  </div>`;
+}
+
+function kpiCardsHtml(items){
+  return `<div class="card"><div style="display:flex;gap:14px;flex-wrap:wrap;">
+    ${items.map(k=>`<div style="background:var(--bg);border-radius:8px;padding:10px 16px;min-width:120px;text-align:center;">
+      <div style="font-size:1.15rem;font-weight:700;color:var(--header-dark);">${k.n}</div>
+      <div style="font-size:.68rem;color:var(--text-muted);">${k.l}</div>
+    </div>`).join('')}
+  </div></div>`;
+}
+
+function generarReporteCurso(cursoId, periodo){
+  const c = cursos[cursoId];
+  if(!c) return '<div class="card">Elegí un curso válido.</div>';
+  const alumnosCurso = Object.entries(alumnos).filter(([id,a])=>a.cursoId===cursoId);
+  const sesionesCurso = Object.entries(sesiones).filter(([id,s])=>s.cursoId===cursoId).sort((a,b)=>new Date(a[1].fecha)-new Date(b[1].fecha));
+  let totalMarcas=0, sumaP=0;
+  alumnosCurso.forEach(([aid])=>{ sesionesCurso.forEach(([sid])=>{ const v=asistencia[aid+'__'+sid]; if(v){ totalMarcas++; if(v==='P') sumaP++; } }); });
+  const asistenciaPct = totalMarcas ? Math.round(sumaP/totalMarcas*100) : null;
+  const notas = alumnosCurso.map(([id,a])=>a.nota).filter(n=>n!==null&&n!==undefined);
+  const promedio = notas.length ? (notas.reduce((s,n)=>s+n,0)/notas.length) : null;
+  const aprobados = alumnosCurso.filter(([id,a])=>a.nota>=6).length;
+  const reprobados = alumnosCurso.filter(([id,a])=>a.nota!==null&&a.nota!==undefined&&a.nota<6).length;
+  const presupuestado = (presupuesto[cursoId]&&presupuesto[cursoId].presupuestado)||0;
+  const facturado = Object.values(facturas).filter(f=>f.cursoId===cursoId).reduce((s,f)=>s+(Number(f.monto)||0),0);
+  const respuestasEnc = Object.values(encuestas).filter(e=>e.cursoId===cursoId);
+  const valCurso = respuestasEnc.length ? respuestasEnc.reduce((s,e)=>s+(e.q1+e.q2+e.q4)/3,0)/respuestasEnc.length : null;
+  const valDocente = respuestasEnc.length ? respuestasEnc.reduce((s,e)=>s+e.q3,0)/respuestasEnc.length : null;
+  const l = logistica[cursoId]||{};
+
+  // tendencia: % asistencia por bucket
+  const buckets = computeBuckets(periodo);
+  const tendenciaRows = buckets.map(b=>{
+    const sesionesBucket = sesionesCurso.filter(([id,s])=>{ const d=new Date(s.fecha); return d>=b.start && d<=b.end; });
+    let tm=0, sp=0;
+    alumnosCurso.forEach(([aid])=>{ sesionesBucket.forEach(([sid])=>{ const v=asistencia[aid+'__'+sid]; if(v){ tm++; if(v==='P') sp++; } }); });
+    const pct = tm ? Math.round(sp/tm*100) : null;
+    return barRow(b.label, pct===null?'Sin clases':pct+'%', pct, '#1f8a5f', pct===null);
+  }).join('');
+
+  // mapa de calor: alumnos x sesiones
+  let heatmapHtml = '<p style="font-size:.8rem;color:var(--text-muted);">Sin alumnos o clases cargadas todavía.</p>';
+  if(alumnosCurso.length && sesionesCurso.length){
+    const headCells = sesionesCurso.map(([sid,s])=>`<div style="font-size:.6rem;text-align:center;padding:2px;min-width:26px;">${fmtDate(s.fecha)}</div>`).join('');
+    const rows = alumnosCurso.sort((a,b)=>a[1].nombre.localeCompare(b[1].nombre)).map(([aid,al])=>{
+      const cells = sesionesCurso.map(([sid])=>{
+        const v = asistencia[aid+'__'+sid];
+        const bg = v==='P' ? '#1f8a5f' : (v==='A' ? '#c0392b' : '#eef2f1');
+        return `<div style="width:22px;height:22px;background:${bg};border-radius:3px;margin:1px;"></div>`;
+      }).join('');
+      return `<div style="display:flex;align-items:center;margin-bottom:2px;">
+        <div style="width:170px;font-size:.68rem;flex-shrink:0;">${truncate(al.nombre,26)}</div>
+        <div style="display:flex;flex-wrap:wrap;">${cells}</div>
+      </div>`;
+    }).join('');
+    heatmapHtml = `<div style="overflow-x:auto;">
+      <div style="display:flex;margin-bottom:4px;"><div style="width:170px;flex-shrink:0;"></div><div style="display:flex;">${headCells}</div></div>
+      ${rows}
+      <div style="margin-top:8px;font-size:.68rem;color:var(--text-muted);">
+        <span style="display:inline-block;width:10px;height:10px;background:#1f8a5f;border-radius:2px;"></span> Presente &nbsp;
+        <span style="display:inline-block;width:10px;height:10px;background:#c0392b;border-radius:2px;"></span> Ausente &nbsp;
+        <span style="display:inline-block;width:10px;height:10px;background:#eef2f1;border-radius:2px;"></span> Sin marcar
+      </div>
+    </div>`;
+  }
+
+  const estLog = estadoLogisticaBadge(l.estado);
+
+  return `
+    ${reporteHeader(`Reporte del curso: ${c.nombre}`, `Docente: ${c.docente||'sin asignar'} · Modalidad: ${c.modalidad} · ${fmtDate(c.inicio)} al ${fmtDate(c.fin)}`)}
+    ${kpiCardsHtml([
+      {n:alumnosCurso.length, l:'Alumnos'},
+      {n:c.horas+'h', l:'Horas de capacitación'},
+      {n:asistenciaPct===null?'—':asistenciaPct+'%', l:'Asistencia promedio'},
+      {n:promedio===null?'—':promedio.toFixed(1), l:'Promedio de nota'},
+      {n:aprobados+'/'+(aprobados+reprobados), l:'Aprobados/evaluados'},
+      {n:valCurso===null?'—':valCurso.toFixed(1)+'/5', l:'Valoración del curso'},
+      {n:valDocente===null?'—':valDocente.toFixed(1)+'/5', l:'Valoración del docente'}
+    ])}
+    <div class="card">
+      <h3>📈 Tendencia de asistencia (${periodo})</h3>
+      ${tendenciaRows}
+    </div>
+    <div class="card">
+      <h3>🔥 Mapa de calor de asistencia</h3>
+      ${heatmapHtml}
+    </div>
+    <div class="card">
+      <h3>💰 Presupuesto</h3>
+      <p style="font-size:.85rem;">Presupuestado: <b>$${presupuestado.toLocaleString('es-AR')}</b> &nbsp;·&nbsp; Facturado: <b>$${facturado.toLocaleString('es-AR')}</b> &nbsp;·&nbsp; Saldo: <b>$${(presupuestado-facturado).toLocaleString('es-AR')}</b></p>
+    </div>
+    <div class="card">
+      <h3>🚚 Logística</h3>
+      <p style="font-size:.85rem;">Lugar: ${l.lugar||c.lugar||'—'} · Responsable: ${l.responsable||'—'} · Estado: <span style="color:${estLog.color};font-weight:600;">${estLog.label}</span></p>
+    </div>
+  `;
+}
+
+function generarReporteConsolidado(periodo){
+  const data = computeIndicadoresData();
+  const totalHoras = data.reduce((s,d)=>s+d.horas,0);
+  const totalAlumnos = Object.keys(alumnos).length;
+  const conAsistencia = data.filter(d=>d.asistenciaPct!==null);
+  const asistenciaGlobal = conAsistencia.length ? Math.round(conAsistencia.reduce((s,d)=>s+d.asistenciaPct,0)/conAsistencia.length) : null;
+  const conAprob = data.filter(d=>d.aprobacionPct!==null);
+  const aprobGlobal = conAprob.length ? Math.round(conAprob.reduce((s,d)=>s+d.aprobacionPct,0)/conAprob.length) : null;
+  const totalPresu = Object.values(presupuesto).reduce((s,p)=>s+(Number(p.presupuestado)||0),0);
+  const totalFact = Object.values(facturas).reduce((s,f)=>s+(Number(f.monto)||0),0);
+
+  const tablaCursos = data.map(d=>`<tr>
+    <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${d.orden}. ${truncate(d.nombre,42)}</td>
+    <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${d.horas}h</td>
+    <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${d.asistenciaPct===null?'—':d.asistenciaPct+'%'}</td>
+    <td style="padding:6px 8px;border-bottom:1px solid var(--border);">${d.aprobacionPct===null?'—':d.aprobacionPct+'%'}</td>
+  </tr>`).join('');
+
+  // tendencia global: % asistencia por bucket, todas las sesiones
+  const buckets = computeBuckets(periodo);
+  const sesionesEntries = Object.entries(sesiones);
+  const tendenciaRows = buckets.map(b=>{
+    const sesionesBucket = sesionesEntries.filter(([id,s])=>{ const d=new Date(s.fecha); return d>=b.start && d<=b.end; });
+    let tm=0, sp=0;
+    sesionesBucket.forEach(([sid])=>{
+      Object.entries(asistencia).forEach(([key,v])=>{
+        if(key.endsWith('__'+sid)){ tm++; if(v==='P') sp++; }
+      });
+    });
+    const pct = tm ? Math.round(sp/tm*100) : null;
+    return barRow(b.label, pct===null?'Sin clases':pct+'%', pct, '#1f8a5f', pct===null);
+  }).join('');
+
+  // mapa de calor: cursos x buckets (cantidad de clases dictadas)
+  const conteos = data.map(d=>buckets.map(b=>sesionesEntries.filter(([id,s])=>s.cursoId===d.cid && new Date(s.fecha)>=b.start && new Date(s.fecha)<=b.end).length));
+  const maxConteo = Math.max(1, ...conteos.flat());
+  const heatHead = buckets.map(b=>`<div style="font-size:.62rem;text-align:center;width:60px;flex-shrink:0;">${b.label}</div>`).join('');
+  const heatRows = data.map((d,i)=>`<div style="display:flex;align-items:center;margin-bottom:2px;">
+    <div style="width:200px;font-size:.68rem;flex-shrink:0;">${d.orden}. ${truncate(d.nombre,32)}</div>
+    <div style="display:flex;">${conteos[i].map(v=>`<div style="width:56px;height:20px;margin:1px;border-radius:3px;background:${heatColor(v,maxConteo)};display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#0a3d34;">${v||''}</div>`).join('')}</div>
+  </div>`).join('');
+
+  return `
+    ${reporteHeader('Reporte consolidado — Convenio 24', 'Los 12 cursos del convenio, período 20 de septiembre al 20 de noviembre de 2026')}
+    ${kpiCardsHtml([
+      {n:data.length, l:'Cursos'},
+      {n:totalAlumnos, l:'Alumnos cargados'},
+      {n:totalHoras+'h', l:'Horas totales'},
+      {n:asistenciaGlobal===null?'—':asistenciaGlobal+'%', l:'Asistencia global'},
+      {n:aprobGlobal===null?'—':aprobGlobal+'%', l:'Aprobación global'},
+      {n:'$'+totalPresu.toLocaleString('es-AR'), l:'Presupuestado'},
+      {n:'$'+totalFact.toLocaleString('es-AR'), l:'Facturado'}
+    ])}
+    <div class="card">
+      <h3>📈 Tendencia de asistencia general (${periodo})</h3>
+      ${tendenciaRows}
+    </div>
+    <div class="card">
+      <h3>🔥 Mapa de calor — clases dictadas por curso y período</h3>
+      <div style="overflow-x:auto;">
+        <div style="display:flex;margin-bottom:4px;"><div style="width:200px;flex-shrink:0;"></div><div style="display:flex;">${heatHead}</div></div>
+        ${heatRows}
+      </div>
+    </div>
+    <div class="card">
+      <h3>📋 Resumen por curso</h3>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:.78rem;">
+          <thead><tr style="background:var(--header);color:#fff;">
+            <th style="padding:6px 8px;text-align:left;">Curso</th>
+            <th style="padding:6px 8px;text-align:left;">Horas</th>
+            <th style="padding:6px 8px;text-align:left;">Asistencia</th>
+            <th style="padding:6px 8px;text-align:left;">Aprobación</th>
+          </tr></thead>
+          <tbody>${tablaCursos}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function generarReporte(){
+  const tipo = document.getElementById('rep_tipo').value;
+  const periodo = document.getElementById('rep_periodo').value;
+  const html = tipo==='curso' ? generarReporteCurso(document.getElementById('rep_curso').value, periodo) : generarReporteConsolidado(periodo);
+  document.getElementById('reportePreview').innerHTML = html;
+  document.getElementById('rep_printBtn').style.display = 'inline-block';
+}
+
 /* ============ USUARIOS ============ */
 function openUserModal(username){
   document.getElementById('u_id').value = username || '';
@@ -1933,6 +2201,7 @@ function renderAll(){
   renderPresupuestoTabla();
   renderFacturasTabla();
   renderIndicadores();
+  populateCursoReporteSelect();
 }
 
 tryInitFirebase();
