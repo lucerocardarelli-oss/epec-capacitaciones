@@ -241,6 +241,7 @@
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
           <input id="al_nuevoNombre" placeholder="Nombre del alumno" style="padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:.8rem;">
           <button class="btn small" onclick="agregarAlumno()">+ Alumno</button>
+          <button class="btn small secondary" onclick="openImportModal()">📋 Importar lista</button>
           <input type="date" id="al_nuevaFecha" style="padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:.78rem;">
           <input id="al_nuevaHora" placeholder="Horario (ej: 08 a 12 hs)" style="padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:.78rem;width:150px;">
           <button class="btn small secondary" onclick="agregarSesion()">+ Clase</button>
@@ -424,6 +425,28 @@
       <div>
         <button class="btn secondary" onclick="closeModal('userModalBg')">Cancelar</button>
         <button class="btn" onclick="saveUser()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL IMPORTAR ALUMNOS -->
+<div class="modal-bg" id="importModalBg">
+  <div class="modal" style="width:min(560px,92vw);">
+    <h3>Importar lista de alumnos</h3>
+    <p style="font-size:.8rem;color:var(--text-muted);margin-top:-6px;">Pegá la lista de nombres, uno por renglón — funciona directo si copiás una columna de Excel o Word. Se van a agregar todos al curso seleccionado arriba.</p>
+    <div class="field">
+      <textarea id="import_texto" style="min-height:180px;" placeholder="Juan Pérez
+María González
+Carlos Rodríguez
+..."></textarea>
+    </div>
+    <div id="import_preview" style="font-size:.78rem;color:var(--text-muted);margin-bottom:6px;"></div>
+    <div class="modal-actions">
+      <div></div>
+      <div>
+        <button class="btn secondary" onclick="closeModal('importModalBg')">Cancelar</button>
+        <button class="btn" onclick="importarAlumnos()">Agregar todos</button>
       </div>
     </div>
   </div>
@@ -960,6 +983,49 @@ function agregarAlumno(){
     renderAlumnosTabla();
   }
   document.getElementById('al_nuevoNombre').value = '';
+}
+
+function openImportModal(){
+  if(!selectedCursoAlumnos){ alert('Elegí un curso primero.'); return; }
+  document.getElementById('import_texto').value = '';
+  document.getElementById('import_preview').textContent = '';
+  document.getElementById('importModalBg').classList.add('active');
+}
+
+function parseImportNombres(){
+  const raw = document.getElementById('import_texto').value;
+  return raw.split(/\r?\n/).map(n=>n.replace(/\t.*$/,'').trim()).filter(n=>n.length>0);
+}
+
+document.addEventListener('input', e=>{
+  if(e.target && e.target.id === 'import_texto'){
+    const nombres = parseImportNombres();
+    document.getElementById('import_preview').textContent = nombres.length
+      ? `Se van a agregar ${nombres.length} alumno(s).`
+      : '';
+  }
+});
+
+function importarAlumnos(){
+  if(!selectedCursoAlumnos){ alert('Elegí un curso primero.'); return; }
+  const nombres = parseImportNombres();
+  if(nombres.length === 0){ alert('Pegá al menos un nombre.'); return; }
+  if(useFirebase){
+    const updates = {};
+    nombres.forEach(nombre=>{
+      const id = uid()+Math.floor(Math.random()*10000);
+      updates['convenio24/alumnos/'+id] = { cursoId: selectedCursoAlumnos, nombre, nota:null };
+    });
+    db.ref().update(updates).catch(e=>alert('Error al importar: '+e.message));
+  }else{
+    nombres.forEach(nombre=>{
+      const id = uid()+Math.floor(Math.random()*10000);
+      alumnos[id] = { cursoId: selectedCursoAlumnos, nombre, nota:null };
+    });
+    persist();
+    renderAlumnosTabla();
+  }
+  closeModal('importModalBg');
 }
 
 function eliminarAlumno(id){
