@@ -730,18 +730,32 @@ function tryInitFirebase(){
     const s2 = document.createElement('script');
     s2.src = "https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js";
     s2.onload = ()=>{
-      clearTimeout(timeout);
-      try{
-        firebase.initializeApp(firebaseConfig);
-        db = firebase.database();
-        useFirebase = true;
-        setStatus("● Sistema en vivo — sincronizado");
-        initFirebaseListeners();
-      }catch(e){
-        console.error(e);
-        setStatus("⚠ Error de conexión — modo local", true);
-        initLocalMode();
-      }
+      // La base exige una sesión (regla "auth != null"). Se carga la librería de
+      // autenticación e inicia sesión anónima antes de leer cualquier dato.
+      const s3 = document.createElement('script');
+      s3.src = "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js";
+      s3.onload = ()=>{
+        clearTimeout(timeout);
+        try{
+          firebase.initializeApp(firebaseConfig);
+          firebase.auth().signInAnonymously().then(()=>{
+            db = firebase.database();
+            useFirebase = true;
+            setStatus("● Sistema en vivo — sincronizado");
+            initFirebaseListeners();
+          }).catch(e=>{
+            console.error(e);
+            setStatus("⚠ No se pudo autenticar — modo local", true);
+            initLocalMode();
+          });
+        }catch(e){
+          console.error(e);
+          setStatus("⚠ Error de conexión — modo local", true);
+          initLocalMode();
+        }
+      };
+      s3.onerror = ()=>{ clearTimeout(timeout); setStatus("⚠ Sin conexión — modo local", true); initLocalMode(); };
+      document.head.appendChild(s3);
     };
     s2.onerror = ()=>{ clearTimeout(timeout); setStatus("⚠ Sin conexión — modo local", true); initLocalMode(); };
     document.head.appendChild(s2);
