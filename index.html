@@ -137,6 +137,100 @@
     #enc_printArea{display:block;position:absolute;top:0;left:0;width:100%;color:#000;}
     .print-target{position:absolute;top:0;left:0;width:100%;color:#000;}
   }
+  /* ===== Calendario interactivo ===== */
+  .cal-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-bottom:14px;}
+  .cal-kpi{display:flex;gap:12px;align-items:center;border-radius:14px;padding:14px 16px;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.14);}
+  .cal-kpi-ico{font-size:1.9rem;line-height:1;}
+  .cal-kpi-num{font-size:1.45rem;font-weight:800;line-height:1.1;}
+  .cal-kpi-lbl{font-size:.74rem;opacity:.92;font-weight:600;}
+  .cal-kpi-sub{font-size:.68rem;opacity:.85;margin-top:2px;}
+  .cal-toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;}
+  .cal-seg{display:flex;background:var(--bg);border-radius:10px;padding:3px;gap:2px;}
+  .cal-seg button{border:none;background:none;padding:7px 12px;border-radius:8px;font-size:.78rem;font-weight:700;color:var(--text-muted);cursor:pointer;}
+  .cal-seg button.on{background:#fff;color:var(--header-dark);box-shadow:0 1px 4px rgba(0,0,0,.15);}
+  .cal-mini{display:flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;color:var(--header-dark);}
+  .cal-mini button{border:1px solid var(--border);background:#fff;border-radius:8px;padding:5px 10px;cursor:pointer;font-weight:700;}
+  .cal-chip{display:flex;align-items:center;gap:5px;font-size:.76rem;background:var(--bg);padding:6px 10px;border-radius:20px;cursor:pointer;font-weight:600;}
+  .cal-search{padding:7px 10px;border:1px solid var(--border);border-radius:20px;font-size:.78rem;width:150px;}
+  .cal-ayuda{font-size:.74rem;color:var(--text-muted);margin:10px 2px 0;}
+  /* línea de tiempo */
+  .tl-wrap{display:flex;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:#fff;}
+  .tl-labels{width:260px;flex-shrink:0;border-right:1px solid var(--border);background:#fbfcfc;z-index:2;}
+  .tl-lab-head{height:62px;display:flex;align-items:flex-end;padding:0 12px 8px;font-size:.72rem;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--border);}
+  .tl-lab{display:flex;flex-direction:column;justify-content:center;padding:0 12px;border-bottom:1px solid var(--border);cursor:pointer;overflow:hidden;}
+  .tl-lab:hover{background:#f1f7f4;}
+  .tl-lab b{font-size:.78rem;color:var(--header-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .tl-lab span{font-size:.68rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .tl-lab.grupo{background:linear-gradient(90deg,#e6f4ee,#f6fbf9);}
+  .tl-lab.pend b{color:#8a6a1f;}
+  .tl-scroll{overflow-x:auto;flex:1;}
+  .tl-inner{position:relative;}
+  .tl-head{border-bottom:1px solid var(--border);background:linear-gradient(180deg,#f7faf9,#eef4f2);position:sticky;top:0;}
+  .tl-meses{display:flex;height:26px;}
+  .tl-mes{font-size:.74rem;font-weight:800;color:var(--header-dark);text-transform:capitalize;padding:5px 8px;border-right:1px solid var(--border);white-space:nowrap;overflow:hidden;}
+  .tl-dias{display:flex;height:36px;}
+  .tl-dia{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;color:var(--text);border-right:1px solid #e6ecea;line-height:1.15;}
+  .tl-dia span{font-size:.56rem;color:var(--text-muted);font-weight:600;}
+  .tl-dia.fin{color:#9aa8a3;background:rgba(0,0,0,.025);}
+  .tl-dia.hoy{background:#c0392b;color:#fff;border-radius:6px;}
+  .tl-dia.hoy span{color:#ffd7d2;}
+  .tl-body{position:relative;}
+  .tl-grid{position:absolute;left:0;top:0;right:0;pointer-events:none;background-image:repeating-linear-gradient(to right,#eef2f1 0,#eef2f1 1px,transparent 1px,transparent var(--dw));}
+  .tl-fin{position:absolute;top:0;bottom:0;background:rgba(0,0,0,.03);}
+  .tl-row{position:relative;border-bottom:1px solid var(--border);}
+  .tl-row.pend{background:repeating-linear-gradient(135deg,#fffaf0,#fffaf0 10px,#fff6e0 10px,#fff6e0 20px);cursor:crosshair;}
+  .tl-pend-txt{position:sticky;left:12px;display:inline-block;margin:17px 0 0 12px;font-size:.74rem;font-weight:700;color:#8a6a1f;}
+  .tl-umb{position:absolute;top:15px;height:24px;border-radius:12px;background:linear-gradient(90deg,#cfe8dc,#e3f2eb);border:2px dashed #8cc4aa;color:#0f4d34;font-size:.7rem;font-weight:800;display:flex;align-items:center;padding:0 12px;white-space:nowrap;overflow:hidden;pointer-events:none;}
+  .tl-bar{position:absolute;top:7px;height:40px;border-radius:10px;background:var(--c);background-image:linear-gradient(135deg,rgba(255,255,255,.28),rgba(0,0,0,.14));color:#fff;box-shadow:0 3px 8px rgba(0,0,0,.25);cursor:grab;overflow:hidden;touch-action:none;user-select:none;transition:box-shadow .15s,transform .15s;}
+  .tl-bar:hover{box-shadow:0 6px 14px rgba(0,0,0,.32);transform:translateY(-1px);}
+  .tl-bar.drag{cursor:grabbing;opacity:.92;box-shadow:0 10px 22px rgba(0,0,0,.4);z-index:5;}
+  .tl-bar-in{padding:4px 12px;display:flex;flex-direction:column;justify-content:center;height:100%;white-space:nowrap;overflow:hidden;pointer-events:none;}
+  .tl-bar-in b{font-size:.74rem;}
+  .tl-bar-in i{font-size:.64rem;font-style:normal;opacity:.92;overflow:hidden;text-overflow:ellipsis;}
+  .tl-h{position:absolute;top:0;bottom:0;width:9px;cursor:ew-resize;z-index:2;background:rgba(255,255,255,.0);}
+  .tl-h.l{left:0;} .tl-h.r{right:0;}
+  .tl-h:hover{background:rgba(255,255,255,.35);}
+  .tl-hoy{position:absolute;top:0;bottom:0;width:2px;background:#c0392b;z-index:4;pointer-events:none;}
+  .tl-hoy span{position:absolute;top:2px;left:4px;background:#c0392b;color:#fff;font-size:.58rem;font-weight:800;padding:1px 5px;border-radius:6px;}
+  /* mes */
+  .mes-wrap{border:1px solid var(--border);border-radius:14px;overflow:hidden;background:#fff;}
+  .mes-head{display:grid;grid-template-columns:repeat(7,1fr);background:linear-gradient(135deg,var(--header),var(--header-dark));color:#fff;font-size:.74rem;font-weight:700;text-align:center;}
+  .mes-head div{padding:9px 0;}
+  .mes-sem{position:relative;display:grid;grid-template-columns:repeat(7,1fr);border-top:1px solid var(--border);cursor:cell;}
+  .mes-dia{border-right:1px solid #edf1f0;padding:5px 7px;font-size:.74rem;font-weight:700;color:var(--text);}
+  .mes-dia:last-child{border-right:none;}
+  .mes-dia.fuera{background:#f6f8f7;color:#b5c0bc;}
+  .mes-dia.fin{background:rgba(0,0,0,.025);}
+  .mes-dia.hoy span{background:#c0392b;color:#fff;border-radius:50%;display:inline-block;min-width:22px;height:22px;line-height:22px;text-align:center;}
+  .mes-ev{position:absolute;height:24px;line-height:24px;padding:0 9px;border-radius:7px;background:var(--c);background-image:linear-gradient(135deg,rgba(255,255,255,.26),rgba(0,0,0,.12));color:#fff;font-size:.7rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:grab;box-shadow:0 2px 5px rgba(0,0,0,.22);}
+  .mes-ev:hover{filter:brightness(1.08);}
+  .mes-ev:not(.ini){border-top-left-radius:0;border-bottom-left-radius:0;margin-left:-2px;}
+  .mes-ev:not(.fin){border-top-right-radius:0;border-bottom-right-radius:0;}
+  /* agenda */
+  .ag-wrap{display:flex;flex-direction:column;gap:14px;}
+  .ag-sem{border:1px solid var(--border);border-radius:14px;padding:12px 14px;background:#fff;}
+  .ag-sem.act{border-color:#c0392b;box-shadow:0 0 0 3px rgba(192,57,43,.12);}
+  .ag-sem.prox{border-color:#ea580c;box-shadow:0 0 0 3px rgba(234,88,12,.14);}
+  .ag-sem.pasada{opacity:.62;}
+  .ag-sem-h{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:.86rem;color:var(--header-dark);}
+  .ag-sem-h span{font-size:.72rem;color:var(--text-muted);margin-left:auto;}
+  .ag-badge{font-size:.64rem;font-weight:800;padding:2px 9px;border-radius:20px;color:#fff;}
+  .ag-badge.hoy{background:#c0392b;} .ag-badge.prox{background:#ea580c;}
+  .ag-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;}
+  .ag-card{border-left:6px solid var(--c);background:linear-gradient(135deg,#fff,#f6faf8);border-radius:10px;padding:10px 12px;box-shadow:0 1px 4px rgba(0,0,0,.1);cursor:pointer;transition:transform .12s,box-shadow .12s;}
+  .ag-card:hover{transform:translateY(-2px);box-shadow:0 5px 12px rgba(0,0,0,.16);}
+  .ag-card.pend{border-left-style:dashed;background:#fffaf0;}
+  .ag-t{font-weight:800;font-size:.82rem;color:var(--header-dark);margin-bottom:4px;}
+  .ag-m{font-size:.72rem;color:var(--text);margin-top:2px;}
+  .ag-x{font-size:.66rem;color:var(--text-muted);margin-top:4px;}
+  @media (max-width:760px){ .tl-labels{width:150px;} .cal-search{width:110px;} }
+  @media print{
+    body.printing-cal header.top, body.printing-cal .kpis, body.printing-cal nav.tabs, body.printing-cal .cal-noprint{display:none!important;}
+    body.printing-cal .panel{display:none!important;} body.printing-cal #panel-calendario{display:block!important;}
+    body.printing-cal main{padding:0;} body.printing-cal .card{box-shadow:none;}
+    body.printing-cal *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    @page{size:landscape;margin:10mm;}
+  }
 </style>
 </head>
 <body>
@@ -187,17 +281,27 @@
 
   <!-- CALENDARIO -->
   <section class="panel active" id="panel-calendario">
-    <div class="banner info">
-      Las fechas de inicio de cada curso son <b>estimaciones iniciales</b> basadas en el cronograma del Tablero Visual. Hacé clic en cualquier barra para ajustar fecha de inicio, duración, docente y lugar.
-    </div>
+    <div class="banner info cal-noprint">Calendario del Convenio 24: las <b>centrales</b> del curso nivelatorio y los demás cursos. Arrastrá para mover, tirá de los bordes para cambiar la duración y hacé clic para editar.</div>
+    <div id="calKpis" class="cal-kpis"></div>
     <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
-        <h2 style="margin:0;">Diagrama de Gantt — 12 cursos del Convenio 24</h2>
-        <button class="btn" onclick="openCourseModal(null)">+ Agregar curso</button>
+      <div class="cal-toolbar cal-noprint">
+        <div class="cal-seg" id="calViews">
+          <button data-v="timeline" onclick="setCalView('timeline')">📊 Línea de tiempo</button>
+          <button data-v="mes" onclick="setCalView('mes')">📅 Mes</button>
+          <button data-v="agenda" onclick="setCalView('agenda')">🗓️ Agenda semanal</button>
+        </div>
+        <div class="cal-mini" id="calNav" style="display:none;"><button onclick="calNavMes(-1)">‹</button><span id="calNavLabel" style="min-width:110px;text-align:center;"></span><button onclick="calNavMes(1)">›</button></div>
+        <div class="cal-mini" id="calZoomBox"><button onclick="calZoomDelta(-1)">−</button><span>Zoom</span><button onclick="calZoomDelta(1)">+</button></div>
+        <button class="btn small secondary" onclick="calHoy()">Hoy</button>
+        <label class="cal-chip"><input type="checkbox" id="calFcent" checked onchange="calSetF()"> 🏭 Centrales</label>
+        <label class="cal-chip"><input type="checkbox" id="calFcur" checked onchange="calSetF()"> 📚 Otros cursos</label>
+        <input class="cal-search" id="calBuscar" placeholder="🔎 Buscar…" oninput="calSetQ(this.value)">
+        <span style="flex:1;"></span>
+        <button class="btn small secondary" onclick="openCentralEvModal(null)">+ Central</button>
+        <button class="btn small" onclick="openCourseModal(null)">+ Agregar curso</button>
+        <button class="btn small secondary" onclick="imprimirCalendario()">🖨️ Imprimir / PDF</button>
       </div>
-      <div class="gantt-wrap">
-        <div id="ganttChart"></div>
-      </div>
+      <div id="calBody"></div>
     </div>
   </section>
 
@@ -225,6 +329,7 @@
       </div>
     </div>
   </section>
+
 
   <!-- ASISTENCIA Y EVALUACIÓN (unificado) -->
   <section class="panel" id="panel-alumnos">
@@ -628,6 +733,32 @@ Carlos Rodríguez
   </div>
 </div>
 
+<!-- MODAL CENTRAL (calendario) -->
+<div class="modal-bg" id="centralEvModalBg">
+  <div class="modal">
+    <h3 id="centralEvTitulo">Editar central</h3>
+    <input type="hidden" id="ce_id">
+    <div class="field"><label>Central</label><input id="ce_nombre" placeholder="Nombre de la central"></div>
+    <div class="row2">
+      <div class="field"><label>Fecha de inicio</label><input type="date" id="ce_inicio"></div>
+      <div class="field"><label>Fecha de fin</label><input type="date" id="ce_fin"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Horario</label><input id="ce_hora" placeholder="ej: 10 A 14"></div>
+      <div class="field"><label>Color</label><input type="color" id="ce_color" style="width:100%;height:36px;padding:2px;"></div>
+    </div>
+    <div class="field"><label>Docente / instructor</label><input id="ce_docente" placeholder="Nombre del docente"></div>
+    <div class="field"><label>Lugar</label><input id="ce_lugar" placeholder="(opcional)"></div>
+    <div class="modal-actions">
+      <button class="btn secondary" onclick="guardarCentralEv(true)" title="Deja la central sin fechas">Quitar fechas</button>
+      <div>
+        <button class="btn secondary" onclick="closeModal('centralEvModalBg')">Cancelar</button>
+        <button class="btn" onclick="guardarCentralEv(false)">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL IMPORTAR EXCEL -->
 <div class="modal-bg" id="xlsModalBg">
   <div class="modal" style="width:min(680px,94vw);">
@@ -941,6 +1072,8 @@ function initFirebaseListeners(){
     centrales = snap.val() || {};
     if(!centralesVistas){ centralesVistas = true; asegurarCentrales(); }
     renderAlumnosTabla();
+    renderCalendario();
+    renderKpis();
   });
   initSession();
 }
@@ -989,57 +1122,450 @@ function renderKpis(){
   ).join('');
 }
 
-/* ============ RENDER: GANTT ============ */
-function renderGantt(){
-  const totalDays = dayDiff(RANGE_START, RANGE_END) + 1;
-  const container = document.getElementById('ganttChart');
-  container.style.setProperty('--daywidth', DAYWIDTH+'px');
+/* ============ CALENDARIO INTERACTIVO (línea de tiempo · mes · agenda) ============ */
+const CAL_COLORS = ['#0f766e','#2563eb','#7c3aed','#db2777','#ea580c','#ca8a04','#16a34a','#0891b2','#be123c'];
+const DIAS_CAL = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const MESES_CAL = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+let calView = 'timeline';
+let calZoom = 28;               // px por día en la línea de tiempo
+let calMes = null;              // 'AAAA-MM' en la vista mensual
+let calFiltro = {centrales:true, cursos:true, q:''};
+let calDragging = false;
+let calGrab = null;
+let calScrollInit = false;
 
-  // header row with week labels
-  let headCells = '';
-  let d = new Date(RANGE_START);
-  let weekNum = 1;
-  let dayCount = 0;
-  let cells = [];
-  while(dayCount < totalDays){
-    const wd = d.getDay();
-    const isMon = wd === 1 || dayCount===0;
-    cells.push({date:new Date(d), isWeekend: wd===0||wd===6, isMon});
-    d.setDate(d.getDate()+1);
-    dayCount++;
-  }
-  headCells = cells.map(c=>{
-    const label = c.isMon ? c.date.toLocaleDateString('es-AR',{day:'2-digit',month:'short'}) : '';
-    return `<div class="week-cell ${c.isWeekend?'weekend-col':''}" style="width:${DAYWIDTH}px;min-width:${DAYWIDTH}px;">${label}</div>`;
-  }).join('');
-
-  let html = `<div class="gantt-row gantt-head">
-      <div class="gantt-label"><b>Curso</b></div>
-      <div class="gantt-timeline" style="display:flex;">${headCells}</div>
-    </div>`;
-
-  const todayOffset = dayDiff(RANGE_START, new Date().toISOString().slice(0,10));
-
-  Object.entries(cursos).sort((a,b)=>(a[1].orden||0)-(b[1].orden||0)).forEach(([id,c])=>{
-    const startOff = Math.max(0, dayDiff(RANGE_START, c.inicio));
-    const endOff = Math.min(totalDays, dayDiff(RANGE_START, c.fin)+1);
-    const left = startOff * DAYWIDTH;
-    const width = Math.max(DAYWIDTH, (endOff-startOff) * DAYWIDTH);
-    let todayLine = '';
-    if(todayOffset>=0 && todayOffset<totalDays){
-      todayLine = `<div class="today-line" style="left:${todayOffset*DAYWIDTH}px;"></div>`;
-    }
-    html += `<div class="gantt-row">
-      <div class="gantt-label"><b>${c.orden}. ${truncate(c.nombre,42)}</b><span>${c.modalidad} · ${c.horas}h · ${c.participantes} part.</span></div>
-      <div class="gantt-timeline" style="width:${totalDays*DAYWIDTH}px;height:36px;">
-        ${todayLine}
-        <div class="bar" style="left:${left}px;width:${width}px;background:${c.color||'#1f8a5f'};" onclick="openCourseModal('${id}')" title="${c.nombre}">${fmtDate(c.inicio)}–${fmtDate(c.fin)}</div>
-      </div>
-    </div>`;
-  });
-
-  container.innerHTML = html;
+function pad2(n){ return String(n).padStart(2,'0'); }
+function isoLocal(d){ return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
+function hoyISO(){ return isoLocal(new Date()); }
+function addDays(iso,n){ const p = iso.split('-').map(Number); return new Date(Date.UTC(p[0],p[1]-1,p[2]+n)).toISOString().slice(0,10); }
+function wdayISO(iso){ const p = iso.split('-').map(Number); return new Date(Date.UTC(p[0],p[1]-1,p[2])).getUTCDay(); }
+function lunesDe(iso){ const w = wdayISO(iso); return addDays(iso, w===0 ? -6 : 1-w); }
+function fmtCorta(iso){ return parseInt(iso.slice(8),10)+'/'+parseInt(iso.slice(5,7),10); }
+function fmtLarga(iso){ return DIAS_CAL[wdayISO(iso)]+' '+fmtCorta(iso); }
+function fmtHora(h){
+  if(!h) return '';
+  const m = /(\d{1,2})(?::(\d{2}))?\s*(?:hs?\.?)?\s*(?:a|-|–)\s*(\d{1,2})(?::(\d{2}))?/i.exec(h);
+  return m ? (parseInt(m[1],10)+(m[2]?':'+m[2]:'')+' a '+parseInt(m[3],10)+(m[4]?':'+m[4]:'')+' hs') : h;
 }
+
+/* ---- datos ---- */
+function centralesCal(){
+  const m = new Map();
+  Object.entries(centrales).forEach(([id,c])=>{ if(c && c.nombre) m.set(c.nombre, Object.assign({id}, c)); });
+  Object.values(alumnos).forEach(a=>{ if(a.central && !m.has(a.central)) m.set(a.central, {id:slugKey(a.central), nombre:a.central}); });
+  return [...m.values()];
+}
+function colorCentral(ce){
+  if(ce.color) return ce.color;
+  let i = SEED_CENTRALES.findIndex(s=>normTxt(s.nombre)===normTxt(ce.nombre));
+  if(i<0){ let h = 0; for(const ch of ce.nombre) h = (h*31+ch.charCodeAt(0))>>>0; i = h; }
+  return CAL_COLORS[i % CAL_COLORS.length];
+}
+function cursoCentralesId(){ return Object.keys(cursos).find(id=>esCursoCentrales(cursos[id])) || null; }
+function calEventosTodos(){
+  const out = [];
+  Object.entries(cursos).forEach(([id,c])=>{
+    if(esCursoCentrales(c) || !c.inicio || !c.fin) return;
+    out.push({key:'c:'+id, tipo:'curso', id, titulo:(c.orden?c.orden+'. ':'')+c.nombre, orden:c.orden||0, inicio:c.inicio, fin:c.fin,
+      color:c.color||'#1f8a5f', docente:c.docente||'', lugar:c.lugar||'', hora:'', extra:[c.modalidad, c.horas?c.horas+' h':''].filter(Boolean).join(' · ')});
+  });
+  centralesCal().forEach(ce=>{
+    if(!ce.inicio || !ce.fin) return;
+    out.push({key:'z:'+ce.id, tipo:'central', id:ce.id, titulo:ce.nombre, orden:0, inicio:ce.inicio, fin:ce.fin, color:colorCentral(ce),
+      docente:ce.docente||'', lugar:ce.lugar||'', hora:ce.hora||'', extra:'Curso Nivelatorio'});
+  });
+  return out;
+}
+function calPasaFiltro(e){
+  if(e.tipo==='central' && !calFiltro.centrales) return false;
+  if(e.tipo==='curso' && !calFiltro.cursos) return false;
+  const q = normTxt(calFiltro.q||'');
+  return !q || normTxt([e.titulo,e.docente,e.lugar].join(' ')).includes(q);
+}
+function calEventos(){ return calEventosTodos().filter(calPasaFiltro); }
+/* rango fijo de la línea de tiempo (siempre con TODOS los eventos, para que no se corra al filtrar) */
+function calRango(){
+  let min = RANGE_START, max = RANGE_END;
+  calEventosTodos().forEach(e=>{ if(e.inicio<min) min = e.inicio; if(e.fin>max) max = e.fin; });
+  return {start: lunesDe(min), end: addDays(max, 8)};
+}
+function calPendientes(){
+  if(!calFiltro.centrales) return [];
+  const q = normTxt(calFiltro.q||'');
+  return centralesCal().filter(ce=>(!ce.inicio || !ce.fin) && (!q || normTxt(ce.nombre+' '+(ce.docente||'')).includes(q)));
+}
+function tituloEvento(e){ return escAl(e.titulo); }
+function tipEvento(e){ return [e.titulo, fmtLarga(e.inicio)+' al '+fmtLarga(e.fin), fmtHora(e.hora), e.docente?('Docente: '+e.docente):'', e.lugar?('Lugar: '+e.lugar):'', e.extra].filter(Boolean).join('\n'); }
+
+/* sincroniza las fechas del Curso 1 con las de sus centrales (mínimo y máximo) */
+function sincCursoCentrales(ups, over){
+  const cid = cursoCentralesId(); if(!cid) return;
+  over = over || {};
+  let mn = null, mx = null;
+  const visto = new Set();
+  centralesCal().forEach(ce=>{
+    visto.add(ce.id);
+    const o = over[ce.id] || {};
+    const i = o.inicio!==undefined ? o.inicio : ce.inicio, f = o.fin!==undefined ? o.fin : ce.fin;
+    if(i && f){ if(!mn || i<mn) mn = i; if(!mx || f>mx) mx = f; }
+  });
+  Object.entries(over).forEach(([id,o])=>{
+    if(!visto.has(id) && o.inicio && o.fin){ if(!mn || o.inicio<mn) mn = o.inicio; if(!mx || o.fin>mx) mx = o.fin; }
+  });
+  if(mn && cursos[cid].inicio!==mn) ups['convenio24/cursos/'+cid+'/inicio'] = mn;
+  if(mx && cursos[cid].fin!==mx) ups['convenio24/cursos/'+cid+'/fin'] = mx;
+}
+
+function guardarFechasEvento(key, s, f){
+  const ups = {};
+  if(key.startsWith('c:')){
+    const id = key.slice(2);
+    ups['convenio24/cursos/'+id+'/inicio'] = s;
+    ups['convenio24/cursos/'+id+'/fin'] = f;
+  }else{
+    const id = key.slice(2);
+    const ce = centralesCal().find(x=>x.id===id);
+    if(ce) ups['convenio24/centrales/'+id+'/nombre'] = ce.nombre;
+    ups['convenio24/centrales/'+id+'/inicio'] = s;
+    ups['convenio24/centrales/'+id+'/fin'] = f;
+    sincCursoCentrales(ups, {[id]:{inicio:s, fin:f}});
+  }
+  dbApply(ups);
+}
+function abrirEventoCal(key){
+  if(key.startsWith('c:') || key.startsWith('g:')) openCourseModal(key.slice(2));
+  else openCentralEvModal(key.slice(2));
+}
+
+/* ---- controles ---- */
+function setCalView(v){ calView = v; calScrollInit = false; renderCalendario(); }
+function calSetQ(v){ calFiltro.q = v; renderCalendario(); }
+function calSetF(){ calFiltro.centrales = document.getElementById('calFcent').checked; calFiltro.cursos = document.getElementById('calFcur').checked; renderCalendario(); }
+function calZoomDelta(d){ const z = [16,22,28,36,48]; let i = z.indexOf(calZoom); if(i<0) i = 2; i = Math.max(0,Math.min(z.length-1,i+d)); calZoom = z[i]; renderCalendario(); }
+function calNavMes(d){
+  const p = calMes.split('-').map(Number); const dt = new Date(Date.UTC(p[0],p[1]-1+d,1));
+  calMes = dt.getUTCFullYear()+'-'+pad2(dt.getUTCMonth()+1); renderCalendario();
+}
+function calHoy(){
+  calMes = hoyISO().slice(0,7);
+  if(calView==='timeline') calScrollInit = false;
+  renderCalendario();
+  if(calView==='agenda'){ const el = document.getElementById('agendaHoy'); if(el) el.scrollIntoView({behavior:'smooth', block:'center'}); }
+}
+function imprimirCalendario(){
+  document.body.classList.add('printing-cal');
+  setTimeout(()=>{ window.print(); setTimeout(()=>document.body.classList.remove('printing-cal'), 600); }, 80);
+}
+
+/* ---- resumen superior ---- */
+function renderCalKpis(){
+  const box = document.getElementById('calKpis'); if(!box) return;
+  const todos = calEventosTodos(), hoy = hoyISO();
+  const cs = centralesCal(), conFecha = cs.filter(c=>c.inicio && c.fin).length;
+  const activos = todos.filter(e=>e.inicio<=hoy && e.fin>=hoy);
+  const futuros = todos.filter(e=>e.inicio>hoy).map(e=>e.inicio).sort();
+  const prox = futuros[0];
+  const proxNombres = prox ? todos.filter(e=>e.inicio===prox).map(e=>e.titulo) : [];
+  const cursosN = Object.keys(cursos).length;
+  const tarj = (ico, num, lbl, sub, grad)=>`<div class="cal-kpi" style="background:${grad};"><div class="cal-kpi-ico">${ico}</div><div><div class="cal-kpi-num">${num}</div><div class="cal-kpi-lbl">${lbl}</div>${sub?`<div class="cal-kpi-sub">${sub}</div>`:''}</div></div>`;
+  box.innerHTML =
+    tarj('🏭', conFecha+'<span style="font-size:.9rem;opacity:.8;"> / '+cs.length+'</span>', 'Centrales con fecha', cs.length-conFecha>0 ? (cs.length-conFecha)+' a definir' : 'todas programadas', 'linear-gradient(135deg,#0f766e,#14b8a6)') +
+    tarj('📚', cursosN, 'Cursos del Convenio 24', 'incluye el nivelatorio por centrales', 'linear-gradient(135deg,#2563eb,#60a5fa)') +
+    tarj('▶️', activos.length, 'En curso hoy', activos.slice(0,2).map(e=>escAl(truncate(e.titulo,28))).join(' · '), 'linear-gradient(135deg,#7c3aed,#a78bfa)') +
+    tarj('⏭️', prox ? fmtLarga(prox) : '—', 'Próximo inicio', proxNombres.slice(0,3).map(n=>escAl(truncate(n,26))).join(' · ')+(proxNombres.length>3?' +'+(proxNombres.length-3):''), 'linear-gradient(135deg,#ea580c,#fb923c)');
+}
+
+/* ---- render principal ---- */
+function renderCalendario(){
+  if(calDragging) return;
+  const body = document.getElementById('calBody'); if(!body) return;
+  if(!calMes) calMes = hoyISO().slice(0,7);
+  renderCalKpis();
+  document.querySelectorAll('#calViews button').forEach(b=>b.classList.toggle('on', b.dataset.v===calView));
+  const nav = document.getElementById('calNav'), zoom = document.getElementById('calZoomBox');
+  if(nav) nav.style.display = calView==='mes' ? 'flex' : 'none';
+  if(zoom) zoom.style.display = calView==='timeline' ? 'flex' : 'none';
+  const lab = document.getElementById('calNavLabel');
+  if(lab){ const p = calMes.split('-').map(Number); lab.textContent = MESES_CAL[p[1]-1].charAt(0).toUpperCase()+MESES_CAL[p[1]-1].slice(1)+' '+p[0]; }
+  const fc = document.getElementById('calFcent'), fu = document.getElementById('calFcur');
+  if(fc) fc.checked = calFiltro.centrales; if(fu) fu.checked = calFiltro.cursos;
+  const evs = calEventos(), pend = calPendientes();
+  if(calView==='mes') body.innerHTML = renderMes(evs, pend);
+  else if(calView==='agenda') body.innerHTML = renderAgenda(evs, pend);
+  else renderTimeline(body, evs, pend);
+}
+function renderGantt(){ renderCalendario(); }
+
+/* ---- LÍNEA DE TIEMPO ---- */
+function renderTimeline(body, evs, pend){
+  const dw = calZoom, ROW = 54, HEAD = 62;
+  const prevScroll = body.querySelector('.tl-scroll') ? body.querySelector('.tl-scroll').scrollLeft : null;
+  const {start, end} = calRango();
+  const nDias = dayDiff(start, end)+1, totalW = nDias*dw;
+  const hoy = hoyISO();
+
+  // cabecera: meses + días
+  let meses = '', dias = '', i = 0;
+  while(i<nDias){
+    const d0 = addDays(start,i), ym = d0.slice(0,7);
+    let n = 0; while(i+n<nDias && addDays(start,i+n).slice(0,7)===ym) n++;
+    const p = ym.split('-').map(Number);
+    meses += `<div class="tl-mes" style="width:${n*dw}px;">${MESES_CAL[p[1]-1]} ${p[0]}</div>`;
+    i += n;
+  }
+  for(let k=0;k<nDias;k++){
+    const d = addDays(start,k), w = wdayISO(d), fin = (w===0||w===6), esHoy = d===hoy;
+    const lbl = dw>=22 ? `<span>${DIAS_CAL[w].charAt(0)}</span>${parseInt(d.slice(8),10)}` : (w===1 ? parseInt(d.slice(8),10) : '');
+    dias += `<div class="tl-dia ${fin?'fin':''} ${esHoy?'hoy':''}" style="width:${dw}px;">${lbl}</div>`;
+  }
+
+  // filas
+  const filas = [];
+  const c1 = cursoCentralesId();
+  const evC = evs.filter(e=>e.tipo==='central').sort((a,b)=>a.inicio.localeCompare(b.inicio) || a.titulo.localeCompare(b.titulo,'es'));
+  if(c1 && calFiltro.centrales){
+    const todasC = calEventosTodos().filter(e=>e.tipo==='central');
+    const gi = todasC.map(e=>e.inicio).sort()[0], gf = todasC.map(e=>e.fin).sort().slice(-1)[0];
+    filas.push({tipo:'grupo', cid:c1, inicio:gi, fin:gf, n:todasC.length, total:centralesCal().length});
+    evC.forEach(e=>filas.push({tipo:'central', ev:e}));
+    pend.forEach(ce=>filas.push({tipo:'pend', ce}));
+  }
+  evs.filter(e=>e.tipo==='curso').sort((a,b)=>a.orden-b.orden).forEach(e=>filas.push({tipo:'curso', ev:e}));
+
+  let labels = `<div class="tl-lab-head">Curso / central</div>`;
+  let rowsHtml = '';
+  const barra = (e)=>{
+    const left = dayDiff(start, e.inicio)*dw, w = (dayDiff(e.inicio, e.fin)+1)*dw;
+    const sub = [fmtHora(e.hora), e.docente].filter(Boolean).join(' · ');
+    return `<div class="tl-bar" data-key="${e.key}" data-s="${e.inicio}" data-f="${e.fin}" style="left:${left}px;width:${w}px;--c:${e.color};" title="${escAl(tipEvento(e))}" onpointerdown="tlDrag(event,'${e.key}','move')">
+      <span class="tl-h l" onpointerdown="tlDrag(event,'${e.key}','l')"></span>
+      <div class="tl-bar-in"><b class="tl-fechas">${fmtCorta(e.inicio)} – ${fmtCorta(e.fin)}</b>${sub?`<i>${escAl(sub)}</i>`:''}</div>
+      <span class="tl-h r" onpointerdown="tlDrag(event,'${e.key}','r')"></span></div>`;
+  };
+  filas.forEach(f=>{
+    if(f.tipo==='grupo'){
+      const c = cursos[f.cid];
+      labels += `<div class="tl-lab grupo" style="height:${ROW}px;" onclick="openCourseModal('${f.cid}')" title="Editar curso"><b>🏭 ${escAl(truncate((c.orden?c.orden+'. ':'')+c.nombre, 46))}</b><span>${f.n} de ${f.total} centrales con fecha</span></div>`;
+      let umb = '';
+      if(f.inicio && f.fin){
+        const left = dayDiff(start,f.inicio)*dw, w = (dayDiff(f.inicio,f.fin)+1)*dw;
+        umb = `<div class="tl-umb" style="left:${left}px;width:${w}px;">${fmtCorta(f.inicio)} – ${fmtCorta(f.fin)} · curso completo</div>`;
+      }
+      rowsHtml += `<div class="tl-row grupo" style="height:${ROW}px;">${umb}</div>`;
+    }else if(f.tipo==='central'){
+      const e = f.ev;
+      labels += `<div class="tl-lab" style="height:${ROW}px;border-left:5px solid ${e.color};" onclick="abrirEventoCal('${e.key}')"><b>⚡ ${escAl(e.titulo)}</b><span>${escAl([e.docente, fmtHora(e.hora)].filter(Boolean).join(' · ') || 'sin docente')}</span></div>`;
+      rowsHtml += `<div class="tl-row" style="height:${ROW}px;">${barra(e)}</div>`;
+    }else if(f.tipo==='pend'){
+      const ce = f.ce;
+      labels += `<div class="tl-lab pend" style="height:${ROW}px;" onclick="openCentralEvModal('${ce.id}')"><b>⚡ ${escAl(ce.nombre)}</b><span>${escAl(ce.docente||'sin docente')} · fecha a definir</span></div>`;
+      rowsHtml += `<div class="tl-row pend" style="height:${ROW}px;" onclick="tlClickPend(event,'${ce.id}')"><div class="tl-pend-txt">⏳ Fecha a definir — hacé clic en el día de inicio</div></div>`;
+    }else{
+      const e = f.ev;
+      labels += `<div class="tl-lab" style="height:${ROW}px;border-left:5px solid ${e.color};" onclick="abrirEventoCal('${e.key}')"><b>${escAl(truncate(e.titulo,46))}</b><span>${escAl(e.extra||'')}${e.docente?' · '+escAl(e.docente):''}</span></div>`;
+      rowsHtml += `<div class="tl-row" style="height:${ROW}px;">${barra(e)}</div>`;
+    }
+  });
+  if(!filas.length) rowsHtml = `<div style="padding:30px;text-align:center;color:var(--text-muted);">No hay eventos para mostrar con estos filtros.</div>`;
+
+  // fines de semana + hoy
+  let stripes = '';
+  for(let k=0;k<nDias;k++){ const w = wdayISO(addDays(start,k)); if(w===6){ stripes += `<div class="tl-fin" style="left:${k*dw}px;width:${Math.min(2,nDias-k)*dw}px;"></div>`; } else if(w===0 && k===0){ stripes += `<div class="tl-fin" style="left:0;width:${dw}px;"></div>`; } }
+  const hoyOff = dayDiff(start,hoy);
+  const hoyLine = (hoyOff>=0 && hoyOff<nDias) ? `<div class="tl-hoy" style="left:${hoyOff*dw+dw/2}px;"><span>HOY</span></div>` : '';
+  const totalH = filas.length*ROW;
+
+  body.innerHTML = `<div class="tl-wrap" style="--dw:${dw}px;">
+    <div class="tl-labels">${labels}</div>
+    <div class="tl-scroll"><div class="tl-inner" style="width:${totalW}px;">
+      <div class="tl-head" style="height:${HEAD}px;"><div class="tl-meses">${meses}</div><div class="tl-dias">${dias}</div></div>
+      <div class="tl-body" style="height:${totalH}px;"><div class="tl-grid" style="height:${totalH}px;">${stripes}</div>${rowsHtml}${hoyLine}</div>
+    </div></div></div>
+    <p class="cal-ayuda cal-noprint">💡 Arrastrá una barra para moverla de fecha, tirá de sus bordes para cambiar la duración y hacé clic para editar docente, horario o lugar.</p>`;
+  const sc = body.querySelector('.tl-scroll');
+  if(prevScroll!==null && calScrollInit) sc.scrollLeft = prevScroll;
+  else{ sc.scrollLeft = Math.max(0,(hoyOff>=0 ? hoyOff : 0)*dw - 40); calScrollInit = true; }
+}
+function tlClickPend(ev, id){
+  if(ev.target.closest('.tl-bar')) return;
+  const row = ev.currentTarget, rect = row.getBoundingClientRect();
+  const dw = calZoom;
+  const dia = Math.floor((ev.clientX - rect.left)/dw);
+  const s = addDays(calRango().start, dia), f = addDays(s,4);
+  const ce = centralesCal().find(x=>x.id===id); if(!ce) return;
+  const ups = {};
+  ups['convenio24/centrales/'+id+'/nombre'] = ce.nombre;
+  ups['convenio24/centrales/'+id+'/inicio'] = s;
+  ups['convenio24/centrales/'+id+'/fin'] = f;
+  sincCursoCentrales(ups, {[id]:{inicio:s, fin:f}});
+  dbApply(ups);
+}
+function tlDrag(e, key, mode){
+  if(e.button!==undefined && e.button!==0) return;
+  e.preventDefault(); e.stopPropagation();
+  const bar = e.currentTarget.closest('.tl-bar');
+  const s0 = bar.dataset.s, f0 = bar.dataset.f, x0 = e.clientX, dw = calZoom;
+  const start = calRango().start;
+  let moved = false;
+  calDragging = true;
+  bar.classList.add('drag');
+  const mover = (m)=>{
+    const dd = Math.round((m.clientX - x0)/dw);
+    if(dd!==0) moved = true;
+    let s = s0, f = f0;
+    if(mode==='move'){ s = addDays(s0,dd); f = addDays(f0,dd); }
+    else if(mode==='l'){ s = addDays(s0,dd); if(s>f0) s = f0; }
+    else { f = addDays(f0,dd); if(f<s0) f = s0; }
+    bar.style.left = (dayDiff(start,s)*dw)+'px';
+    bar.style.width = ((dayDiff(s,f)+1)*dw)+'px';
+    bar.dataset.ns = s; bar.dataset.nf = f;
+    const t = bar.querySelector('.tl-fechas'); if(t) t.textContent = fmtCorta(s)+' – '+fmtCorta(f);
+  };
+  const soltar = ()=>{
+    window.removeEventListener('pointermove', mover);
+    window.removeEventListener('pointerup', soltar);
+    calDragging = false;
+    bar.classList.remove('drag');
+    if(!moved){ abrirEventoCal(key); return; }
+    const s = bar.dataset.ns || s0, f = bar.dataset.nf || f0;
+    if(s===s0 && f===f0){ renderCalendario(); return; }
+    guardarFechasEvento(key, s, f);
+    renderCalendario();
+  };
+  window.addEventListener('pointermove', mover);
+  window.addEventListener('pointerup', soltar);
+}
+
+/* ---- MES ---- */
+function renderMes(evs, pend){
+  const p = calMes.split('-').map(Number);
+  const first = p[0]+'-'+pad2(p[1])+'-01';
+  const lastD = new Date(Date.UTC(p[0],p[1],0)).getUTCDate();
+  const last = p[0]+'-'+pad2(p[1])+'-'+pad2(lastD);
+  const hoy = hoyISO();
+  const semanas = []; for(let w=lunesDe(first); w<=last; w=addDays(w,7)) semanas.push(w);
+  let html = `<div class="mes-wrap"><div class="mes-head">${['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'].map(d=>`<div>${d}</div>`).join('')}</div>`;
+  semanas.forEach(w=>{
+    const wf = addDays(w,6);
+    const segs = evs.filter(e=>e.inicio<=wf && e.fin>=w).map(e=>({e, c0:Math.max(0,dayDiff(w,e.inicio)), c1:Math.min(6,dayDiff(w,e.fin)), ini:e.inicio>=w, fin:e.fin<=wf}))
+      .sort((a,b)=>a.c0-b.c0 || (b.c1-b.c0)-(a.c1-a.c0) || a.e.titulo.localeCompare(b.e.titulo,'es'));
+    const lanes = [];
+    segs.forEach(sg=>{ let l = 0; while(lanes[l]!==undefined && lanes[l]>=sg.c0) l++; lanes[l] = sg.c1; sg.lane = l; });
+    const alto = Math.max(112, 34 + lanes.length*27 + 8);
+    let celdas = '';
+    for(let c=0;c<7;c++){
+      const d = addDays(w,c), fuera = d.slice(0,7)!==calMes, fin = c>=5;
+      celdas += `<div class="mes-dia ${fuera?'fuera':''} ${fin?'fin':''} ${d===hoy?'hoy':''}"><span>${parseInt(d.slice(8),10)}</span></div>`;
+    }
+    const chips = segs.map(sg=>{
+      const e = sg.e;
+      return `<div class="mes-ev ${sg.ini?'ini':''} ${sg.fin?'fin':''}" draggable="true" style="left:calc(${sg.c0}/7*100% + 2px);width:calc(${sg.c1-sg.c0+1}/7*100% - 4px);top:${30+sg.lane*27}px;--c:${e.color};" title="${escAl(tipEvento(e))}"
+        ondragstart="mesDragStart(event,'${e.key}','${w}')" onclick="event.stopPropagation();abrirEventoCal('${e.key}')">${sg.ini?(e.tipo==='central'?'⚡ ':'')+tituloEvento(e)+(e.hora?' · '+escAl(fmtHora(e.hora)):''):'… '+tituloEvento(e)}</div>`;
+    }).join('');
+    html += `<div class="mes-sem" style="height:${alto}px;" data-w="${w}" ondragover="event.preventDefault()" ondrop="mesDrop(event,'${w}')" onclick="mesClick(event,'${w}')">${celdas}${chips}</div>`;
+  });
+  html += `</div>`;
+  if(pend.length) html += `<p class="cal-ayuda">⏳ Fecha a definir: <b>${pend.map(c=>escAl(c.nombre)).join(', ')}</b> — ubicalas desde la línea de tiempo o tocando la central.</p>`;
+  html += `<p class="cal-ayuda cal-noprint">💡 Arrastrá un evento a otro día para moverlo, hacé clic para editarlo o tocá un día vacío para agregar un curso.</p>`;
+  return html;
+}
+function mesColDe(ev, sem){
+  const r = sem.getBoundingClientRect();
+  return Math.max(0, Math.min(6, Math.floor((ev.clientX - r.left)/(r.width/7))));
+}
+function mesDragStart(ev, key, w){
+  const sem = ev.currentTarget.parentElement;
+  calGrab = {key, fecha:addDays(w, mesColDe(ev, sem))};
+  ev.dataTransfer.setData('text/plain', key);
+  ev.dataTransfer.effectAllowed = 'move';
+}
+function mesDrop(ev, w){
+  ev.preventDefault();
+  if(!calGrab) return;
+  const destino = addDays(w, mesColDe(ev, ev.currentTarget));
+  const delta = dayDiff(calGrab.fecha, destino);
+  const e = calEventosTodos().find(x=>x.key===calGrab.key);
+  calGrab = null;
+  if(!e || delta===0) return;
+  guardarFechasEvento(e.key, addDays(e.inicio,delta), addDays(e.fin,delta));
+}
+function mesClick(ev, w){
+  if(ev.target.closest('.mes-ev')) return;
+  const d = addDays(w, mesColDe(ev, ev.currentTarget));
+  openCourseModal(null);
+  document.getElementById('c_inicio').value = d;
+  document.getElementById('c_fin').value = d;
+}
+
+/* ---- AGENDA SEMANAL ---- */
+function renderAgenda(evs, pend){
+  const hoy = hoyISO(), lunesHoy = lunesDe(hoy), lunesProx = addDays(lunesHoy,7);
+  if(!evs.length && !pend.length) return `<div style="padding:30px;text-align:center;color:var(--text-muted);">No hay eventos para mostrar con estos filtros.</div>`;
+  let min = null, max = null;
+  evs.forEach(e=>{ if(!min || e.inicio<min) min = e.inicio; if(!max || e.fin>max) max = e.fin; });
+  let html = '<div class="ag-wrap">';
+  if(min){
+    for(let w=lunesDe(min); w<=max; w=addDays(w,7)){
+      const wf = addDays(w,6);
+      const lista = evs.filter(e=>e.inicio<=wf && e.fin>=w).sort((a,b)=>a.inicio.localeCompare(b.inicio) || a.titulo.localeCompare(b.titulo,'es'));
+      if(!lista.length) continue;
+      const esAct = w===lunesHoy, esProx = w===lunesProx, pasada = wf<hoy;
+      const badge = esAct ? '<span class="ag-badge hoy">Esta semana</span>' : (esProx ? '<span class="ag-badge prox">Próxima semana</span>' : '');
+      html += `<div class="ag-sem ${esAct?'act':''} ${esProx?'prox':''} ${pasada?'pasada':''}" ${esAct?'id="agendaHoy"':''}>
+        <div class="ag-sem-h"><b>Semana del ${fmtCorta(w)} al ${fmtCorta(addDays(w,4))}</b>${badge}<span>${lista.length} ${lista.length===1?'actividad':'actividades'}</span></div>
+        <div class="ag-cards">${lista.map(e=>`<div class="ag-card" style="--c:${e.color};" onclick="abrirEventoCal('${e.key}')" title="Clic para editar">
+          <div class="ag-t">${e.tipo==='central'?'⚡ ':''}${escAl(e.titulo)}</div>
+          <div class="ag-m">📅 ${fmtLarga(e.inicio)} → ${fmtLarga(e.fin)}</div>
+          ${e.hora?`<div class="ag-m">🕙 ${escAl(fmtHora(e.hora))}</div>`:''}
+          <div class="ag-m">👤 ${escAl(e.docente||'Docente sin asignar')}</div>
+          ${e.lugar?`<div class="ag-m">📍 ${escAl(e.lugar)}</div>`:''}
+          ${e.extra?`<div class="ag-x">${escAl(e.extra)}</div>`:''}
+        </div>`).join('')}</div></div>`;
+    }
+  }
+  if(pend.length){
+    html += `<div class="ag-sem"><div class="ag-sem-h"><b>⏳ Fecha a definir</b><span>${pend.length}</span></div><div class="ag-cards">${pend.map(ce=>`<div class="ag-card pend" style="--c:${colorCentral(ce)};" onclick="openCentralEvModal('${ce.id}')"><div class="ag-t">⚡ ${escAl(ce.nombre)}</div><div class="ag-m">👤 ${escAl(ce.docente||'Docente sin asignar')}</div><div class="ag-x">Tocá para cargar las fechas</div></div>`).join('')}</div></div>`;
+  }
+  return html+'</div>';
+}
+
+/* ---- MODAL DE CENTRAL (fechas, horario, docente) ---- */
+function openCentralEvModal(id){
+  const ce = id ? centralesCal().find(x=>x.id===id) : null;
+  document.getElementById('ce_id').value = ce ? ce.id : '';
+  document.getElementById('centralEvTitulo').textContent = ce ? ('Editar central — '+ce.nombre) : 'Nueva central';
+  const nom = document.getElementById('ce_nombre');
+  nom.value = ce ? ce.nombre : ''; nom.disabled = !!ce;
+  document.getElementById('ce_inicio').value = (ce && ce.inicio) || '';
+  document.getElementById('ce_fin').value = (ce && ce.fin) || '';
+  document.getElementById('ce_hora').value = (ce && ce.hora) || '';
+  document.getElementById('ce_docente').value = (ce && ce.docente) || '';
+  document.getElementById('ce_lugar').value = (ce && ce.lugar) || '';
+  document.getElementById('ce_color').value = ce ? colorCentral(ce) : CAL_COLORS[Object.keys(centrales).length % CAL_COLORS.length];
+  document.getElementById('centralEvModalBg').classList.add('active');
+}
+function guardarCentralEv(quitarFechas){
+  const nombre = document.getElementById('ce_nombre').value.trim();
+  if(!nombre){ alert('Escribí el nombre de la central.'); return; }
+  const id = document.getElementById('ce_id').value || slugKey(nombre);
+  let ini = document.getElementById('ce_inicio').value, fin = document.getElementById('ce_fin').value;
+  if(quitarFechas){ ini = ''; fin = ''; }
+  if((ini && !fin) || (!ini && fin)){ alert('Completá las dos fechas (inicio y fin) o dejá las dos vacías.'); return; }
+  if(ini && fin<ini){ alert('La fecha de fin no puede ser anterior al inicio.'); return; }
+  const v = x => (String(x||'').trim() || null);
+  const ups = {};
+  ups['convenio24/centrales/'+id+'/nombre'] = nombre;
+  ups['convenio24/centrales/'+id+'/inicio'] = v(ini);
+  ups['convenio24/centrales/'+id+'/fin'] = v(fin);
+  ups['convenio24/centrales/'+id+'/hora'] = v(document.getElementById('ce_hora').value);
+  ups['convenio24/centrales/'+id+'/docente'] = v(document.getElementById('ce_docente').value);
+  ups['convenio24/centrales/'+id+'/lugar'] = v(document.getElementById('ce_lugar').value);
+  ups['convenio24/centrales/'+id+'/color'] = document.getElementById('ce_color').value;
+  sincCursoCentrales(ups, {[id]:{inicio:v(ini), fin:v(fin)}});
+  dbApply(ups);
+  closeModal('centralEvModalBg');
+}
+
 
 function truncate(s,n){ return s && s.length>n ? s.slice(0,n-1)+'…' : s; }
 
@@ -1281,34 +1807,53 @@ function dbApply(ups, silencioso){
   });
   persist();
   renderAlumnosTabla();
+  renderCalendario();
+  renderKpis();
   return Promise.resolve();
 }
 
 /* Centrales del Curso 1 (se cargan una sola vez; después se administran desde "⚙ Administrar centrales") */
 const SEED_CENTRALES = [
-  {nombre:'La Calera', docente:'Mauro Peralta'},
-  {nombre:'La Viña', docente:'Roberto Actis'},
-  {nombre:'Ing. Fitz Simon', docente:'Osvaldo Tejada'},
-  {nombre:'Ing. Cassaffosuth', docente:'Luis Debandi'},
-  {nombre:'San Roque', docente:''},
-  {nombre:'Reolin y Piedras Moras', docente:'Mauricio Poidomani'},
+  {nombre:'La Calera', docente:'Mauro Peralta', inicio:'2026-10-05', fin:'2026-10-09', hora:'10 A 14'},
+  {nombre:'La Viña', docente:'Roberto Actis', inicio:'2026-10-19', fin:'2026-10-23', hora:'10 A 14'},
+  {nombre:'Ing. Fitz Simon', docente:'Osvaldo Tejada', inicio:'2026-10-26', fin:'2026-10-30', hora:'10 A 14'},
+  {nombre:'Ing. Cassaffosuth', docente:'Luis Debandi', inicio:'2026-10-26', fin:'2026-10-30', hora:'8 A 12'},
+  {nombre:'San Roque', docente:'', inicio:'2026-11-02', fin:'2026-11-06', hora:'10 A 14'},
+  {nombre:'Reolin y Piedras Moras', docente:'Mauricio Poidomani', inicio:'2026-11-16', fin:'2026-11-20', hora:'10 A 14'},
   {nombre:'Molinos I y II', docente:''}
 ];
 function asegurarCentrales(){
-  if(centrales._seed) return;
+  if(centrales._seed && centrales._seed2) return;
   const ex = listaCentrales(), ups = {};
-  SEED_CENTRALES.forEach(sc=>{
+  SEED_CENTRALES.forEach((sc,i)=>{
     const f = ex.find(x=>normTxt(x.nombre)===normTxt(sc.nombre));
     const id = f ? centralId(f.nombre) : slugKey(sc.nombre);
-    if(f){
-      if(!f.docente && sc.docente){ ups['convenio24/centrales/'+id+'/nombre'] = f.nombre; ups['convenio24/centrales/'+id+'/docente'] = sc.docente; }
-      else if(!f.id){ ups['convenio24/centrales/'+id+'/nombre'] = f.nombre; }
-    }else{
-      ups['convenio24/centrales/'+id+'/nombre'] = sc.nombre;
-      if(sc.docente) ups['convenio24/centrales/'+id+'/docente'] = sc.docente;
+    const nodo = centrales[id] || {};
+    if(!centrales._seed){
+      if(f){
+        if(!f.docente && sc.docente){ ups['convenio24/centrales/'+id+'/nombre'] = f.nombre; ups['convenio24/centrales/'+id+'/docente'] = sc.docente; }
+        else if(!f.id){ ups['convenio24/centrales/'+id+'/nombre'] = f.nombre; }
+      }else{
+        ups['convenio24/centrales/'+id+'/nombre'] = sc.nombre;
+        if(sc.docente) ups['convenio24/centrales/'+id+'/docente'] = sc.docente;
+      }
+    }
+    if(!centrales._seed2 && sc.inicio){
+      ups['convenio24/centrales/'+id+'/nombre'] = (f ? f.nombre : sc.nombre);
+      if(!nodo.inicio) ups['convenio24/centrales/'+id+'/inicio'] = sc.inicio;
+      if(!nodo.fin) ups['convenio24/centrales/'+id+'/fin'] = sc.fin;
+      if(!nodo.hora) ups['convenio24/centrales/'+id+'/hora'] = sc.hora;
+      if(!nodo.color) ups['convenio24/centrales/'+id+'/color'] = CAL_COLORS[i % CAL_COLORS.length];
+      if(!nodo.docente && sc.docente) ups['convenio24/centrales/'+id+'/docente'] = sc.docente;
     }
   });
+  if(!centrales._seed2){
+    const over = {};
+    SEED_CENTRALES.forEach(sc=>{ if(sc.inicio){ const f = ex.find(x=>normTxt(x.nombre)===normTxt(sc.nombre)); over[f ? centralId(f.nombre) : slugKey(sc.nombre)] = {inicio:sc.inicio, fin:sc.fin}; } });
+    sincCursoCentrales(ups, over);
+  }
   ups['convenio24/centrales/_seed'] = true;
+  ups['convenio24/centrales/_seed2'] = true;
   dbApply(ups, true);
 }
 
