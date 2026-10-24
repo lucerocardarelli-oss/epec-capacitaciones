@@ -1624,7 +1624,7 @@ function renderAlumnosTabla(){
     tbody.innerHTML = ord.map(([aid,al])=>{
       const sesAl = Object.entries(sesiones).filter(([sid,s])=>s.cursoId===selectedCursoAlumnos && (s.central||'')===(al.central||''));
       const nP = sesAl.filter(([sid])=>asistencia[aid+'__'+sid]==='P').length;
-      const meta = [al.dni?('ID '+al.dni):'', al.zona, al.area, al.rol].filter(Boolean).join(' · ');
+      const meta = [al.dni?('ID '+al.dni):'', al.planta?('Planta '+al.planta):'', al.zona, al.area, al.rol].filter(Boolean).join(' · ');
       let cells = `<td style="padding:6px 8px;border-bottom:1px solid var(--border);">
         <div style="font-weight:600;">${escAl(al.nombre)}</div>
         ${meta?`<div style="font-size:.62rem;color:var(--text-muted);">${escAl(meta)}</div>`:''}
@@ -1879,6 +1879,25 @@ function analizarGrilla(grid){
   return {cursoNombre:cursoSolo, instructor:meta.instructor||'', hora, centralDefault, filas, sesiones:sesiones_};
 }
 
+/* El título del Excel ("[ La Calera - Cruz del Eje ]") define el grupo: un Excel = un grupo con un docente.
+   Si coincide con una central ya cargada se usa esa; si no, se crea con el nombre del título. */
+function resolverGrupo(texto){
+  const B = normTxt(texto); if(!B) return '';
+  const conocidas = listaCentrales().map(c=>c.nombre).concat(SEED_CENTRALES.map(c=>c.nombre));
+  const exacta = conocidas.find(n=>normTxt(n)===B);
+  if(exacta) return exacta;
+  let mejor = null, mejorPos = 1e9;
+  conocidas.forEach(n=>{
+    const N = normTxt(n); const pos = B.indexOf(N);
+    if(pos>=0 && (pos<mejorPos || (pos===mejorPos && mejor && N.length>normTxt(mejor).length))){ mejor = n; mejorPos = pos; }
+  });
+  return mejor || String(texto).trim();
+}
+function grupoDeFila(an, f, usaC){
+  if(!usaC) return '';
+  return an.centralDefault ? resolverGrupo(an.centralDefault) : (f.central||'').trim();
+}
+
 function detectarCursoXls(nombre){
   const base = normTxt(nombre||''); if(!base) return null;
   let hit = null;
@@ -1891,13 +1910,14 @@ function planificarImportacion(items){
   const ups = {};
   const st = {nuevos:0, actualizados:0, clasesNuevas:0, marcas:0, centrales:new Set()};
   const asignados = {}; // cn -> id (evita duplicar entre archivos)
+  const movidos = new Set(), viejas = new Set(), usadas = new Set();
   items.forEach(({an, cursoId})=>{
     const usaC = esCursoCentrales(cursos[cursoId]);
-    const centralesArchivo = [...new Set(an.filas.map(f=>usaC ? (f.central||an.centralDefault||'').trim() : ''))];
+    const centralesArchivo = [...new Set(an.filas.map(f=>grupoDeFila(an,f,usaC)))];
     centralesArchivo.forEach(cn=>{
       let centId = 'curso';
       if(cn){
-        st.centrales.add(cn);
+        st.centrales.add(cn); usadas.add(cn);
         centId = asignados[cn] || centralId(cn);
         asignados[cn] = centId;
         ups['convenio24/centrales/'+centId+'/nombre'] = cn;
@@ -1920,11 +1940,11 @@ function planificarImportacion(items){
         }
       });
       // alumnos
-      an.filas.filter(f=>(usaC ? (f.central||an.centralDefault||'').trim() : '')===cn).forEach(f=>{
+      an.filas.filter(f=>grupoDeFila(an,f,usaC)===cn).forEach(f=>{
         const nombreDisp = (f.apellido+', '+f.nombres).replace(/\s+/g,' ').replace(/^, |, $/g,'').trim();
-        let ex = f.id ? Object.entries(alumnos).find(([id,a])=>a.cursoId===cursoId && (a.central||'')===cn && String(a.dni||'')===f.id) : null;
+        let ex = f.id ? Object.entries(alumnos).find(([id,a])=>a.cursoId===cursoId && String(a.dni||'')===f.id) : null;
         if(!ex) ex = Object.entries(alumnos).find(([id,a])=>a.cursoId===cursoId && (a.central||'')===cn && normTxt(a.nombre)===normTxt(nombreDisp));
-        const campos = {dni:f.id, apellido:f.apellido, nombres:f.nombres, nombre:nombreDisp, gerencia:f.gerencia, zona:f.zona, reparto:f.reparto, sobre:f.sobre, area:f.area, rol:f.rol};
+        const campos = {planta:(f.central && normTxt(f.central)!==normTxt(cn)) ? f.central : '', dni:f.id, apellido:f.apellido, nombres:f.nombres, nombre:nombreDisp, gerencia:f.gerencia, zona:f.zona, reparto:f.reparto, sobre:f.sobre, area:f.area, rol:f.rol};
         if(f.nota!==null) campos.nota = f.nota;
         if(f.notaRecup!==null) campos.notaRecup = f.notaRecup;
         if(f.condicion) campos.condicion = f.condicion;
@@ -1932,6 +1952,10 @@ function planificarImportacion(items){
         let aid;
         if(ex){
           aid = ex[0]; st.actualizados++;
+          if(usaC && (ex[1].central||'')!==cn){
+            ups['convenio24/alumnos/'+aid+'/central'] = cn;
+            movidos.add(aid); if(ex[1].central) viejas.add(ex[1].central);
+          }
           Object.entries(campos).forEach(([k,v])=>{ if(v!=='' && v!==null) ups['convenio24/alumnos/'+aid+'/'+k] = v; });
         }else{
           aid = 'a_'+cursoId+'_'+centId+'_'+(String(f.id||slugKey(nombreDisp)).replace(/[^A-Za-z0-9_-]/g,''));
@@ -1945,6 +1969,20 @@ function planificarImportacion(items){
         });
       });
     });
+  });
+  // centrales que quedaron sin alumnos tras mover (ej.: "Cruz del Eje" cargada antes como central aparte): se limpian
+  viejas.forEach(old=>{
+    if(usadas.has(old)) return;
+    const quedan = Object.entries(alumnos).some(([id,a])=>a.central===old && !movidos.has(id));
+    if(quedan) return;
+    Object.entries(sesiones).filter(([id,x])=>(x.central||'')===old).forEach(([sid])=>{
+      ups['convenio24/sesiones/'+sid] = null;
+      Object.keys(asistencia).filter(k=>k.endsWith('__'+sid)).forEach(k=>{ ups['convenio24/asistencia/'+k] = null; });
+    });
+    Object.entries(centrales).forEach(([cid,c])=>{
+      if(c && c.nombre===old && !SEED_CENTRALES.some(x=>normTxt(x.nombre)===normTxt(old))) ups['convenio24/centrales/'+cid] = null;
+    });
+    st.limpiadas = (st.limpiadas||0)+1;
   });
   return {ups, st};
 }
@@ -1982,13 +2020,15 @@ function renderXlsPreview(){
     it.cursoId = detectado || fallback;
     const {st} = planificarImportacion([it]);
     const c = cursos[it.cursoId];
-    const cents = [...new Set(it.an.filas.map(f=>(f.central||it.an.centralDefault||'').trim()))].filter(Boolean);
+    const usaCC = esCursoCentrales(cursos[it.cursoId]);
+    const cents = [...new Set(it.an.filas.map(f=>grupoDeFila(it.an,f,usaCC)))].filter(Boolean);
+    const plantas = [...new Set(it.an.filas.map(f=>f.central).filter(Boolean))];
     html += `<div style="background:#e8f5ee;border:1px solid #bfe0cd;border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:.78rem;line-height:1.5;">
       <b>📄 ${escAl(it.fileName)}</b><br>
       Curso: <b>${escAl(c?c.orden+'. '+truncate(c.nombre,70):'—')}</b>${detectado?'':' <span style="color:#a05a00;">(no lo reconocí por nombre: usé el curso elegido abajo)</span>'}<br>
-      ${esCursoCentrales(c)?'Central: <b>'+escAl(cents.join(', ')||'— sin central —')+'</b><br>':''}
+      ${esCursoCentrales(c)?'Central: <b>'+escAl(cents.join(', ')||'— sin central —')+'</b>'+(plantas.length>1?' <span style="color:var(--text-muted);">(incluye plantas: '+escAl(plantas.join(', '))+')</span>':'')+'<br>':''}
       Instructor: ${escAl(it.an.instructor||'—')} · Horario: ${escAl(it.an.hora||'—')}<br>
-      Alumnos: <b>${it.an.filas.length}</b> (${st.nuevos} nuevos, ${st.actualizados} ya existentes que se actualizan) · Clases: <b>${it.an.sesiones.length}</b> (${st.clasesNuevas} nuevas) · Marcas de asistencia: ${st.marcas}
+      Alumnos: <b>${it.an.filas.length}</b> (${st.nuevos} nuevos, ${st.actualizados} ya existentes que se actualizan) · Clases: <b>${it.an.sesiones.length}</b> (${st.clasesNuevas} nuevas) · Marcas de asistencia: ${st.marcas}${st.limpiadas?'<br><span style="color:#a05a00;">Se van a juntar en esta central alumnos que estaban en una central separada, y se quita esa central vacía.</span>':''}
     </div>`;
   });
   document.getElementById('xls_preview').innerHTML = html;
