@@ -231,6 +231,21 @@
     body.printing-cal *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
     @page{size:landscape;margin:10mm;}
   }
+  /* ===== Programas e informes ===== */
+  .pg-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-bottom:16px;}
+  .pg-card{background:#fff;border-radius:12px;border-left:6px solid var(--c);padding:12px 14px;box-shadow:0 1px 5px rgba(0,0,0,.1);cursor:pointer;transition:transform .12s,box-shadow .12s;}
+  .pg-card:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(0,0,0,.15);}
+  .pg-card.sel{outline:3px solid var(--c);box-shadow:0 6px 16px rgba(0,0,0,.18);}
+  .pg-card-t{font-weight:800;font-size:.8rem;color:var(--header-dark);line-height:1.25;}
+  .pg-card-m{font-size:.68rem;color:var(--text-muted);margin:3px 0 7px;}
+  .pg-card-chips{display:flex;flex-wrap:wrap;gap:5px;}
+  .pg-nota{background:#eef6f2;border:1px solid #cfe5da;color:#0f4d34;font-size:.76rem;border-radius:10px;padding:9px 12px;margin-bottom:12px;}
+  .pg-arch{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:#f3f7f5;border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:.78rem;}
+  .pg-mod{display:grid;grid-template-columns:minmax(120px,1fr) minmax(180px,2.4fr) 80px 38px;gap:6px;align-items:start;margin-bottom:6px;}
+  .pg-mod input,.pg-mod textarea{padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:.78rem;font-family:inherit;width:100%;}
+  @media (max-width:760px){ .pg-mod{grid-template-columns:1fr 1fr;} }
+  #pgPrintArea{display:none;}
+  @media print{ #pgPrintArea{display:block;} #pgPrintArea .doc{font-size:12px;} }
 </style>
 </head>
 <body>
@@ -268,6 +283,7 @@
   <button data-tab="calendario" class="active">📅 Calendario</button>
   <button data-tab="todo">✅ To Do</button>
   <button data-tab="alumnos">👥 Asistencia y Evaluación</button>
+  <button data-tab="programas">📘 Programas e informes</button>
   <button data-tab="indicadores">📊 Indicadores</button>
   <button data-tab="encuesta">🙂 Encuesta</button>
   <button data-tab="logistica">🚚 Logística</button>
@@ -383,6 +399,14 @@
       </div>
     </div>
   </section>
+  <!-- PROGRAMAS E INFORMES -->
+  <section class="panel" id="panel-programas">
+    <div class="banner info">Cargá el <b>programa de capacitación</b> de cada curso y su <b>informe</b>. El informe toma solo la asistencia, notas, horas y encuesta del curso; vos completás las conclusiones y podés adjuntar el documento firmado. El Curso 1 tiene un programa único y un informe por central (más el consolidado).</div>
+    <div id="pgCards"></div>
+    <div id="pgDetalle"></div>
+    <div id="pgPrintArea" class="print-target"></div>
+  </section>
+
   <section class="panel" id="panel-indicadores">
     <div class="banner info">Estos gráficos se arman solos con los datos que cargues en "Asistencia y Evaluación" — a medida que registres asistencia y notas, se van a ir actualizando.</div>
     <div id="indicadoresBody"></div>
@@ -627,6 +651,10 @@
   <div class="modal">
     <h3 id="courseModalTitle">Editar curso</h3>
     <input type="hidden" id="c_id">
+    <div id="c_pgLinks" style="display:none;gap:8px;margin:-4px 0 12px;flex-wrap:wrap;">
+      <button class="btn small secondary" onclick="irAProgramaInforme(document.getElementById('c_id').value,'programa')">📘 Programa de capacitación</button>
+      <button class="btn small secondary" onclick="irAProgramaInforme(document.getElementById('c_id').value,'informe')">📝 Informe del curso</button>
+    </div>
     <div class="field"><label>Nombre del curso</label><input id="c_nombre"></div>
     <div class="row2">
       <div class="field"><label>Fecha de inicio</label><input type="date" id="c_inicio"></div>
@@ -733,11 +761,29 @@ Carlos Rodríguez
   </div>
 </div>
 
+<!-- MODAL DOCUMENTO (programa / informe) -->
+<div class="modal-bg" id="docModalBg">
+  <div class="modal" style="width:min(920px,96vw);padding:22px;">
+    <div id="docModalBody" style="background:#fff;"></div>
+    <div class="modal-actions">
+      <div></div>
+      <div>
+        <button class="btn secondary" onclick="closeModal('docModalBg')">Cerrar</button>
+        <button class="btn" onclick="imprimirDoc()">🖨️ Imprimir / Guardar PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL CENTRAL (calendario) -->
 <div class="modal-bg" id="centralEvModalBg">
   <div class="modal">
     <h3 id="centralEvTitulo">Editar central</h3>
     <input type="hidden" id="ce_id">
+    <div id="ce_pgLinks" style="display:none;gap:8px;margin:-4px 0 12px;flex-wrap:wrap;">
+      <button class="btn small secondary" onclick="irAProgramaInforme(cursoCentralesId(),'programa')">📘 Programa del curso</button>
+      <button class="btn small secondary" onclick="irAProgramaInforme(cursoCentralesId(),'informe',document.getElementById('ce_nombre').value)">📝 Informe de esta central</button>
+    </div>
     <div class="field"><label>Central</label><input id="ce_nombre" placeholder="Nombre de la central"></div>
     <div class="row2">
       <div class="field"><label>Fecha de inicio</label><input type="date" id="ce_inicio"></div>
@@ -871,7 +917,8 @@ function loadLocal(){
   try{ return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }catch(e){ return {}; }
 }
 function saveLocal(data){
-  localStorage.setItem(LS_KEY, JSON.stringify(data));
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(data)); }
+  catch(e){ alert('No se pudo guardar en este navegador (espacio lleno). Si adjuntaste archivos, quitá alguno o usá la versión con base en línea.'); }
 }
 
 function setStatus(text, offline){
@@ -975,6 +1022,9 @@ let logistica = {};    // { cursoId: {lugar, responsable, traslados, materiales,
 let presupuesto = {};  // { cursoId: {presupuestado} }
 let facturas = {};     // { id: {cursoId, numero, proveedor, concepto, monto, fecha, estado, link} }
 let centrales = {};    // { id: {nombre, docente} } — centrales en las que se dicta el curso 1
+let programas = {};    // { cursoId: {objetivoGeneral, modulos, ..., archivoNombre} }
+let informes = {};     // { cursoId | cursoId__centralId | cursoId__all: {...} }
+let archivos = {};     // { 'prog_<key>' | 'inf_<key>': {nombre, tipo, tam, datos} } (solo modo local; en Firebase se leen a demanda)
 let selectedCursoAlumnos = null;
 let selectedCursoEncuesta = null;
 let selectedCursoLogistica = null;
@@ -993,6 +1043,9 @@ async function initLocalMode(){
   presupuesto = data.presupuesto || {};
   facturas = data.facturas || {};
   centrales = data.centrales || {};
+  programas = data.programas || {};
+  informes = data.informes || {};
+  archivos = data.archivos || {};
   if(Object.keys(cursos).length === 0){
     seedCursos.forEach((c,i)=>{ cursos["c"+i] = c; });
   }
@@ -1067,6 +1120,8 @@ function initFirebaseListeners(){
     renderFacturasTabla();
     renderPresupuestoTabla();
   });
+  db.ref('convenio24/programas').on('value', snap=>{ programas = snap.val() || {}; renderProgramas(); });
+  db.ref('convenio24/informes').on('value', snap=>{ informes = snap.val() || {}; renderProgramas(); });
   let centralesVistas = false;
   db.ref('convenio24/centrales').on('value', snap=>{
     centrales = snap.val() || {};
@@ -1080,7 +1135,7 @@ function initFirebaseListeners(){
 
 function persist(){
   if(useFirebase) return; // firebase writes happen directly per-action
-  saveLocal({cursos, tareas, usuarios, alumnos, sesiones, asistencia, encuestas, logistica, presupuesto, facturas, centrales});
+  saveLocal({cursos, tareas, usuarios, alumnos, sesiones, asistencia, encuestas, logistica, presupuesto, facturas, centrales, programas, informes, archivos});
 }
 
 /* ============ HELPERS ============ */
@@ -1533,6 +1588,7 @@ function renderAgenda(evs, pend){
 function openCentralEvModal(id){
   const ce = id ? centralesCal().find(x=>x.id===id) : null;
   document.getElementById('ce_id').value = ce ? ce.id : '';
+  document.getElementById('ce_pgLinks').style.display = ce ? 'flex' : 'none';
   document.getElementById('centralEvTitulo').textContent = ce ? ('Editar central — '+ce.nombre) : 'Nueva central';
   const nom = document.getElementById('ce_nombre');
   nom.value = ce ? ce.nombre : ''; nom.disabled = !!ce;
@@ -1573,6 +1629,7 @@ function truncate(s,n){ return s && s.length>n ? s.slice(0,n-1)+'…' : s; }
 function openCourseModal(id){
   document.getElementById('c_id').value = id || '';
   document.getElementById('c_delBtn').style.display = id ? 'inline-block' : 'none';
+  document.getElementById('c_pgLinks').style.display = id ? 'flex' : 'none';
   if(id){
     const c = cursos[id];
     document.getElementById('courseModalTitle').textContent = 'Editar curso';
@@ -1789,7 +1846,7 @@ function condEstilo(c){
 }
 
 function collByName(n){
-  return ({cursos,tareas,usuarios,alumnos,sesiones,asistencia,encuestas,logistica,presupuesto,facturas,centrales})[n];
+  return ({cursos,tareas,usuarios,alumnos,sesiones,asistencia,encuestas,logistica,presupuesto,facturas,centrales,programas,informes,archivos})[n];
 }
 /* Aplica varios cambios de una sola vez (Firebase: update multi-ruta; modo local: memoria + localStorage) */
 function dbApply(ups, silencioso){
@@ -1809,6 +1866,7 @@ function dbApply(ups, silencioso){
   renderAlumnosTabla();
   renderCalendario();
   renderKpis();
+  renderProgramas();
   return Promise.resolve();
 }
 
@@ -3114,6 +3172,408 @@ function renderPresupuestoTabla(){
   }
 }
 
+/* ============ PROGRAMAS E INFORMES POR CURSO ============ */
+const PG_ESTADOS = ['Borrador','En revisión','Aprobado'];
+const INF_ESTADOS = ['Borrador','Final'];
+const PG_MAX_ARCHIVO = 3*1024*1024;
+let pgCurso = null, pgCentral = '*', pgTab = 'programa', pgDirty = false;
+
+function pgUsuarioNombre(){ return (usuarios[currentUser] && usuarios[currentUser].nombre) || currentUser || ''; }
+function pgKeyInforme(cid, central){
+  if(!esCursoCentrales(cursos[cid])) return cid;
+  return cid+'__'+((!central || central==='*') ? 'all' : centralId(central));
+}
+function pgCursosOrden(){ return Object.entries(cursos).sort((a,b)=>(a[1].orden||0)-(b[1].orden||0)); }
+function pgChip(txt, tipo){
+  const col = {gris:['#eef2f1','#5b6b66'], ambar:['#fdf3e0','#8a5a00'], azul:['#e8f1fc','#1565c0'], verde:['#e1f4ea','#0f6b3f']}[tipo] || ['#eef2f1','#5b6b66'];
+  return `<span style="display:inline-block;background:${col[0]};color:${col[1]};font-size:.64rem;font-weight:800;padding:2px 8px;border-radius:12px;">${txt}</span>`;
+}
+function pgEstadoProg(id){
+  const p = programas[id];
+  if(!p) return pgChip('Programa: sin cargar','gris');
+  const e = p.estado || 'Borrador';
+  return pgChip('Programa: '+e + (p.archivoNombre?' 📎':''), e==='Aprobado'?'verde':(e==='En revisión'?'azul':'ambar'));
+}
+function pgEstadoInf(id){
+  const c = cursos[id];
+  if(esCursoCentrales(c)){
+    const cs = centralesCal();
+    const hechos = cs.filter(ce=>{ const i = informes[id+'__'+ce.id]; return i && i.estado==='Final'; }).length;
+    const algo = cs.filter(ce=>informes[id+'__'+ce.id]).length;
+    return pgChip('Informes: '+hechos+'/'+cs.length+' finales', hechos===cs.length && cs.length ? 'verde' : (algo ? 'ambar' : 'gris'));
+  }
+  const i = informes[id];
+  if(!i) return pgChip('Informe: sin cargar','gris');
+  return pgChip('Informe: '+(i.estado||'Borrador')+(i.archivoNombre?' 📎':''), i.estado==='Final'?'verde':'ambar');
+}
+
+function renderProgramas(){
+  const box = document.getElementById('pgCards'); if(!box) return;
+  const lista = pgCursosOrden();
+  if(!pgCurso || !cursos[pgCurso]) pgCurso = (lista[0]||[])[0] || null;
+  const nProg = lista.filter(([id])=>programas[id]).length;
+  const nApr = lista.filter(([id])=>programas[id] && programas[id].estado==='Aprobado').length;
+  let totInf = 0, finInf = 0;
+  lista.forEach(([id,c])=>{
+    if(esCursoCentrales(c)){ const cs = centralesCal(); totInf += cs.length; finInf += cs.filter(ce=>informes[id+'__'+ce.id] && informes[id+'__'+ce.id].estado==='Final').length; }
+    else{ totInf++; if(informes[id] && informes[id].estado==='Final') finInf++; }
+  });
+  const kp = (ico, n, l, sub, g)=>`<div class="cal-kpi" style="background:${g};"><div class="cal-kpi-ico">${ico}</div><div><div class="cal-kpi-num">${n}</div><div class="cal-kpi-lbl">${l}</div><div class="cal-kpi-sub">${sub}</div></div></div>`;
+  const resumen = `<div class="cal-kpis">${kp('📘', nProg+'<span style="font-size:.9rem;opacity:.8;"> / '+lista.length+'</span>', 'Programas cargados', nApr+' aprobados', 'linear-gradient(135deg,#2563eb,#60a5fa)')}${kp('📝', finInf+'<span style="font-size:.9rem;opacity:.8;"> / '+totInf+'</span>', 'Informes finales', 'cursos y centrales', 'linear-gradient(135deg,#0f766e,#14b8a6)')}</div>`;
+  box.innerHTML = resumen + '<div class="pg-cards">' + lista.map(([id,c])=>`<div class="pg-card ${id===pgCurso?'sel':''}" style="--c:${c.color||'#1f8a5f'};" onclick="pgSeleccionar('${id}')">
+      <div class="pg-card-t">${escAl((c.orden?c.orden+'. ':'')+truncate(c.nombre,70))}</div>
+      <div class="pg-card-m">${escAl([c.modalidad, c.horas?c.horas+' h':'', esCursoCentrales(c)?'7 centrales':''].filter(Boolean).join(' · '))}</div>
+      <div class="pg-card-chips">${pgEstadoProg(id)} ${pgEstadoInf(id)}</div></div>`).join('') + '</div>';
+  renderPgDetalle(false);
+}
+function pgSeleccionar(id){
+  if(pgDirty && !confirm('Tenés cambios sin guardar. ¿Descartarlos y cambiar de curso?')) return;
+  pgCurso = id; pgCentral = '*'; pgDirty = false; renderProgramas();
+  const d = document.getElementById('pgDetalle'); if(d) d.scrollIntoView({behavior:'smooth', block:'start'});
+}
+function pgSetTab(t){
+  if(pgDirty && !confirm('Tenés cambios sin guardar. ¿Descartarlos?')) return;
+  pgTab = t; pgDirty = false; renderPgDetalle(true);
+}
+function pgSetCentral(v){
+  if(pgDirty && !confirm('Tenés cambios sin guardar. ¿Descartarlos?')){ renderPgDetalle(true); return; }
+  pgCentral = v==='*' ? '*' : decodeURIComponent(v); pgDirty = false; renderPgDetalle(true);
+}
+function irAProgramaInforme(cid, tab, central){
+  closeModal('courseModalBg'); closeModal('centralEvModalBg');
+  if(!cid || !cursos[cid]) return;
+  pgCurso = cid; pgTab = tab || 'programa'; pgCentral = central || '*'; pgDirty = false;
+  const b = document.querySelector('nav.tabs button[data-tab="programas"]'); if(b) b.click();
+  renderProgramas(); window.scrollTo({top:0});
+}
+
+/* ---- panel de detalle ---- */
+function renderPgDetalle(force){
+  const box = document.getElementById('pgDetalle'); if(!box || !pgCurso) return;
+  if(pgDirty && !force){ pgActualizarArchivoBox(); return; }
+  const c = cursos[pgCurso];
+  const tabs = `<div class="cal-seg" style="display:inline-flex;margin-bottom:14px;">
+      <button class="${pgTab==='programa'?'on':''}" onclick="pgSetTab('programa')">📘 Programa de capacitación</button>
+      <button class="${pgTab==='informe'?'on':''}" onclick="pgSetTab('informe')">📝 Informe del curso</button></div>`;
+  box.innerHTML = `<div class="card" style="border-top:4px solid ${c.color||'#1f8a5f'};">
+    <h2 style="margin:0 0 4px;">${escAl((c.orden?c.orden+'. ':'')+c.nombre)}</h2>
+    <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:12px;">${escAl([c.modalidad, c.horas?c.horas+' h':'', c.dirigido].filter(Boolean).join(' · '))}</div>
+    ${tabs}
+    <div id="pgForm">${pgTab==='programa' ? pgFormPrograma(c) : pgFormInforme(c)}</div></div>`;
+  pgActualizarTotHoras();
+}
+function pgMarcarSucio(){ pgDirty = true; }
+document.addEventListener('input', e=>{
+  if(e.target && e.target.closest && e.target.closest('#pgForm')){
+    if(e.target.type!=='file' && !e.target.classList.contains('pg-nodirty')) pgDirty = true;
+    if(e.target.classList.contains('pm-h')) pgActualizarTotHoras();
+  }
+});
+document.addEventListener('change', e=>{ if(e.target && e.target.closest && e.target.closest('#pgForm') && e.target.type!=='file' && !e.target.classList.contains('pg-nodirty')) pgDirty = true; });
+
+/* ---- archivos adjuntos ---- */
+function pgArchivoMeta(tipo, key){ const o = (tipo==='prog' ? programas : informes)[key]; return o && o.archivoNombre ? o : null; }
+function pgArchivoBoxHtml(tipo, key){
+  const m = pgArchivoMeta(tipo, key);
+  const kb = m && m.archivoTam ? (m.archivoTam>1048576 ? (m.archivoTam/1048576).toFixed(1)+' MB' : Math.round(m.archivoTam/1024)+' KB') : '';
+  return m
+    ? `<div class="pg-arch"><span>📎 <b>${escAl(m.archivoNombre)}</b> <span style="color:var(--text-muted);">${kb}</span></span>
+        <span><button class="btn small secondary" onclick="pgDescargar('${tipo}','${key}')">⬇ Descargar</button> <button class="btn small danger" onclick="pgQuitarArchivo('${tipo}','${key}')">Quitar</button></span></div>`
+    : `<div style="font-size:.76rem;color:var(--text-muted);">Todavía no hay archivo adjunto.</div>`;
+}
+function pgActualizarArchivoBox(){
+  const b = document.getElementById('pg_archivoBox'); if(!b) return;
+  const tipo = pgTab==='programa' ? 'prog' : 'inf';
+  const key = tipo==='prog' ? pgCurso : pgKeyInforme(pgCurso, pgCentral);
+  b.innerHTML = pgArchivoBoxHtml(tipo, key);
+}
+function pgSubirArchivo(tipo, ev){
+  const f = ev.target.files[0]; if(!f) return;
+  if(f.size > PG_MAX_ARCHIVO){ alert('El archivo pesa más de 3 MB. Comprimilo o subí uno más liviano.'); ev.target.value = ''; return; }
+  const key = tipo==='prog' ? pgCurso : pgKeyInforme(pgCurso, pgCentral);
+  const coll = tipo==='prog' ? 'programas' : 'informes';
+  const r = new FileReader();
+  r.onload = ()=>{
+    const ups = {};
+    ups['convenio24/archivos/'+tipo+'_'+key] = {nombre:f.name, tipo:f.type, tam:f.size, datos:r.result};
+    ups['convenio24/'+coll+'/'+key+'/cursoId'] = pgCurso;
+    if(tipo==='inf' && esCursoCentrales(cursos[pgCurso]) && pgCentral!=='*') ups['convenio24/'+coll+'/'+key+'/central'] = pgCentral;
+    ups['convenio24/'+coll+'/'+key+'/archivoNombre'] = f.name;
+    ups['convenio24/'+coll+'/'+key+'/archivoTipo'] = f.type || '';
+    ups['convenio24/'+coll+'/'+key+'/archivoTam'] = f.size;
+    Promise.resolve(dbApply(ups)).then(()=>{ ev.target.value = ''; setTimeout(pgActualizarArchivoBox, 200); });
+  };
+  r.onerror = ()=>alert('No se pudo leer el archivo.');
+  r.readAsDataURL(f);
+}
+async function pgDescargar(tipo, key){
+  const ak = tipo+'_'+key;
+  let a = archivos[ak];
+  if(useFirebase){
+    try{ a = (await db.ref('convenio24/archivos/'+ak).once('value')).val(); }catch(e){ alert('No se pudo descargar: '+e.message); return; }
+  }
+  if(!a){ alert('No se encontró el archivo en la base.'); return; }
+  const l = document.createElement('a'); l.href = a.datos; l.download = a.nombre; document.body.appendChild(l); l.click(); l.remove();
+}
+function pgQuitarArchivo(tipo, key){
+  if(!confirm('¿Quitar el archivo adjunto?')) return;
+  const coll = tipo==='prog' ? 'programas' : 'informes';
+  const ups = {};
+  ups['convenio24/archivos/'+tipo+'_'+key] = null;
+  ['archivoNombre','archivoTipo','archivoTam'].forEach(k=>{ ups['convenio24/'+coll+'/'+key+'/'+k] = null; });
+  Promise.resolve(dbApply(ups)).then(()=>setTimeout(pgActualizarArchivoBox, 200));
+}
+
+/* ---- formulario del PROGRAMA ---- */
+function pgModulosOrdenados(p){
+  return Object.values((p && p.modulos) || {}).sort((a,b)=>(a.orden||0)-(b.orden||0));
+}
+function pgFilaModulo(m){
+  m = m || {};
+  return `<div class="pg-mod"><input class="pm-t" placeholder="Módulo / tema" value="${escAl(m.titulo||'')}"><textarea class="pm-c" rows="2" placeholder="Contenidos que se desarrollan">${escAl(m.contenidos||'')}</textarea><input class="pm-h" type="number" min="0" step="0.5" placeholder="Horas" value="${m.horas||''}"><button class="btn danger small" onclick="pgQuitarMod(this)" title="Quitar módulo">✕</button></div>`;
+}
+function pgAddMod(){ document.getElementById('pg_mods').insertAdjacentHTML('beforeend', pgFilaModulo()); pgDirty = true; pgActualizarTotHoras(); }
+function pgQuitarMod(b){ b.closest('.pg-mod').remove(); pgDirty = true; pgActualizarTotHoras(); }
+function pgActualizarTotHoras(){
+  const el = document.getElementById('pg_totHoras'); if(!el) return;
+  const tot = [...document.querySelectorAll('#pg_mods .pm-h')].reduce((s,i)=>s+(Number(i.value)||0),0);
+  const c = cursos[pgCurso], h = c ? (Number(c.horas)||0) : 0;
+  const ok = !h || Math.abs(tot-h)<0.01;
+  el.innerHTML = `Suma de módulos: <b>${fmtHs(tot)} h</b>${h?` · Duración del curso: <b>${h} h</b>`:''} ${ok?'':'<span style="color:#a05a00;font-weight:700;">⚠ no coincide con la duración del curso</span>'}`;
+}
+function pgFormPrograma(c){
+  const p = programas[pgCurso] || {};
+  const mods = pgModulosOrdenados(p);
+  const ta = (id, lbl, val, ph, rows)=>`<div class="field"><label>${lbl}</label><textarea id="${id}" rows="${rows||3}" placeholder="${escAl(ph||'')}">${escAl(val||'')}</textarea></div>`;
+  const docente = p.docente!==undefined ? p.docente : (esCursoCentrales(c) ? centralesCal().filter(x=>x.docente).map(x=>x.docente).join(', ') : (c.docente||''));
+  const cronCent = esCursoCentrales(c) ? `<div class="pg-nota">🏭 Este curso se dicta en varias centrales con un <b>único programa</b>. Las fechas, horarios y docentes de cada central se administran en el Calendario y salen automáticamente en el documento.</div>` : '';
+  return `${cronCent}
+    <div class="row2">
+      <div class="field"><label>Estado del programa</label><select id="pg_estado">${PG_ESTADOS.map(e=>`<option ${((p.estado||'Borrador')===e)?'selected':''}>${e}</option>`).join('')}</select></div>
+      <div class="field"><label>Versión</label><input id="pg_version" value="${escAl(p.version||'1.0')}"></div>
+    </div>
+    ${ta('pg_objGeneral','Objetivo general', p.objetivoGeneral, 'Qué va a ser capaz de hacer el participante al finalizar el curso.')}
+    ${ta('pg_objEsp','Objetivos específicos (uno por renglón)', p.objetivosEspecificos, 'Un objetivo por renglón…', 4)}
+    <div class="row2">
+      <div class="field"><label>Destinatarios</label><input id="pg_dest" value="${escAl(p.destinatarios!==undefined?p.destinatarios:(c.dirigido||''))}"></div>
+      <div class="field"><label>Docente / instructor</label><input id="pg_doc" value="${escAl(docente)}"></div>
+    </div>
+    ${ta('pg_req','Requisitos y conocimientos previos', p.requisitos, '', 2)}
+    <div class="field"><label>Plan de contenidos por módulo</label>
+      <div id="pg_mods">${mods.length ? mods.map(pgFilaModulo).join('') : pgFilaModulo()}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;gap:10px;flex-wrap:wrap;"><button class="btn small secondary" onclick="pgAddMod()">+ Agregar módulo</button><span id="pg_totHoras" style="font-size:.76rem;color:var(--text-muted);"></span></div>
+    </div>
+    ${ta('pg_met','Metodología', p.metodologia, 'Estrategia didáctica, práctica / teoría, simulaciones, trabajo en campo…')}
+    ${ta('pg_eval','Evaluación y condiciones de aprobación', p.evaluacion, 'Instrumentos de evaluación, nota mínima de aprobación, asistencia requerida…')}
+    ${ta('pg_rec','Recursos y materiales', p.recursos, '', 2)}
+    ${ta('pg_bib','Bibliografía y documentación de referencia', p.bibliografia, '', 2)}
+    <div class="field"><label>Archivo del programa (PDF, Word, etc. — hasta 3 MB)</label>
+      <div id="pg_archivoBox">${pgArchivoBoxHtml('prog', pgCurso)}</div>
+      <input type="file" id="pg_file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg" onchange="pgSubirArchivo('prog',event)" style="margin-top:6px;">
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+      <button class="btn" onclick="pgGuardarPrograma()">💾 Guardar programa</button>
+      <button class="btn secondary" onclick="pgVerDoc('programa')">👁 Ver documento / Imprimir PDF</button>
+    </div>
+    ${p.actualizado?`<div style="font-size:.68rem;color:var(--text-muted);margin-top:8px;">Última actualización: ${escAl(p.actualizado)}${p.actualizadoPor?' por '+escAl(p.actualizadoPor):''}</div>`:''}`;
+}
+function pgGuardarPrograma(){
+  const cid = pgCurso, old = programas[cid] || {};
+  const v = id => document.getElementById(id).value.trim();
+  const mods = {};
+  [...document.querySelectorAll('#pg_mods .pg-mod')].forEach((r,i)=>{
+    const t = r.querySelector('.pm-t').value.trim(), co = r.querySelector('.pm-c').value.trim(), h = Number(r.querySelector('.pm-h').value)||0;
+    if(t || co || h) mods['m'+String(i+1).padStart(2,'0')] = {orden:i+1, titulo:t, contenidos:co, horas:h};
+  });
+  const data = {cursoId:cid, estado:v('pg_estado'), version:v('pg_version'), objetivoGeneral:v('pg_objGeneral'), objetivosEspecificos:v('pg_objEsp'),
+    destinatarios:v('pg_dest'), docente:v('pg_doc'), requisitos:v('pg_req'), metodologia:v('pg_met'), evaluacion:v('pg_eval'), recursos:v('pg_rec'), bibliografia:v('pg_bib'),
+    modulos:mods, actualizado:hoyISO(), actualizadoPor:pgUsuarioNombre()};
+  if(old.archivoNombre){ data.archivoNombre = old.archivoNombre; data.archivoTipo = old.archivoTipo||''; data.archivoTam = old.archivoTam||0; }
+  Promise.resolve(dbApply({['convenio24/programas/'+cid]: data})).then(()=>{ pgDirty = false; renderProgramas(); pgAviso('Programa guardado ✔'); });
+}
+function pgAviso(txt){
+  const d = document.createElement('div');
+  d.textContent = txt;
+  d.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0f4d34;color:#fff;padding:10px 20px;border-radius:24px;font-size:.85rem;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,.3);z-index:99;';
+  document.body.appendChild(d); setTimeout(()=>d.remove(), 2200);
+}
+
+/* ---- métricas e informe ---- */
+function metricasInforme(cid, central){
+  const c = cursos[cid], esC = esCursoCentrales(c);
+  const pasa = it => !esC || central==='*' || !central || (it.central||'')===central;
+  const al = Object.entries(alumnos).filter(([id,a])=>a.cursoId===cid && pasa(a));
+  const se = Object.entries(sesiones).filter(([id,s])=>s.cursoId===cid && pasa(s)).sort((a,b)=>a[1].fecha.localeCompare(b[1].fecha));
+  const R = calcResumen(al, se);
+  let hAsist = 0, hProg = 0;
+  al.forEach(([aid,a])=>{ const h = horasAlumno(aid,a); hAsist += h.asist; hProg += h.prog; });
+  const enc = Object.values(encuestas).filter(e=>e.cursoId===cid);
+  const prom = k => enc.length ? enc.reduce((s,e)=>s+(Number(e[k])||0),0)/enc.length : null;
+  const ce = (esC && central && central!=='*') ? centralesCal().find(x=>x.nombre===central) : null;
+  const f = ce ? {ini:ce.inicio, fin:ce.fin, hora:ce.hora||'', docente:ce.docente||'', lugar:ce.lugar||''}
+               : {ini:c.inicio, fin:c.fin, hora:'', docente:c.docente||'', lugar:c.lugar||''};
+  const presup = (presupuesto[cid] && presupuesto[cid].presupuestado) || 0;
+  const factur = Object.values(facturas).filter(x=>x.cursoId===cid).reduce((s,x)=>s+(Number(x.monto)||0),0);
+  return {c, esC, al, se, R, hAsist, hProg, enc:{n:enc.length, q1:prom('q1'), q2:prom('q2'), q3:prom('q3'), q4:prom('q4')}, f, presup, factur};
+}
+
+function pgFormInforme(c){
+  const esC = esCursoCentrales(c);
+  if(esC && pgCentral!=='*' && !centralesCal().some(x=>x.nombre===pgCentral)) pgCentral = '*';
+  const key = pgKeyInforme(pgCurso, pgCentral);
+  const inf = informes[key] || {};
+  const M = metricasInforme(pgCurso, esC ? pgCentral : null);
+  const selCentral = esC ? `<div class="field" style="max-width:420px;"><label>Informe de</label><select class="pg-nodirty" onchange="pgSetCentral(this.value)">
+      <option value="*" ${pgCentral==='*'?'selected':''}>🏭 Consolidado (todas las centrales)</option>
+      ${centralesCal().sort((a,b)=>a.nombre.localeCompare(b.nombre,'es')).map(ce=>{ const i = informes[pgCurso+'__'+ce.id]; return `<option value="${encodeURIComponent(ce.nombre)}" ${pgCentral===ce.nombre?'selected':''}>⚡ ${escAl(ce.nombre)}${i?(i.estado==='Final'?' — Final ✔':' — borrador'):''}</option>`; }).join('')}
+    </select></div>` : '';
+  const sat = M.enc.n ? ((M.enc.q1+M.enc.q2+M.enc.q3+M.enc.q4)/4).toFixed(1)+'/5' : '–';
+  const cards = resumenCards([
+    {n:M.R.total, l:'Participantes'}, {n:M.R.clases, l:'Clases'}, {n:M.R.asistPct===null?'–':M.R.asistPct+'%', l:'Asistencia'},
+    {n:fmtHs(M.hAsist), l:'Horas-hombre'}, {n:M.R.aprobados, l:'Aprobados'}, {n:M.R.reprobados, l:'No aprobados'},
+    {n:M.R.promedio===null?'–':M.R.promedio.toFixed(1), l:'Promedio de nota'}, {n:sat, l:'Satisfacción ('+M.enc.n+' resp.)'}
+  ]);
+  const ta = (id, lbl, val, ph, rows)=>`<div class="field"><label>${lbl}</label><textarea id="${id}" rows="${rows||4}" placeholder="${escAl(ph||'')}">${escAl(val||'')}</textarea></div>`;
+  return `${selCentral}
+    <div class="pg-nota">📊 Los números del informe se calculan solos con la <b>asistencia, notas, horas y encuesta</b> cargadas${esC&&pgCentral!=='*'?' para <b>'+escAl(pgCentral)+'</b> (la encuesta es del curso completo)':''}. Acá completás la parte narrativa.</div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px;">${cards}</div>
+    <div class="row2">
+      <div class="field"><label>Estado del informe</label><select id="pi_estado">${INF_ESTADOS.map(e=>`<option ${((inf.estado||'Borrador')===e)?'selected':''}>${e}</option>`).join('')}</select></div>
+      <div class="field"><label>Fecha del informe</label><input type="date" id="pi_fecha" value="${escAl(inf.fecha||hoyISO())}"></div>
+    </div>
+    <div class="field"><label>Elaborado por</label><input id="pi_elabora" value="${escAl(inf.elaboradoPor!==undefined?inf.elaboradoPor:pgUsuarioNombre())}"></div>
+    ${ta('pi_desarrollo','Desarrollo del curso', inf.desarrollo, 'Cómo se desarrolló: cumplimiento del cronograma, situaciones relevantes, participación del grupo…')}
+    ${ta('pi_conclusiones','Conclusiones', inf.conclusiones, 'Resultados alcanzados respecto de los objetivos del programa…')}
+    ${ta('pi_recomendaciones','Recomendaciones y oportunidades de mejora', inf.recomendaciones, 'Ajustes al programa, logística, evaluación, próximos pasos…')}
+    <div class="field"><label>Informe final firmado (PDF, Word, etc. — hasta 3 MB)</label>
+      <div id="pg_archivoBox">${pgArchivoBoxHtml('inf', key)}</div>
+      <input type="file" id="pg_file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg" onchange="pgSubirArchivo('inf',event)" style="margin-top:6px;">
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+      <button class="btn" onclick="pgGuardarInforme()">💾 Guardar informe</button>
+      <button class="btn secondary" onclick="pgVerDoc('informe')">👁 Ver informe completo / Imprimir PDF</button>
+    </div>
+    ${inf.fecha?`<div style="font-size:.68rem;color:var(--text-muted);margin-top:8px;">Guardado el ${escAl(inf.fecha)}${inf.elaboradoPor?' · '+escAl(inf.elaboradoPor):''}</div>`:''}`;
+}
+function pgGuardarInforme(){
+  const cid = pgCurso, esC = esCursoCentrales(cursos[cid]);
+  const key = pgKeyInforme(cid, pgCentral), old = informes[key] || {};
+  const v = id => document.getElementById(id).value.trim();
+  const data = {cursoId:cid, estado:v('pi_estado'), fecha:document.getElementById('pi_fecha').value || hoyISO(), elaboradoPor:v('pi_elabora'),
+    desarrollo:v('pi_desarrollo'), conclusiones:v('pi_conclusiones'), recomendaciones:v('pi_recomendaciones'), actualizadoPor:pgUsuarioNombre()};
+  if(esC) data.central = pgCentral==='*' ? '*' : pgCentral;
+  if(old.archivoNombre){ data.archivoNombre = old.archivoNombre; data.archivoTipo = old.archivoTipo||''; data.archivoTam = old.archivoTam||0; }
+  Promise.resolve(dbApply({['convenio24/informes/'+key]: data})).then(()=>{ pgDirty = false; renderProgramas(); pgAviso('Informe guardado ✔'); });
+}
+
+/* ---- documentos imprimibles ---- */
+const DOC_H3 = 'font-size:13px;color:#0b3d2e;border-bottom:1px solid #cfd8d4;padding-bottom:3px;margin:16px 0 8px;';
+const DOC_TH = 'background:#0b5d46;color:#fff;padding:5px 7px;text-align:left;font-size:11px;';
+const DOC_TD = 'padding:5px 7px;border-bottom:1px solid #dfe6e3;font-size:11px;vertical-align:top;';
+function docCabecera(titulo, sub, estado){
+  return `<div style="border-bottom:4px solid #00833E;padding-bottom:10px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-end;gap:14px;">
+    <div><div style="font-size:10px;color:#555;letter-spacing:.06em;font-weight:700;">EPEC SAU · EMPRESA PROVINCIAL DE ENERGÍA DE CÓRDOBA</div>
+    <div style="font-size:10px;color:#555;">Convenio 24 · Capacitación</div>
+    <h1 style="margin:6px 0 2px;font-size:19px;color:#0b3d2e;">${titulo}</h1><div style="font-size:12px;color:#444;">${sub}</div></div>
+    <div style="text-align:right;font-size:10px;color:#555;white-space:nowrap;"><b style="color:#0b3d2e;">${escAl(estado||'')}</b><br>Emitido: ${fmtLarga(hoyISO())}/${hoyISO().slice(0,4)}</div></div>`;
+}
+function docTexto(t){ return t ? `<div style="white-space:pre-wrap;font-size:11.5px;line-height:1.45;">${escAl(t)}</div>` : `<div style="font-size:11px;color:#999;">— Sin completar —</div>`; }
+function docFilas(pares){
+  return `<table style="width:100%;border-collapse:collapse;">${pares.filter(p=>p[1]!==''&&p[1]!==null&&p[1]!==undefined).map(p=>`<tr><td style="${DOC_TD}width:30%;background:#f3f7f5;font-weight:700;">${p[0]}</td><td style="${DOC_TD}">${p[1]}</td></tr>`).join('')}</table>`;
+}
+function docFirmas(){
+  const l = t=>`<div style="flex:1;text-align:center;font-size:10px;"><div style="border-top:1px solid #333;margin:0 14px;padding-top:4px;">${t}</div></div>`;
+  return `<div style="display:flex;gap:10px;margin-top:46px;page-break-inside:avoid;">${l('Responsable de Capacitación')}${l('Gerencia')}</div>`;
+}
+
+function htmlDocPrograma(cid){
+  const c = cursos[cid], p = programas[cid] || {}, esC = esCursoCentrales(c);
+  const mods = pgModulosOrdenados(p);
+  const totH = mods.reduce((s,m)=>s+(Number(m.horas)||0),0);
+  const objEsp = String(p.objetivosEspecificos||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+  let cron = '';
+  if(esC){
+    const cs = calEventosTodos().filter(e=>e.tipo==='central').sort((a,b)=>a.inicio.localeCompare(b.inicio));
+    if(cs.length) cron = `<h3 style="${DOC_H3}">Cronograma por central</h3><table style="width:100%;border-collapse:collapse;"><thead><tr><th style="${DOC_TH}">Central</th><th style="${DOC_TH}">Fechas</th><th style="${DOC_TH}">Horario</th><th style="${DOC_TH}">Docente</th></tr></thead><tbody>${cs.map(e=>`<tr><td style="${DOC_TD}font-weight:700;">${escAl(e.titulo)}</td><td style="${DOC_TD}">${fmtLarga(e.inicio)} al ${fmtLarga(e.fin)}</td><td style="${DOC_TD}">${escAl(fmtHora(e.hora)||'—')}</td><td style="${DOC_TD}">${escAl(e.docente||'—')}</td></tr>`).join('')}</tbody></table>`;
+  }
+  return `<div class="doc" style="color:#1c2b27;font-family:'Segoe UI',Arial,sans-serif;">
+    ${docCabecera('Programa de capacitación', escAl((c.orden?c.orden+'. ':'')+c.nombre), (p.estado||'Borrador')+' · v'+(p.version||'1.0'))}
+    <h3 style="${DOC_H3}">1. Datos generales</h3>
+    ${docFilas([['Curso', escAl(c.nombre)], ['Modalidad', escAl(c.modalidad||'')], ['Duración', c.horas?c.horas+' horas':''], ['Destinatarios', escAl(p.destinatarios!==undefined?p.destinatarios:(c.dirigido||''))],
+      ['Docente / instructor', escAl(p.docente||c.docente||'')], ['Lugar', escAl(c.lugar||'')], ['Período', esC?'':(c.inicio&&c.fin?fmtLarga(c.inicio)+' al '+fmtLarga(c.fin):'')]])}
+    ${cron}
+    <h3 style="${DOC_H3}">2. Objetivo general</h3>${docTexto(p.objetivoGeneral)}
+    <h3 style="${DOC_H3}">3. Objetivos específicos</h3>${objEsp.length?`<ul style="margin:0;padding-left:20px;font-size:11.5px;line-height:1.5;">${objEsp.map(o=>`<li>${escAl(o)}</li>`).join('')}</ul>`:docTexto('')}
+    <h3 style="${DOC_H3}">4. Requisitos y conocimientos previos</h3>${docTexto(p.requisitos)}
+    <h3 style="${DOC_H3}">5. Plan de contenidos</h3>
+    ${mods.length?`<table style="width:100%;border-collapse:collapse;"><thead><tr><th style="${DOC_TH}width:30px;">N°</th><th style="${DOC_TH}width:28%;">Módulo / tema</th><th style="${DOC_TH}">Contenidos</th><th style="${DOC_TH}width:52px;text-align:center;">Horas</th></tr></thead><tbody>
+      ${mods.map((m,i)=>`<tr><td style="${DOC_TD}text-align:center;">${i+1}</td><td style="${DOC_TD}font-weight:700;">${escAl(m.titulo||'')}</td><td style="${DOC_TD}white-space:pre-wrap;">${escAl(m.contenidos||'')}</td><td style="${DOC_TD}text-align:center;">${m.horas?fmtHs(m.horas):'–'}</td></tr>`).join('')}
+      <tr style="background:#f3f7f5;font-weight:800;"><td style="${DOC_TD}" colspan="3">Total</td><td style="${DOC_TD}text-align:center;">${fmtHs(totH)}</td></tr></tbody></table>`:docTexto('')}
+    <h3 style="${DOC_H3}">6. Metodología</h3>${docTexto(p.metodologia)}
+    <h3 style="${DOC_H3}">7. Evaluación y condiciones de aprobación</h3>${docTexto(p.evaluacion)}
+    <h3 style="${DOC_H3}">8. Recursos y materiales</h3>${docTexto(p.recursos)}
+    <h3 style="${DOC_H3}">9. Bibliografía y documentación de referencia</h3>${docTexto(p.bibliografia)}
+    ${docFirmas()}</div>`;
+}
+
+function htmlDocInforme(cid, central){
+  const c = cursos[cid], esC = esCursoCentrales(c);
+  const cen = esC ? (central||'*') : null;
+  const key = pgKeyInforme(cid, cen);
+  const inf = informes[key] || {};
+  const M = metricasInforme(cid, cen);
+  const p = programas[cid];
+  const titulo = esC ? (cen==='*' ? 'Informe del curso — consolidado' : 'Informe del curso — '+escAl(cen)) : 'Informe del curso';
+  const sat = M.enc.n ? ((M.enc.q1+M.enc.q2+M.enc.q3+M.enc.q4)/4).toFixed(1) : null;
+  const f1 = n => n===null ? '–' : n.toFixed(1);
+  const hh = M.hProg ? Math.round(M.hAsist/M.hProg*100)+'%' : '–';
+  let porCentral = '';
+  if(esC && cen==='*'){
+    const nombres = [...new Set(M.al.map(([id,a])=>a.central||''))].sort((a,b)=>a.localeCompare(b,'es'));
+    porCentral = `<h3 style="${DOC_H3}">Resumen por central</h3><table style="width:100%;border-collapse:collapse;"><thead><tr><th style="${DOC_TH}">Central</th><th style="${DOC_TH}">Docente</th><th style="${DOC_TH}text-align:center;">Participantes</th><th style="${DOC_TH}text-align:center;">Asistencia</th><th style="${DOC_TH}text-align:center;">Aprobados</th><th style="${DOC_TH}text-align:center;">No aprob.</th><th style="${DOC_TH}text-align:center;">Prom.</th><th style="${DOC_TH}text-align:center;">Horas-hombre</th></tr></thead><tbody>
+      ${nombres.map(cn=>{ const al = M.al.filter(([id,a])=>(a.central||'')===cn); const se = M.se.filter(([id,s])=>(s.central||'')===cn); const r = calcResumen(al,se); let ha = 0; al.forEach(([aid,a])=>{ ha += horasAlumno(aid,a).asist; }); const ce = centralesCal().find(x=>x.nombre===cn)||{};
+        return `<tr><td style="${DOC_TD}font-weight:700;">${escAl(cn||'(Sin central)')}</td><td style="${DOC_TD}">${escAl(ce.docente||'—')}</td><td style="${DOC_TD}text-align:center;">${r.total}</td><td style="${DOC_TD}text-align:center;">${r.asistPct===null?'–':r.asistPct+'%'}</td><td style="${DOC_TD}text-align:center;">${r.aprobados}</td><td style="${DOC_TD}text-align:center;">${r.reprobados}</td><td style="${DOC_TD}text-align:center;">${f1(r.promedio)}</td><td style="${DOC_TD}text-align:center;">${fmtHs(ha)}</td></tr>`; }).join('')}</tbody></table>`;
+  }
+  const detalle = M.al.slice().sort((a,b)=>(a[1].central||'').localeCompare(b[1].central||'','es') || String(a[1].nombre||'').localeCompare(String(b[1].nombre||''),'es')).map(([aid,a])=>{
+    const h = horasAlumno(aid,a);
+    return `<tr><td style="${DOC_TD}">${escAl(a.nombre||'')}</td>${esC&&cen==='*'?`<td style="${DOC_TD}">${escAl(a.central||'—')}</td>`:''}<td style="${DOC_TD}text-align:center;">${h.nSes?h.nAsist+'/'+h.nSes:'–'}</td><td style="${DOC_TD}text-align:center;">${fmtHs(h.asist)}</td><td style="${DOC_TD}text-align:center;">${a.nota===null||a.nota===undefined?'–':a.nota}</td><td style="${DOC_TD}text-align:center;">${a.notaRecup===null||a.notaRecup===undefined?'–':a.notaRecup}</td><td style="${DOC_TD}">${escAl(condicionAlumno(a)||'Pendiente')}</td></tr>`;
+  }).join('');
+  const q = (lbl, v)=>`<tr><td style="${DOC_TD}">${lbl}</td><td style="${DOC_TD}text-align:center;font-weight:700;">${v===null?'–':v.toFixed(1)} / 5</td></tr>`;
+  return `<div class="doc" style="color:#1c2b27;font-family:'Segoe UI',Arial,sans-serif;">
+    ${docCabecera(titulo, escAl((c.orden?c.orden+'. ':'')+c.nombre), inf.estado||'Borrador')}
+    <h3 style="${DOC_H3}">1. Datos generales</h3>
+    ${docFilas([['Curso', escAl(c.nombre)], ['Central', esC?(cen==='*'?'Todas las centrales':escAl(cen)):''], ['Modalidad', escAl(c.modalidad||'')], ['Período', M.f.ini&&M.f.fin?fmtLarga(M.f.ini)+' al '+fmtLarga(M.f.fin):''],
+      ['Horario', escAl(fmtHora(M.f.hora))], ['Docente / instructor', escAl(M.f.docente||'')], ['Lugar', escAl(M.f.lugar||'')], ['Duración programada', c.horas?c.horas+' horas':''], ['Programa', p?escAl('Versión '+(p.version||'1.0')+' · '+(p.estado||'Borrador')):'Sin cargar']])}
+    <h3 style="${DOC_H3}">2. Participación y resultados</h3>
+    <table style="width:100%;border-collapse:collapse;"><tbody>
+      <tr><td style="${DOC_TD}background:#f3f7f5;font-weight:700;width:30%;">Participantes (head count)</td><td style="${DOC_TD}">${M.R.total}</td><td style="${DOC_TD}background:#f3f7f5;font-weight:700;width:30%;">Clases dictadas</td><td style="${DOC_TD}">${M.R.clases}</td></tr>
+      <tr><td style="${DOC_TD}background:#f3f7f5;font-weight:700;">Asistencia promedio</td><td style="${DOC_TD}">${M.R.asistPct===null?'–':M.R.asistPct+'%'}</td><td style="${DOC_TD}background:#f3f7f5;font-weight:700;">Horas-hombre asistidas / programadas</td><td style="${DOC_TD}">${fmtHs(M.hAsist)} / ${fmtHs(M.hProg)} (${hh})</td></tr>
+      <tr><td style="${DOC_TD}background:#f3f7f5;font-weight:700;">Aprobados</td><td style="${DOC_TD}">${M.R.aprobados}</td><td style="${DOC_TD}background:#f3f7f5;font-weight:700;">No aprobados</td><td style="${DOC_TD}">${M.R.reprobados}</td></tr>
+      <tr><td style="${DOC_TD}background:#f3f7f5;font-weight:700;">Sin evaluar / otros</td><td style="${DOC_TD}">${M.R.pendientes}</td><td style="${DOC_TD}background:#f3f7f5;font-weight:700;">Promedio de nota</td><td style="${DOC_TD}">${f1(M.R.promedio)}</td></tr>
+    </tbody></table>
+    ${porCentral}
+    <h3 style="${DOC_H3}">3. Satisfacción de los participantes</h3>
+    ${M.enc.n ? `<table style="width:60%;border-collapse:collapse;"><tbody>${q('Contenido y utilidad del curso',M.enc.q1)}${q('Material didáctico',M.enc.q2)}${q('Desempeño del docente',M.enc.q3)}${q('Organización y logística',M.enc.q4)}<tr style="background:#f3f7f5;font-weight:800;"><td style="${DOC_TD}">Promedio general (${M.enc.n} respuestas${esC&&cen!=='*'?', del curso completo':''})</td><td style="${DOC_TD}text-align:center;">${sat} / 5</td></tr></tbody></table>` : docTexto('')}
+    <h3 style="${DOC_H3}">4. Desarrollo del curso</h3>${docTexto(inf.desarrollo)}
+    <h3 style="${DOC_H3}">5. Conclusiones</h3>${docTexto(inf.conclusiones)}
+    <h3 style="${DOC_H3}">6. Recomendaciones y oportunidades de mejora</h3>${docTexto(inf.recomendaciones)}
+    ${(!esC || cen==='*') && (M.presup || M.factur) ? `<h3 style="${DOC_H3}">7. Presupuesto y facturación</h3>${docFilas([['Presupuestado','$'+M.presup.toLocaleString('es-AR')],['Facturado','$'+M.factur.toLocaleString('es-AR')],['Saldo','$'+(M.presup-M.factur).toLocaleString('es-AR')]])}`:''}
+    <h3 style="${DOC_H3}">Detalle de participantes</h3>
+    <table style="width:100%;border-collapse:collapse;"><thead><tr><th style="${DOC_TH}">Participante</th>${esC&&cen==='*'?`<th style="${DOC_TH}">Central</th>`:''}<th style="${DOC_TH}text-align:center;">Asistencia</th><th style="${DOC_TH}text-align:center;">Horas</th><th style="${DOC_TH}text-align:center;">Nota</th><th style="${DOC_TH}text-align:center;">Recup.</th><th style="${DOC_TH}">Condición final</th></tr></thead><tbody>${detalle||`<tr><td colspan="7" style="${DOC_TD}text-align:center;color:#999;">Sin participantes cargados.</td></tr>`}</tbody></table>
+    <div style="font-size:10px;color:#555;margin-top:12px;">Elaborado por: <b>${escAl(inf.elaboradoPor||pgUsuarioNombre()||'—')}</b>${inf.fecha?' · Fecha: '+fmtLarga(inf.fecha)+'/'+inf.fecha.slice(0,4):''}</div>
+    ${docFirmas()}</div>`;
+}
+function pgVerDoc(tipo){
+  const html = tipo==='programa' ? htmlDocPrograma(pgCurso) : htmlDocInforme(pgCurso, pgCentral);
+  document.getElementById('docModalBody').innerHTML = html;
+  document.getElementById('docModalBg').classList.add('active');
+}
+function imprimirDoc(){
+  document.getElementById('pgPrintArea').innerHTML = document.getElementById('docModalBody').innerHTML;
+  window.print();
+}
+
+
 /* ============ REPORTES ============ */
 function onCambioTipoReporte(){
   const tipo = document.getElementById('rep_tipo').value;
@@ -3472,6 +3932,7 @@ function renderAll(){
   renderFacturasTabla();
   renderIndicadores();
   populateCursoReporteSelect();
+  renderProgramas();
 }
 
 tryInitFirebase();
