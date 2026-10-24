@@ -244,6 +244,16 @@
   .pg-mod{display:grid;grid-template-columns:minmax(120px,1fr) minmax(180px,2.4fr) 80px 38px;gap:6px;align-items:start;margin-bottom:6px;}
   .pg-mod input,.pg-mod textarea{padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:.78rem;font-family:inherit;width:100%;}
   @media (max-width:760px){ .pg-mod{grid-template-columns:1fr 1fr;} }
+  .pg-multi{position:relative;}
+  .pg-multi-btn{width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:.82rem;cursor:pointer;text-align:left;font-family:inherit;}
+  .pg-multi-btn:hover{border-color:var(--green);}
+  .pg-multi-panel{display:none;position:absolute;z-index:30;left:0;right:0;top:calc(100% + 4px);background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 10px 24px rgba(0,0,0,.18);padding:8px;max-height:280px;overflow-y:auto;}
+  .pg-multi-panel.open{display:block;}
+  .pg-multi-tools{font-size:.72rem;padding:2px 6px 8px;border-bottom:1px solid var(--border);margin-bottom:4px;}
+  .pg-multi-tools a{color:var(--green);cursor:pointer;font-weight:700;}
+  .pg-multi-panel label{display:flex;gap:8px;align-items:flex-start;padding:6px;border-radius:6px;font-size:.8rem;cursor:pointer;}
+  .pg-multi-panel label:hover{background:#f1f7f4;}
+  .pg-multi-panel small{color:var(--text-muted);}
   #pgPrintArea{display:none;}
   @media print{ #pgPrintArea{display:block;} #pgPrintArea .doc{font-size:12px;} }
 </style>
@@ -3261,6 +3271,7 @@ function renderPgDetalle(force){
     ${tabs}
     <div id="pgForm">${pgTab==='programa' ? pgFormPrograma(c) : pgFormInforme(c)}</div></div>`;
   pgActualizarTotHoras();
+  ['pgm_cent','pgm_doc'].forEach(pgMultiResumen);
 }
 function pgMarcarSucio(){ pgDirty = true; }
 document.addEventListener('input', e=>{
@@ -3341,6 +3352,60 @@ function pgActualizarTotHoras(){
   const ok = !h || Math.abs(tot-h)<0.01;
   el.innerHTML = `Suma de módulos: <b>${fmtHs(tot)} h</b>${h?` · Duración del curso: <b>${h} h</b>`:''} ${ok?'':'<span style="color:#a05a00;font-weight:700;">⚠ no coincide con la duración del curso</span>'}`;
 }
+/* ---- desplegable con casillas (varias centrales / varios docentes) ---- */
+function tituloCase(t){ t = String(t||'').trim(); return t===t.toUpperCase() ? t.toLowerCase().replace(/(^|\s)\S/g, m=>m.toUpperCase()) : t; }
+function docentesCentrales(){
+  const m = new Map();
+  centralesCal().forEach(ce=>{
+    if(!ce.docente) return;
+    const k = slugKey(ce.docente);
+    if(!m.has(k)) m.set(k, {key:k, nombre:tituloCase(ce.docente), centrales:[]});
+    m.get(k).centrales.push(ce.nombre);
+  });
+  return [...m.values()].sort((a,b)=>a.nombre.localeCompare(b.nombre,'es'));
+}
+function pgSeleccion(p, campo, todos){
+  return (p && p[campo]) ? todos.filter(t=>p[campo][t.key]) : todos;
+}
+function pgMultiHtml(id, items, sinDatos, plural){
+  if(!items.length) return `<div style="font-size:.76rem;color:#8a6a1f;background:#fffaf0;border:1px dashed #e9c581;border-radius:8px;padding:8px 10px;">${sinDatos}</div>`;
+  return `<div class="pg-multi" id="${id}" data-plural="${plural}">
+    <button type="button" class="pg-multi-btn" onclick="pgMultiToggle('${id}')"><span class="pg-multi-sum"></span><span>▾</span></button>
+    <div class="pg-multi-panel">
+      <div class="pg-multi-tools"><a onclick="pgMultiAll('${id}',true)">Marcar todas</a> · <a onclick="pgMultiAll('${id}',false)">Ninguna</a></div>
+      ${items.map(it=>`<label><input type="checkbox" value="${escAl(it.key)}" data-label="${escAl(it.label)}" ${it.checked?'checked':''} onchange="pgMultiResumen('${id}')"> <span>${escAl(it.label)}${it.sub?` <small>${escAl(it.sub)}</small>`:''}</span></label>`).join('')}
+    </div></div>`;
+}
+function pgMultiResumen(id){
+  const box = document.getElementById(id); if(!box) return;
+  const cb = [...box.querySelectorAll('input[type=checkbox]')], on = cb.filter(x=>x.checked);
+  const pl = box.dataset.plural || 'elementos';
+  const t = box.querySelector('.pg-multi-sum');
+  t.textContent = on.length===cb.length ? 'Todas ('+cb.length+')' : (on.length===0 ? 'Ninguna seleccionada' : (on.length<=2 ? on.map(x=>x.dataset.label).join(', ') : on.slice(0,2).map(x=>x.dataset.label).join(', ')+' +'+(on.length-2)+' más'));
+  t.title = on.map(x=>x.dataset.label).join(', ') || ('Sin '+pl);
+}
+function pgMultiToggle(id){
+  const pn = document.querySelector('#'+id+' .pg-multi-panel'); if(!pn) return;
+  const abrir = !pn.classList.contains('open');
+  document.querySelectorAll('.pg-multi-panel.open').forEach(x=>x.classList.remove('open'));
+  if(abrir) pn.classList.add('open');
+}
+function pgMultiAll(id, v){
+  document.querySelectorAll('#'+id+' input[type=checkbox]').forEach(x=>{ x.checked = v; });
+  pgMultiResumen(id); pgDirty = true;
+}
+function pgMultiLeer(id){
+  const box = document.getElementById(id); if(!box) return null;
+  const cb = [...box.querySelectorAll('input[type=checkbox]')];
+  if(cb.every(x=>x.checked)) return null;           // todas = se calcula siempre con la lista actual
+  const o = {}; cb.filter(x=>x.checked).forEach(x=>{ o[x.value] = x.dataset.label; });
+  return o;
+}
+document.addEventListener('click', e=>{
+  if(!e.target.closest || e.target.closest('.pg-multi')) return;
+  document.querySelectorAll('.pg-multi-panel.open').forEach(x=>x.classList.remove('open'));
+});
+
 function pgFormPrograma(c){
   const p = programas[pgCurso] || {};
   const mods = pgModulosOrdenados(p);
@@ -3354,10 +3419,17 @@ function pgFormPrograma(c){
     </div>
     ${ta('pg_objGeneral','Objetivo general', p.objetivoGeneral, 'Qué va a ser capaz de hacer el participante al finalizar el curso.')}
     ${ta('pg_objEsp','Objetivos específicos (uno por renglón)', p.objetivosEspecificos, 'Un objetivo por renglón…', 4)}
+    ${esCursoCentrales(c) ? `
+    <div class="field"><label>Destinatarios (perfil)</label><input id="pg_dest" value="${escAl(p.destinatarios!==undefined?p.destinatarios:'Personal de operación y mantenimiento de centrales hidráulicas')}"></div>
+    <div class="row2">
+      <div class="field"><label>Centrales destinatarias</label>${pgMultiHtml('pgm_cent', centralesCal().sort((a,b)=>a.nombre.localeCompare(b.nombre,'es')).map(ce=>({key:slugKey(ce.nombre), label:ce.nombre, checked: !p.centralesSel || !!p.centralesSel[slugKey(ce.nombre)]})), 'Todavía no hay centrales cargadas (botón "Administrar centrales" en Asistencia y Evaluación).', 'centrales')}</div>
+      <div class="field"><label>Docentes / instructores</label>${pgMultiHtml('pgm_doc', docentesCentrales().map(d=>({key:d.key, label:d.nombre, sub:'· '+d.centrales.join(', '), checked: !p.docentesSel || !!p.docentesSel[d.key]})), 'Todavía no hay docentes asignados a las centrales (se cargan en el Calendario o en Asistencia y Evaluación).', 'docentes')}
+        <input id="pg_docOtro" placeholder="Otro docente o colaborador (opcional)" value="${escAl(p.docenteOtro||'')}" style="margin-top:6px;"></div>
+    </div>` : `
     <div class="row2">
       <div class="field"><label>Destinatarios</label><input id="pg_dest" value="${escAl(p.destinatarios!==undefined?p.destinatarios:(c.dirigido||''))}"></div>
       <div class="field"><label>Docente / instructor</label><input id="pg_doc" value="${escAl(docente)}"></div>
-    </div>
+    </div>`}
     ${ta('pg_req','Requisitos y conocimientos previos', p.requisitos, '', 2)}
     <div class="field"><label>Plan de contenidos por módulo</label>
       <div id="pg_mods">${mods.length ? mods.map(pgFilaModulo).join('') : pgFilaModulo()}</div>
@@ -3386,8 +3458,16 @@ function pgGuardarPrograma(){
     if(t || co || h) mods['m'+String(i+1).padStart(2,'0')] = {orden:i+1, titulo:t, contenidos:co, horas:h};
   });
   const data = {cursoId:cid, estado:v('pg_estado'), version:v('pg_version'), objetivoGeneral:v('pg_objGeneral'), objetivosEspecificos:v('pg_objEsp'),
-    destinatarios:v('pg_dest'), docente:v('pg_doc'), requisitos:v('pg_req'), metodologia:v('pg_met'), evaluacion:v('pg_eval'), recursos:v('pg_rec'), bibliografia:v('pg_bib'),
+    destinatarios:v('pg_dest'), requisitos:v('pg_req'), metodologia:v('pg_met'), evaluacion:v('pg_eval'), recursos:v('pg_rec'), bibliografia:v('pg_bib'),
     modulos:mods, actualizado:hoyISO(), actualizadoPor:pgUsuarioNombre()};
+  if(esCursoCentrales(cursos[cid])){
+    const cs = pgMultiLeer('pgm_cent'), ds = pgMultiLeer('pgm_doc');
+    if(cs) data.centralesSel = Object.fromEntries(Object.keys(cs).map(k=>[k,true]));
+    if(ds) data.docentesSel = Object.fromEntries(Object.keys(ds).map(k=>[k,true]));
+    const otro = document.getElementById('pg_docOtro'); if(otro && otro.value.trim()) data.docenteOtro = otro.value.trim();
+  }else{
+    data.docente = v('pg_doc');
+  }
   if(old.archivoNombre){ data.archivoNombre = old.archivoNombre; data.archivoTipo = old.archivoTipo||''; data.archivoTam = old.archivoTam||0; }
   Promise.resolve(dbApply({['convenio24/programas/'+cid]: data})).then(()=>{ pgDirty = false; renderProgramas(); pgAviso('Programa guardado ✔'); });
 }
@@ -3499,8 +3579,16 @@ function htmlDocPrograma(cid){
   return `<div class="doc" style="color:#1c2b27;font-family:'Segoe UI',Arial,sans-serif;">
     ${docCabecera('Programa de capacitación', escAl((c.orden?c.orden+'. ':'')+c.nombre), (p.estado||'Borrador')+' · v'+(p.version||'1.0'))}
     <h3 style="${DOC_H3}">1. Datos generales</h3>
-    ${docFilas([['Curso', escAl(c.nombre)], ['Modalidad', escAl(c.modalidad||'')], ['Duración', c.horas?c.horas+' horas':''], ['Destinatarios', escAl(p.destinatarios!==undefined?p.destinatarios:(c.dirigido||''))],
-      ['Docente / instructor', escAl(p.docente||c.docente||'')], ['Lugar', escAl(c.lugar||'')], ['Período', esC?'':(c.inicio&&c.fin?fmtLarga(c.inicio)+' al '+fmtLarga(c.fin):'')]])}
+    ${docFilas(esC ? (function(){
+        const cents = pgSeleccion(p,'centralesSel', centralesCal().map(ce=>({key:slugKey(ce.nombre), nombre:ce.nombre})));
+        const docs = pgSeleccion(p,'docentesSel', docentesCentrales());
+        const base = p.destinatarios!==undefined ? p.destinatarios : 'Personal de operación y mantenimiento de centrales hidráulicas';
+        return [['Curso', escAl(c.nombre)], ['Modalidad', escAl(c.modalidad||'')], ['Duración', c.horas?c.horas+' horas':''],
+          ['Destinatarios', escAl(base)+(cents.length?'<br><b>Centrales:</b> '+cents.map(x=>escAl(x.nombre)).join(', '):'')],
+          ['Docentes / instructores', docs.map(d=>escAl(d.nombre)+' <span style="color:#666;">('+d.centrales.map(escAl).join(', ')+')</span>').concat(p.docenteOtro?[escAl(p.docenteOtro)]:[]).join('<br>')],
+          ['Lugar', escAl(c.lugar||'')]];
+      })() : [['Curso', escAl(c.nombre)], ['Modalidad', escAl(c.modalidad||'')], ['Duración', c.horas?c.horas+' horas':''], ['Destinatarios', escAl(p.destinatarios!==undefined?p.destinatarios:(c.dirigido||''))],
+      ['Docente / instructor', escAl(p.docente||c.docente||'')], ['Lugar', escAl(c.lugar||'')], ['Período', c.inicio&&c.fin?fmtLarga(c.inicio)+' al '+fmtLarga(c.fin):'']])}
     ${cron}
     <h3 style="${DOC_H3}">2. Objetivo general</h3>${docTexto(p.objetivoGeneral)}
     <h3 style="${DOC_H3}">3. Objetivos específicos</h3>${objEsp.length?`<ul style="margin:0;padding-left:20px;font-size:11.5px;line-height:1.5;">${objEsp.map(o=>`<li>${escAl(o)}</li>`).join('')}</ul>`:docTexto('')}
