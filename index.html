@@ -245,8 +245,12 @@
     </div>
 
     <div class="card">
-      <h2 style="margin:0 0 10px;">📝 Resumen de evaluación</h2>
+      <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;">
+        <button class="btn small" id="rsTabEval" onclick="setResumenTab('eval')">📝 Resumen de evaluación</button>
+        <button class="btn small secondary" id="rsTabHoras" onclick="setResumenTab('horas')">⏱ Horas por participante</button>
+      </div>
       <div id="al_evalResumen" style="display:flex;gap:14px;flex-wrap:wrap;"></div>
+      <div id="al_horas" style="display:none;"></div>
     </div>
 
     <div id="al_porCentral"></div>
@@ -1591,6 +1595,7 @@ function renderAlumnosTabla(){
     tbody.innerHTML = '<tr><td style="padding:10px;color:var(--text-muted);">Elegí un curso para ver su listado.</td></tr>';
     if(resumen) resumen.innerHTML = '';
     if(porCentral) porCentral.innerHTML = '';
+    const hh = document.getElementById('al_horas'); if(hh) hh.innerHTML = '';
     return;
   }
 
@@ -1671,6 +1676,9 @@ function renderAlumnosTabla(){
     ]);
   }
 
+  renderHoras(cursoAlumnos, verTodas);
+  setResumenTab(resumenTab);
+
   // consolidado por central
   if(porCentral){
     if(verTodas){
@@ -1692,6 +1700,76 @@ function renderAlumnosTabla(){
     }else porCentral.innerHTML = '';
   }
   renderIndicadores();
+}
+
+/* ---------- Horas por participante (head count y horas-hombre) ---------- */
+let resumenTab = 'eval';
+function setResumenTab(t){
+  resumenTab = t;
+  const ev = document.getElementById('al_evalResumen'), ho = document.getElementById('al_horas');
+  if(ev) ev.style.display = t==='eval' ? 'flex' : 'none';
+  if(ho) ho.style.display = t==='horas' ? 'block' : 'none';
+  const b1 = document.getElementById('rsTabEval'), b2 = document.getElementById('rsTabHoras');
+  if(b1) b1.className = 'btn small' + (t==='eval' ? '' : ' secondary');
+  if(b2) b2.className = 'btn small' + (t==='horas' ? '' : ' secondary');
+}
+function horasDeSesion(se, cursoId, nSes){
+  const m = /(\d{1,2})(?::(\d{2}))?\s*(?:hs?\.?)?\s*(?:a|-|–)\s*(\d{1,2})(?::(\d{2}))?/i.exec(se.hora||'');
+  if(m){
+    const a = +m[1] + (+(m[2]||0))/60, b = +m[3] + (+(m[4]||0))/60;
+    if(b>a) return b-a;
+  }
+  const c = cursos[cursoId];
+  return (c && c.horas && nSes) ? c.horas/nSes : 0;
+}
+function fmtHs(n){ return (Math.round(n*10)/10).toLocaleString('es-AR'); }
+function horasAlumno(aid, al){
+  const ses = Object.entries(sesiones).filter(([sid,x])=>x.cursoId===al.cursoId && (x.central||'')===(al.central||''));
+  let prog = 0, asist = 0, nAsist = 0;
+  ses.forEach(([sid,x])=>{
+    const h = horasDeSesion(x, al.cursoId, ses.length);
+    prog += h;
+    if(asistencia[aid+'__'+sid]==='P'){ asist += h; nAsist++; }
+  });
+  return {prog, asist, nAsist, nSes: ses.length};
+}
+function renderHoras(lista, verTodas){
+  const box = document.getElementById('al_horas'); if(!box) return;
+  const filas = lista.map(([aid,al])=>({al, ...horasAlumno(aid,al)}))
+    .sort((a,b)=> (verTodas && (a.al.central||'')!==(b.al.central||'')) ? (a.al.central||'').localeCompare(b.al.central||'','es') : String(a.al.nombre||'').localeCompare(String(b.al.nombre||''),'es'));
+  const totAsist = filas.reduce((x,f)=>x+f.asist,0), totProg = filas.reduce((x,f)=>x+f.prog,0);
+  const head = filas.length;
+  const pct = totProg ? Math.round(totAsist/totProg*100) : null;
+  const cards = resumenCards([
+    {n:head, l:'Participantes (head count)'},
+    {n:fmtHs(totAsist), l:'Horas totales asistidas (horas-hombre)'},
+    {n:fmtHs(totProg), l:'Horas programadas (horas-hombre)'},
+    {n:pct===null?'–':pct+'%', l:'Cumplimiento de horas'},
+    {n:head?fmtHs(totAsist/head):'–', l:'Promedio de horas por participante'}
+  ]);
+  const td = 'padding:6px 8px;border-bottom:1px solid var(--border);';
+  let porCentral = '';
+  if(verTodas){
+    const mapa = {};
+    filas.forEach(f=>{ const k = f.al.central||'(Sin central)'; (mapa[k] = mapa[k] || {n:0,asist:0,prog:0}); mapa[k].n++; mapa[k].asist += f.asist; mapa[k].prog += f.prog; });
+    const rows = Object.entries(mapa).sort((a,b)=>a[0].localeCompare(b[0],'es')).map(([k,v])=>
+      `<tr><td style="${td}font-weight:600;">${escAl(k)}</td><td style="${td}text-align:center;">${v.n}</td><td style="${td}text-align:center;">${fmtHs(v.asist)}</td><td style="${td}text-align:center;">${fmtHs(v.prog)}</td><td style="${td}text-align:center;">${v.prog?Math.round(v.asist/v.prog*100)+'%':'–'}</td><td style="${td}text-align:center;">${v.n?fmtHs(v.asist/v.n):'–'}</td></tr>`).join('');
+    porCentral = `<h3 style="margin:14px 0 6px;font-size:.9rem;">Por central</h3>
+      <div style="overflow-x:auto;border:1px solid var(--border);border-radius:8px;"><table style="width:100%;border-collapse:collapse;font-size:.76rem;">
+      <thead><tr style="background:var(--header);color:#fff;"><th style="padding:8px;text-align:left;">Central</th><th style="padding:8px;">Participantes</th><th style="padding:8px;">Horas asistidas</th><th style="padding:8px;">Horas programadas</th><th style="padding:8px;">Cumplimiento</th><th style="padding:8px;">Prom. por participante</th></tr></thead>
+      <tbody>${rows||''}</tbody></table></div>`;
+  }
+  const detalle = filas.map(f=>`<tr><td style="${td}">${escAl(f.al.nombre)}</td>${verTodas?`<td style="${td}">${escAl(f.al.central||'—')}</td>`:''}<td style="${td}text-align:center;">${f.nSes?f.nAsist+'/'+f.nSes:'–'}</td><td style="${td}text-align:center;font-weight:700;">${fmtHs(f.asist)}</td><td style="${td}text-align:center;">${fmtHs(f.prog)}</td><td style="${td}text-align:center;">${f.prog?Math.round(f.asist/f.prog*100)+'%':'–'}</td></tr>`).join('')
+    || `<tr><td colspan="${verTodas?6:5}" style="padding:12px;text-align:center;color:var(--text-muted);">Sin participantes cargados.</td></tr>`;
+  box.innerHTML = `<div style="display:flex;gap:14px;flex-wrap:wrap;">${cards}</div>
+    <p style="font-size:.72rem;color:var(--text-muted);margin:10px 0 6px;">Las horas de cada clase salen del horario cargado (ej. "10 A 14" = 4 h). Cuenta solo las clases en que el participante está marcado como presente.</p>
+    ${porCentral}
+    <h3 style="margin:14px 0 6px;font-size:.9rem;">Detalle por participante</h3>
+    <div style="overflow-x:auto;border:1px solid var(--border);border-radius:8px;"><table style="width:100%;border-collapse:collapse;font-size:.76rem;">
+      <thead><tr style="background:var(--header);color:#fff;"><th style="padding:8px;text-align:left;">Participante</th>${verTodas?'<th style="padding:8px;text-align:left;">Central</th>':''}<th style="padding:8px;">Clases asistidas</th><th style="padding:8px;">Horas asistidas</th><th style="padding:8px;">Horas programadas</th><th style="padding:8px;">% de horas</th></tr></thead>
+      <tbody>${detalle}</tbody>
+      <tfoot><tr style="background:var(--bg);font-weight:700;"><td style="${td}" colspan="${verTodas?3:2}">TOTAL (${head} participantes)</td><td style="${td}text-align:center;">${fmtHs(totAsist)}</td><td style="${td}text-align:center;">${fmtHs(totProg)}</td><td style="${td}text-align:center;">${pct===null?'–':pct+'%'}</td></tr></tfoot>
+    </table></div>`;
 }
 
 function irACentral(enc){
