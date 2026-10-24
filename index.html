@@ -173,9 +173,7 @@
 <nav class="tabs" id="tabsNav">
   <button data-tab="calendario" class="active">📅 Calendario</button>
   <button data-tab="todo">✅ To Do</button>
-  <button data-tab="alumnos">👥 Alumnos y Docentes</button>
-  <button data-tab="alumnos" data-anchor="sec-asistencia">🗓️ Asistencia</button>
-  <button data-tab="alumnos" data-anchor="sec-evaluaciones">📝 Evaluaciones</button>
+  <button data-tab="alumnos">👥 Asistencia y Evaluación</button>
   <button data-tab="indicadores">📊 Indicadores</button>
   <button data-tab="encuesta">🙂 Encuesta</button>
   <button data-tab="logistica">🚚 Logística</button>
@@ -228,36 +226,46 @@
     </div>
   </section>
 
-  <!-- ALUMNOS, DOCENTES, ASISTENCIA Y EVALUACIONES (unificado) -->
+  <!-- ASISTENCIA Y EVALUACIÓN (unificado) -->
   <section class="panel" id="panel-alumnos">
-    <div class="banner info">Seleccioná un curso para gestionar su docente, el listado de alumnos, la asistencia por clase y las evaluaciones — todo en un mismo lugar.</div>
+    <div class="banner info">Elegí el curso (o la central) para gestionar docente, alumnos, asistencia por clase y evaluación en una sola pantalla. Para cargar todo de una vez, usá <b>📥 Importar Excel</b> con el registro que te envían.</div>
     <div class="card">
-      <div class="field" style="max-width:560px;">
-        <label>Curso</label>
+      <div class="field" style="max-width:640px;">
+        <label>Curso / central</label>
         <select id="al_curso" onchange="onSelectCursoAlumnos()"></select>
       </div>
-      <div class="field" style="max-width:560px;margin-top:6px;">
+      <div class="field" style="max-width:640px;margin-top:6px;">
         <label>Docente / instructor asignado</label>
-        <div style="display:flex;gap:8px;">
-          <input id="al_docente" placeholder="Nombre del docente">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <input id="al_docente" placeholder="Nombre del docente" style="flex:1;min-width:200px;">
           <button class="btn small" onclick="saveDocenteAlumnos()">Guardar</button>
+          <button class="btn small secondary" id="btnCentrales" onclick="openCentralesModal()" style="display:none;">⚙ Administrar centrales</button>
         </div>
       </div>
     </div>
 
     <div class="card">
+      <h2 style="margin:0 0 10px;">📝 Resumen de evaluación</h2>
+      <div id="al_evalResumen" style="display:flex;gap:14px;flex-wrap:wrap;"></div>
+    </div>
+
+    <div id="al_porCentral"></div>
+
+    <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:10px;">
-        <h2 style="margin:0;">👥 Alumnos, asistencia y evaluación</h2>
+        <h2 style="margin:0;">👥 Registro de asistencia y evaluación</h2>
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="btn small" onclick="openXlsModal()">📥 Importar Excel</button>
           <input id="al_nuevoNombre" placeholder="Nombre del alumno" style="padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:.8rem;">
           <button class="btn small" onclick="agregarAlumno()">+ Alumno</button>
-          <button class="btn small secondary" onclick="openImportModal()">📋 Importar lista</button>
+          <button class="btn small secondary" onclick="openImportModal()">📋 Pegar nombres</button>
           <input type="date" id="al_nuevaFecha" style="padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:.78rem;">
-          <input id="al_nuevaHora" placeholder="Horario (ej: 08 a 12 hs)" style="padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:.78rem;width:150px;">
+          <input id="al_nuevaHora" placeholder="Horario (ej: 10 A 14)" style="padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:.78rem;width:150px;">
           <button class="btn small secondary" onclick="agregarSesion()">+ Clase</button>
+          <button class="btn small danger" onclick="vaciarVista()">🗑 Vaciar listado</button>
         </div>
       </div>
-      <p id="sec-asistencia" style="font-size:.75rem;color:var(--text-muted);margin:0 0 10px;">Hacé clic en cada celda de asistencia para pasar de sin marcar → <span style="color:#1f8a5f;font-weight:700;">Presente</span> → <span style="color:#c0392b;font-weight:700;">Ausente</span>. La columna Nota calcula el estado automáticamente (aprobado desde 6).</p>
+      <p style="font-size:.75rem;color:var(--text-muted);margin:0 0 10px;">Tocá cada celda de asistencia para pasar de sin marcar → <span style="color:#1f8a5f;font-weight:700;">✓ Presente</span> → <span style="color:#c0392b;font-weight:700;">✕ Ausente</span>. La <b>Condición final</b> viene del Excel o se calcula sola (aprobado desde 6); podés cambiarla a mano. Si hay nota de recuperatorio, ese valor es el que cuenta.</p>
       <div style="overflow-x:auto;border:1px solid var(--border);border-radius:8px;">
         <table style="width:100%;border-collapse:collapse;font-size:.76rem;min-width:600px;">
           <thead id="al_thead"></thead>
@@ -265,26 +273,9 @@
         </table>
       </div>
     </div>
-
-    <div class="card" id="sec-evaluaciones">
-      <h2 style="margin:0 0 10px;">📝 Resumen de evaluación del curso</h2>
-      <div id="al_evalResumen" style="display:flex;gap:14px;flex-wrap:wrap;"></div>
-    </div>
-  </section>
-  <section class="panel" id="panel-asistencia">
-    <div class="placeholder">
-      <h3>🗓️ Ya integrada</h3>
-      <p>La asistencia se gestiona junto con el listado en la pestaña "Alumnos y Docentes" — seleccioná un curso ahí.</p>
-    </div>
-  </section>
-  <section class="panel" id="panel-evaluaciones">
-    <div class="placeholder">
-      <h3>📝 Ya integrada</h3>
-      <p>Las evaluaciones se gestionan junto con el listado en la pestaña "Alumnos y Docentes" — seleccioná un curso ahí.</p>
-    </div>
   </section>
   <section class="panel" id="panel-indicadores">
-    <div class="banner info">Estos gráficos se arman solos con los datos que cargues en "Alumnos y Docentes" — a medida que registres asistencia y notas, se van a ir actualizando.</div>
+    <div class="banner info">Estos gráficos se arman solos con los datos que cargues en "Asistencia y Evaluación" — a medida que registres asistencia y notas, se van a ir actualizando.</div>
     <div id="indicadoresBody"></div>
   </section>
   <section class="panel" id="panel-encuesta">
@@ -633,6 +624,41 @@ Carlos Rodríguez
   </div>
 </div>
 
+<!-- MODAL IMPORTAR EXCEL -->
+<div class="modal-bg" id="xlsModalBg">
+  <div class="modal" style="width:min(680px,94vw);">
+    <h3>Importar Excel de asistencia y evaluación</h3>
+    <p style="font-size:.8rem;color:var(--text-muted);margin-top:-6px;">Elegí el Excel (.xlsx) que te envía cada central. La app reconoce el curso, la central, el instructor, los alumnos, las clases, la asistencia (✓ / ✕), las notas y la condición final. Si cargás de nuevo el mismo Excel con más datos, se actualiza sin duplicar.</p>
+    <div class="field"><input type="file" id="xls_file" accept=".xlsx" multiple onchange="onXlsFiles()"></div>
+    <div class="field"><label style="font-size:.72rem;">Si no reconozco el curso por el nombre, usar:</label>
+      <select id="xls_cursoFallback" onchange="renderXlsPreview()"></select></div>
+    <div id="xls_preview"></div>
+    <div class="modal-actions">
+      <div></div>
+      <div>
+        <button class="btn secondary" onclick="closeModal('xlsModalBg')">Cancelar</button>
+        <button class="btn" id="xls_btnImportar" onclick="confirmarImportXls()" disabled>Importar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CENTRALES -->
+<div class="modal-bg" id="centralesModalBg">
+  <div class="modal" style="width:min(460px,92vw);">
+    <h3>Centrales hidroeléctricas</h3>
+    <p style="font-size:.8rem;color:var(--text-muted);margin-top:-6px;">Una central por renglón. Aparecen en el desplegable del curso aunque todavía no tengan alumnos. Las que ya tienen datos no se pueden quitar.</p>
+    <div class="field"><textarea id="cent_texto" style="min-height:200px;" placeholder="La Viña&#10;..."></textarea></div>
+    <div class="modal-actions">
+      <div></div>
+      <div>
+        <button class="btn secondary" onclick="closeModal('centralesModalBg')">Cancelar</button>
+        <button class="btn" onclick="guardarCentrales()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ============ CONFIG FIREBASE ============
    Reemplazá este objeto con la configuración real de tu proyecto Firebase
@@ -813,6 +839,7 @@ let encuestas = {};    // { id: {cursoId, q1,q2,q3,q4, comentario} }
 let logistica = {};    // { cursoId: {lugar, responsable, traslados, materiales, equipamiento, estado, notas} }
 let presupuesto = {};  // { cursoId: {presupuestado} }
 let facturas = {};     // { id: {cursoId, numero, proveedor, concepto, monto, fecha, estado, link} }
+let centrales = {};    // { id: {nombre, docente} } — centrales en las que se dicta el curso 1
 let selectedCursoAlumnos = null;
 let selectedCursoEncuesta = null;
 let selectedCursoLogistica = null;
@@ -830,6 +857,7 @@ async function initLocalMode(){
   logistica = data.logistica || {};
   presupuesto = data.presupuesto || {};
   facturas = data.facturas || {};
+  centrales = data.centrales || {};
   if(Object.keys(cursos).length === 0){
     seedCursos.forEach((c,i)=>{ cursos["c"+i] = c; });
   }
@@ -903,18 +931,27 @@ function initFirebaseListeners(){
     renderFacturasTabla();
     renderPresupuestoTabla();
   });
+  db.ref('convenio24/centrales').on('value', snap=>{
+    centrales = snap.val() || {};
+    renderAlumnosTabla();
+  });
   initSession();
 }
 
 function persist(){
   if(useFirebase) return; // firebase writes happen directly per-action
-  saveLocal({cursos, tareas, usuarios, alumnos, sesiones, asistencia, encuestas, logistica, presupuesto, facturas});
+  saveLocal({cursos, tareas, usuarios, alumnos, sesiones, asistencia, encuestas, logistica, presupuesto, facturas, centrales});
 }
 
 /* ============ HELPERS ============ */
 function uid(){ return 't' + Date.now() + Math.floor(Math.random()*1000); }
 function dayDiff(a,b){ return Math.round((new Date(b) - new Date(a)) / 86400000); }
-function fmtDate(d){ return new Date(d).toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'}); }
+function fmtDate(d){
+  // las fechas se guardan como 'AAAA-MM-DD': se muestran tal cual, sin pasar por la zona horaria (evita el "un día menos")
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(d||''));
+  if(m) return parseInt(m[3],10)+'/'+parseInt(m[2],10);
+  return new Date(d).toLocaleDateString('es-AR',{day:'numeric',month:'numeric'});
+}
 
 const RANGE_START = "2026-09-21";
 const RANGE_END = "2026-11-20";
@@ -1186,29 +1223,140 @@ document.querySelectorAll('.kanban-col').forEach(col=>{
   col.addEventListener('dragleave', ()=>col.classList.remove('dragover'));
 });
 
-/* ============ ALUMNOS, DOCENTES, ASISTENCIA Y EVALUACIONES ============ */
+/* ============ ASISTENCIA Y EVALUACIÓN (pestaña unificada) ============ */
+let selectedCentral = null;   // null = curso sin centrales | '*' = todas | '-' = sin central | nombre de la central
+let lastDocKey = null;
+const CONDICIONES = ['APROBADO','ASISTIDO-NO APROBADO','NO APROBADO','NO ASISTIÓ','ABANDONÓ','EN REVISIÓN','ASISTIÓ'];
+
+function escAl(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function normTxt(s){ return String(s==null?'':s).normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,' ').trim().toUpperCase(); }
+function slugKey(s){ return normTxt(s).toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'') || 'x'; }
+let _uidN = 0;
+function uid2(){ return 'a'+Date.now().toString(36)+(++_uidN).toString(36)+Math.floor(Math.random()*1296).toString(36); }
+
+function esCursoCentrales(c){ return !!c && (c.porCentral===true || /centrales?\s+hidr/i.test(c.nombre||'')); }
+function numOrNull(v){ return (v===null||v===undefined||v==='') ? null : Number(v); }
+function notaFinal(a){
+  const r = numOrNull(a.notaRecup), n = numOrNull(a.nota);
+  return r!==null && !isNaN(r) ? r : (n!==null && !isNaN(n) ? n : null);
+}
+function condicionAlumno(a){
+  if(a.condicion && a.condicion!=='-') return a.condicion;
+  const n = notaFinal(a);
+  if(n===null) return '';
+  return n>=6 ? 'APROBADO' : 'NO APROBADO';
+}
+function esAprobado(a){ return condicionAlumno(a)==='APROBADO'; }
+function esNoAprobado(a){ const c = condicionAlumno(a); return c==='NO APROBADO' || c==='ASISTIDO-NO APROBADO'; }
+function condEstilo(c){
+  if(c==='APROBADO') return {bg:'#c8e6d3',fg:'#0f4d2c'};
+  if(c==='NO APROBADO' || c==='ASISTIDO-NO APROBADO') return {bg:'#f5c6c0',fg:'#7a1f14'};
+  if(c==='NO ASISTIÓ' || c==='ABANDONÓ') return {bg:'#ffe2b8',fg:'#7a4b00'};
+  return {bg:'#eef2f1',fg:'var(--text-muted)'};
+}
+
+function collByName(n){
+  return ({cursos,tareas,usuarios,alumnos,sesiones,asistencia,encuestas,logistica,presupuesto,facturas,centrales})[n];
+}
+/* Aplica varios cambios de una sola vez (Firebase: update multi-ruta; modo local: memoria + localStorage) */
+function dbApply(ups){
+  if(useFirebase){
+    return db.ref().update(ups).catch(e=>{ alert('Error al guardar en Firebase: '+e.message); throw e; });
+  }
+  Object.entries(ups).forEach(([path,val])=>{
+    const seg = path.split('/');
+    const coll = collByName(seg[1]); if(!coll) return;
+    if(seg.length===3){ if(val===null) delete coll[seg[2]]; else coll[seg[2]] = JSON.parse(JSON.stringify(val)); }
+    else if(seg.length===4){
+      if(!coll[seg[2]]) coll[seg[2]] = {};
+      if(val===null) delete coll[seg[2]][seg[3]]; else coll[seg[2]][seg[3]] = val;
+    }
+  });
+  persist();
+  renderAlumnosTabla();
+  return Promise.resolve();
+}
+
+function listaCentrales(){
+  const m = new Map();
+  Object.entries(centrales).forEach(([id,c])=>{ if(c && c.nombre) m.set(c.nombre,{id,docente:c.docente||''}); });
+  Object.values(alumnos).forEach(a=>{ if(a.central && !m.has(a.central)) m.set(a.central,{id:null,docente:''}); });
+  return [...m.entries()].map(([nombre,v])=>({nombre,id:v.id,docente:v.docente})).sort((a,b)=>a.nombre.localeCompare(b.nombre,'es'));
+}
+function centralId(nombre){
+  const ce = listaCentrales().find(x=>x.nombre===nombre);
+  return ce && ce.id ? ce.id : slugKey(nombre);
+}
+
+function parseSelAlumnos(v){
+  const p = String(v||'').split('|');
+  selectedCursoAlumnos = p[0] || null;
+  if(p.length<2) selectedCentral = null;
+  else selectedCentral = (p[1]==='*'||p[1]==='-') ? p[1] : decodeURIComponent(p[1]);
+}
+function selValueActual(){
+  if(!selectedCursoAlumnos) return '';
+  if(selectedCentral===null) return selectedCursoAlumnos;
+  return selectedCursoAlumnos+'|'+((selectedCentral==='*'||selectedCentral==='-')?selectedCentral:encodeURIComponent(selectedCentral));
+}
+
 function populateCursoAlumnosSelect(){
   const sel = document.getElementById('al_curso');
   if(!sel) return;
-  const current = sel.value || selectedCursoAlumnos;
-  sel.innerHTML = Object.entries(cursos).sort((a,b)=>(a[1].orden||0)-(b[1].orden||0))
-    .map(([id,c])=>`<option value="${id}">${c.orden}. ${c.nombre}</option>`).join('');
-  if(current && cursos[current]){
-    sel.value = current;
+  const prev = selValueActual() || sel.value;
+  const cents = listaCentrales();
+  const haySinCentral = Object.values(alumnos).some(a=>!a.central && esCursoCentrales(cursos[a.cursoId]));
+  let html = '';
+  Object.entries(cursos).sort((a,b)=>(a[1].orden||0)-(b[1].orden||0)).forEach(([id,c])=>{
+    const et = escAl(`${c.orden}. ${c.nombre}`);
+    if(esCursoCentrales(c)){
+      html += `<optgroup label="${et}"><option value="${id}|*">🏭 Todas las centrales (consolidado)</option>`;
+      cents.forEach(ce=>{ html += `<option value="${id}|${encodeURIComponent(ce.nombre)}">⚡ ${escAl(ce.nombre)}</option>`; });
+      if(haySinCentral) html += `<option value="${id}|-">(Sin central asignada)</option>`;
+      html += '</optgroup>';
+    }else{
+      html += `<option value="${id}">${et}</option>`;
+    }
+  });
+  sel.innerHTML = html;
+  if(prev && [...sel.options].some(o=>o.value===prev)) sel.value = prev;
+  parseSelAlumnos(sel.value);
+}
+
+function refreshDocenteField(){
+  const inp = document.getElementById('al_docente'); if(!inp) return;
+  const c = cursos[selectedCursoAlumnos];
+  if(esCursoCentrales(c)){
+    if(selectedCentral && selectedCentral!=='*' && selectedCentral!=='-'){
+      const ce = listaCentrales().find(x=>x.nombre===selectedCentral);
+      inp.disabled = false; inp.value = ce ? ce.docente : ''; inp.placeholder = 'Docente de '+selectedCentral;
+    }else{
+      inp.disabled = true; inp.value = ''; inp.placeholder = 'Elegí una central para ver o asignar su docente';
+    }
+  }else{
+    inp.disabled = false; inp.value = (c && c.docente) || ''; inp.placeholder = 'Nombre del docente';
   }
-  selectedCursoAlumnos = sel.value || null;
 }
 
 function onSelectCursoAlumnos(){
-  selectedCursoAlumnos = document.getElementById('al_curso').value;
-  const c = cursos[selectedCursoAlumnos];
-  document.getElementById('al_docente').value = (c && c.docente) || '';
+  parseSelAlumnos(document.getElementById('al_curso').value);
+  lastDocKey = null;
   renderAlumnosTabla();
 }
 
 function saveDocenteAlumnos(){
   if(!selectedCursoAlumnos){ alert('Elegí un curso primero.'); return; }
   const val = document.getElementById('al_docente').value.trim();
+  const c = cursos[selectedCursoAlumnos];
+  if(esCursoCentrales(c)){
+    if(!selectedCentral || selectedCentral==='*' || selectedCentral==='-'){ alert('Elegí una central para asignarle docente.'); return; }
+    const id = centralId(selectedCentral);
+    dbApply({
+      ['convenio24/centrales/'+id+'/nombre']: selectedCentral,
+      ['convenio24/centrales/'+id+'/docente']: val
+    });
+    return;
+  }
   if(useFirebase){
     db.ref('convenio24/cursos/'+selectedCursoAlumnos+'/docente').set(val).catch(e=>alert('Error al guardar: '+e.message));
   }else{
@@ -1218,19 +1366,23 @@ function saveDocenteAlumnos(){
   }
 }
 
+/* destino (central) para altas manuales; devuelve null si hay que elegir una central primero */
+function centralDestino(){
+  const c = cursos[selectedCursoAlumnos];
+  if(!esCursoCentrales(c)) return '';
+  if(selectedCentral==='-') return '';
+  if(!selectedCentral || selectedCentral==='*'){ alert('Este curso se dicta en varias centrales: elegí una central en el desplegable de Curso.'); return null; }
+  return selectedCentral;
+}
+
 function agregarAlumno(){
   if(!selectedCursoAlumnos){ alert('Elegí un curso primero.'); return; }
   const nombre = document.getElementById('al_nuevoNombre').value.trim();
   if(!nombre){ alert('Escribí el nombre del alumno.'); return; }
-  const id = uid();
+  const cn = centralDestino(); if(cn===null) return;
   const data = { cursoId: selectedCursoAlumnos, nombre, nota:null };
-  if(useFirebase){
-    db.ref('convenio24/alumnos/'+id).set(data).catch(e=>alert('Error al guardar: '+e.message));
-  }else{
-    alumnos[id] = data;
-    persist();
-    renderAlumnosTabla();
-  }
+  if(cn) data.central = cn;
+  dbApply({['convenio24/alumnos/'+uid2()]: data});
   document.getElementById('al_nuevoNombre').value = '';
 }
 
@@ -1259,38 +1411,46 @@ function importarAlumnos(){
   if(!selectedCursoAlumnos){ alert('Elegí un curso primero.'); return; }
   const nombres = parseImportNombres();
   if(nombres.length === 0){ alert('Pegá al menos un nombre.'); return; }
-  if(useFirebase){
-    const updates = {};
-    nombres.forEach(nombre=>{
-      const id = uid()+Math.floor(Math.random()*10000);
-      updates['convenio24/alumnos/'+id] = { cursoId: selectedCursoAlumnos, nombre, nota:null };
-    });
-    db.ref().update(updates).catch(e=>alert('Error al importar: '+e.message));
-  }else{
-    nombres.forEach(nombre=>{
-      const id = uid()+Math.floor(Math.random()*10000);
-      alumnos[id] = { cursoId: selectedCursoAlumnos, nombre, nota:null };
-    });
-    persist();
-    renderAlumnosTabla();
-  }
+  const cn = centralDestino(); if(cn===null) return;
+  const ups = {};
+  nombres.forEach(nombre=>{
+    const d = { cursoId: selectedCursoAlumnos, nombre, nota:null };
+    if(cn) d.central = cn;
+    ups['convenio24/alumnos/'+uid2()] = d;
+  });
+  dbApply(ups);
   closeModal('importModalBg');
+}
+
+function alumnosDeVista(){
+  return Object.entries(alumnos).filter(([id,a])=>vistaIncluye(a));
+}
+function vistaIncluye(it){
+  if(it.cursoId!==selectedCursoAlumnos) return false;
+  if(!esCursoCentrales(cursos[selectedCursoAlumnos])) return true;
+  if(selectedCentral==='*' || selectedCentral===null) return true;
+  return (it.central||'') === (selectedCentral==='-' ? '' : selectedCentral);
 }
 
 function eliminarAlumno(id){
   if(!confirm('¿Quitar a este alumno del listado? También se borra su asistencia y nota cargadas.')) return;
-  const clavesAsistencia = Object.keys(asistencia).filter(k=>k.startsWith(id+'__'));
-  if(useFirebase){
-    const updates = {};
-    updates['convenio24/alumnos/'+id] = null;
-    clavesAsistencia.forEach(k=>{ updates['convenio24/asistencia/'+k] = null; });
-    db.ref().update(updates).catch(e=>alert('Error al eliminar: '+e.message));
-  }else{
-    delete alumnos[id];
-    clavesAsistencia.forEach(k=>delete asistencia[k]);
-    persist();
-    renderAlumnosTabla();
-  }
+  const ups = {};
+  ups['convenio24/alumnos/'+id] = null;
+  Object.keys(asistencia).filter(k=>k.startsWith(id+'__')).forEach(k=>{ ups['convenio24/asistencia/'+k] = null; });
+  dbApply(ups);
+}
+
+function vaciarVista(){
+  const lista = alumnosDeVista();
+  if(!lista.length){ alert('No hay alumnos para quitar en esta vista.'); return; }
+  const donde = selectedCentral==='*' ? 'de TODAS las centrales de este curso' : (selectedCentral==='-' ? 'sin central asignada' : (selectedCentral ? 'de la central '+selectedCentral : 'de este curso'));
+  if(!confirm(`Vas a quitar ${lista.length} alumno(s) ${donde}, con su asistencia y notas. Las clases se mantienen. ¿Continuar?`)) return;
+  if(!confirm('Esta acción no se puede deshacer. ¿Seguro?')) return;
+  const ids = new Set(lista.map(([id])=>id));
+  const ups = {};
+  lista.forEach(([id])=>{ ups['convenio24/alumnos/'+id] = null; });
+  Object.keys(asistencia).forEach(k=>{ if(ids.has(k.split('__')[0])) ups['convenio24/asistencia/'+k] = null; });
+  dbApply(ups);
 }
 
 function agregarSesion(){
@@ -1298,56 +1458,58 @@ function agregarSesion(){
   const fecha = document.getElementById('al_nuevaFecha').value;
   const hora = document.getElementById('al_nuevaHora').value.trim();
   if(!fecha){ alert('Elegí la fecha de la clase.'); return; }
-  const id = uid();
-  const data = { cursoId: selectedCursoAlumnos, fecha, hora };
-  if(useFirebase){
-    db.ref('convenio24/sesiones/'+id).set(data).catch(e=>alert('Error al guardar: '+e.message));
-  }else{
-    sesiones[id] = data;
-    persist();
-    renderAlumnosTabla();
+  const c = cursos[selectedCursoAlumnos];
+  let destinos = [''];
+  if(esCursoCentrales(c)){
+    if(selectedCentral==='*' || !selectedCentral){
+      destinos = listaCentrales().map(x=>x.nombre);
+      if(!destinos.length){ alert('Primero cargá las centrales (botón "Administrar centrales") o importá un Excel.'); return; }
+      if(!confirm(`Se va a agregar la clase del ${fecha} a las ${destinos.length} centrales. ¿Continuar?`)) return;
+    }else destinos = [selectedCentral==='-' ? '' : selectedCentral];
   }
+  const ups = {};
+  destinos.forEach(cn=>{
+    const existe = Object.values(sesiones).some(s=>s.cursoId===selectedCursoAlumnos && (s.central||'')===cn && s.fecha===fecha);
+    if(existe) return;
+    const d = { cursoId: selectedCursoAlumnos, fecha, hora };
+    if(cn) d.central = cn;
+    ups['convenio24/sesiones/'+uid2()] = d;
+  });
+  if(!Object.keys(ups).length){ alert('Esa clase ya existe.'); return; }
+  dbApply(ups);
   document.getElementById('al_nuevaHora').value = '';
 }
 
 function eliminarSesion(id){
   if(!confirm('¿Eliminar esta clase del cronograma de asistencia? Se borran las marcas asociadas.')) return;
-  const claves = Object.keys(asistencia).filter(k=>k.endsWith('__'+id));
-  if(useFirebase){
-    const updates = {};
-    updates['convenio24/sesiones/'+id] = null;
-    claves.forEach(k=>{ updates['convenio24/asistencia/'+k] = null; });
-    db.ref().update(updates).catch(e=>alert('Error al eliminar: '+e.message));
-  }else{
-    delete sesiones[id];
-    claves.forEach(k=>delete asistencia[k]);
-    persist();
-    renderAlumnosTabla();
-  }
+  const ups = {};
+  ups['convenio24/sesiones/'+id] = null;
+  Object.keys(asistencia).filter(k=>k.endsWith('__'+id)).forEach(k=>{ ups['convenio24/asistencia/'+k] = null; });
+  dbApply(ups);
 }
 
 function toggleAsistencia(alumnoId, sesionId){
   const key = alumnoId+'__'+sesionId;
   const actual = asistencia[key];
   const siguiente = actual === 'P' ? 'A' : (actual === 'A' ? null : 'P');
-  if(useFirebase){
-    db.ref('convenio24/asistencia/'+key).set(siguiente);
-  }else{
-    if(siguiente===null) delete asistencia[key]; else asistencia[key] = siguiente;
-    persist();
-    renderAlumnosTabla();
-  }
+  dbApply({['convenio24/asistencia/'+key]: siguiente});
 }
 
-function guardarNota(alumnoId, valor){
-  const nota = valor === '' ? null : Number(valor);
-  if(useFirebase){
-    db.ref('convenio24/alumnos/'+alumnoId+'/nota').set(nota);
-  }else{
-    alumnos[alumnoId].nota = nota;
-    persist();
-    renderAlumnosTabla();
+/* campo = nota | notaRecup | condicion | obs */
+function guardarCampoAlumno(alumnoId, campo, valor){
+  const al = alumnos[alumnoId]; if(!al) return;
+  const ups = {};
+  let v = valor;
+  if(campo==='nota' || campo==='notaRecup'){
+    v = valor==='' ? null : Number(String(valor).replace(',','.'));
+    if(v!==null && (isNaN(v) || v<0 || v>10)){ alert('La nota tiene que estar entre 0 y 10.'); renderAlumnosTabla(); return; }
+    // si la condición era una de las que dependen de la nota, se vuelve a calcular sola
+    if(['APROBADO','NO APROBADO','ASISTIDO-NO APROBADO'].includes(al.condicion)) ups['convenio24/alumnos/'+alumnoId+'/condicion'] = null;
+  }else if(campo==='condicion' || campo==='obs'){
+    v = String(valor||'').trim(); if(v==='') v = null;
   }
+  ups['convenio24/alumnos/'+alumnoId+'/'+campo] = v;
+  dbApply(ups);
 }
 
 function estadoPorNota(nota){
@@ -1355,97 +1517,470 @@ function estadoPorNota(nota){
   return nota >= 6 ? {label:'Aprobado', color:'var(--green)'} : {label:'Reprobado', color:'var(--red)'};
 }
 
+function resumenCards(arr){
+  return arr.map(k=>`<div style="background:var(--bg);border-radius:8px;padding:10px 16px;min-width:110px;text-align:center;">
+      <div style="font-size:1.2rem;font-weight:700;color:var(--header-dark);">${k.n}</div>
+      <div style="font-size:.68rem;color:var(--text-muted);">${k.l}</div>
+    </div>`).join('');
+}
+function calcResumen(listaAl, listaSes){
+  const total = listaAl.length;
+  const aprobados = listaAl.filter(([id,a])=>esAprobado(a)).length;
+  const reprobados = listaAl.filter(([id,a])=>esNoAprobado(a)).length;
+  const pendientes = total - aprobados - reprobados;
+  const notas = listaAl.map(([id,a])=>notaFinal(a)).filter(n=>n!==null);
+  const promedio = notas.length ? (notas.reduce((s,n)=>s+n,0)/notas.length) : null;
+  let sumaP=0, marcas=0;
+  listaAl.forEach(([aid,al])=>{
+    listaSes.filter(([sid,s])=>(s.central||'')===(al.central||'')).forEach(([sid])=>{
+      const v = asistencia[aid+'__'+sid]; if(v){ marcas++; if(v==='P') sumaP++; }
+    });
+  });
+  return {total, aprobados, reprobados, pendientes, promedio, asistPct: marcas? Math.round(sumaP/marcas*100) : null, clases: listaSes.length};
+}
+
 function renderAlumnosTabla(){
   populateCursoAlumnosSelect();
   const thead = document.getElementById('al_thead');
   const tbody = document.getElementById('al_tbody');
   const resumen = document.getElementById('al_evalResumen');
+  const porCentral = document.getElementById('al_porCentral');
   if(!thead || !tbody) return;
+
+  const curso = cursos[selectedCursoAlumnos];
+  const esCent = esCursoCentrales(curso);
+  const docKey = selValueActual();
+  const inpDoc = document.getElementById('al_docente');
+  if(docKey!==lastDocKey && document.activeElement!==inpDoc){ lastDocKey = docKey; refreshDocenteField(); }
+  const btnCent = document.getElementById('btnCentrales');
+  if(btnCent) btnCent.style.display = esCent ? '' : 'none';
 
   if(!selectedCursoAlumnos){
     thead.innerHTML = '';
     tbody.innerHTML = '<tr><td style="padding:10px;color:var(--text-muted);">Elegí un curso para ver su listado.</td></tr>';
     if(resumen) resumen.innerHTML = '';
+    if(porCentral) porCentral.innerHTML = '';
     return;
   }
 
-  const cursoAlumnos = Object.entries(alumnos).filter(([id,a])=>a.cursoId===selectedCursoAlumnos);
-  const cursoSesiones = Object.entries(sesiones).filter(([id,s])=>s.cursoId===selectedCursoAlumnos)
+  const verTodas = esCent && selectedCentral==='*';
+  const cursoAlumnos = alumnosDeVista();
+  const cursoSesiones = Object.entries(sesiones).filter(([id,s])=>vistaIncluye(s))
     .sort((a,b)=>new Date(a[1].fecha)-new Date(b[1].fecha));
 
-  // header
-  let headHtml = '<tr style="background:var(--header);color:#fff;"><th style="padding:8px;text-align:left;min-width:160px;">Alumno</th>';
-  cursoSesiones.forEach(([sid,s])=>{
-    headHtml += `<th style="padding:6px;text-align:center;min-width:70px;font-weight:600;">
-        ${fmtDate(s.fecha)}${s.hora?'<br><span style="font-weight:400;font-size:.62rem;">'+s.hora+'</span>':''}
+  const th = 'padding:8px;';
+  let headHtml = `<tr style="background:var(--header);color:#fff;"><th style="${th}text-align:left;min-width:200px;">Alumno</th>`;
+  if(verTodas) headHtml += `<th style="${th}text-align:left;min-width:110px;">Central</th>`;
+  if(!verTodas){
+    cursoSesiones.forEach(([sid,s])=>{
+      headHtml += `<th style="padding:6px;text-align:center;min-width:64px;font-weight:600;">
+        ${fmtDate(s.fecha)}${s.hora?'<br><span style="font-weight:400;font-size:.62rem;">'+escAl(s.hora)+'</span>':''}
         <br><a onclick="eliminarSesion('${sid}')" style="color:#ffd7d7;font-size:.62rem;cursor:pointer;">quitar</a>
       </th>`;
-  });
-  headHtml += '<th style="padding:8px;min-width:80px;">Nota</th><th style="padding:8px;min-width:100px;">Estado</th><th style="padding:8px;"></th></tr>';
+    });
+  }
+  headHtml += `<th style="${th}min-width:62px;">Asist.</th><th style="${th}min-width:70px;">Nota<br><span style="font-weight:400;font-size:.62rem;">original</span></th><th style="${th}min-width:70px;">Nota<br><span style="font-weight:400;font-size:.62rem;">recup.</span></th><th style="${th}min-width:170px;">Condición final</th><th style="${th}min-width:150px;text-align:left;">Observaciones</th><th style="${th}"></th></tr>`;
   thead.innerHTML = headHtml;
 
-  // body
+  const cols = (verTodas?2:1) + (verTodas?0:cursoSesiones.length) + 6;
   if(cursoAlumnos.length === 0){
-    tbody.innerHTML = `<tr><td colspan="${cursoSesiones.length+4}" style="padding:12px;text-align:center;color:var(--text-muted);">Sin alumnos cargados todavía para este curso.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="${cols}" style="padding:12px;text-align:center;color:var(--text-muted);">Sin alumnos cargados todavía${esCent&&!verTodas?' en esta central':''}. Usá "📥 Importar Excel" para cargar el registro completo.</td></tr>`;
   }else{
-    tbody.innerHTML = cursoAlumnos.sort((a,b)=>a[1].nombre.localeCompare(b[1].nombre)).map(([aid,al])=>{
-      let cells = `<td style="padding:7px 8px;border-bottom:1px solid var(--border);">${al.nombre}</td>`;
-      cursoSesiones.forEach(([sid])=>{
-        const est = asistencia[aid+'__'+sid];
-        const bg = est==='P' ? '#c8e6d3' : (est==='A' ? '#f5c6c0' : '#f2f5f4');
-        const color = est==='P' ? '#0f4d2c' : (est==='A' ? '#7a1f14' : 'var(--text-muted)');
-        const label = est==='P' ? 'P' : (est==='A' ? 'A' : '–');
-        cells += `<td style="padding:0;border-bottom:1px solid var(--border);text-align:center;">
-          <div onclick="toggleAsistencia('${aid}','${sid}')" style="cursor:pointer;background:${bg};color:${color};font-weight:700;padding:8px 0;">${label}</div>
-        </td>`;
-      });
-      const est = estadoPorNota(al.nota);
-      cells += `<td style="padding:6px 8px;border-bottom:1px solid var(--border);">
-        <input type="number" min="0" max="10" step="0.1" value="${al.nota===null||al.nota===undefined?'':al.nota}" style="width:60px;padding:4px 6px;border:1px solid var(--border);border-radius:5px;font-size:.76rem;" onchange="guardarNota('${aid}', this.value)">
-      </td>
-      <td style="padding:6px 8px;border-bottom:1px solid var(--border);color:${est.color};font-weight:600;">${est.label}</td>
-      <td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:right;">
-        <button class="btn danger small" onclick="eliminarAlumno('${aid}')">Quitar</button>
+    const ord = cursoAlumnos.slice().sort((a,b)=>{
+      const ca = (a[1].central||''), cb = (b[1].central||'');
+      return verTodas && ca!==cb ? ca.localeCompare(cb,'es') : String(a[1].nombre||'').localeCompare(String(b[1].nombre||''),'es');
+    });
+    tbody.innerHTML = ord.map(([aid,al])=>{
+      const sesAl = Object.entries(sesiones).filter(([sid,s])=>s.cursoId===selectedCursoAlumnos && (s.central||'')===(al.central||''));
+      const nP = sesAl.filter(([sid])=>asistencia[aid+'__'+sid]==='P').length;
+      const meta = [al.dni?('ID '+al.dni):'', al.zona, al.area, al.rol].filter(Boolean).join(' · ');
+      let cells = `<td style="padding:6px 8px;border-bottom:1px solid var(--border);">
+        <div style="font-weight:600;">${escAl(al.nombre)}</div>
+        ${meta?`<div style="font-size:.62rem;color:var(--text-muted);">${escAl(meta)}</div>`:''}
       </td>`;
+      if(verTodas) cells += `<td style="padding:6px 8px;border-bottom:1px solid var(--border);">${escAl(al.central||'—')}</td>`;
+      if(!verTodas){
+        cursoSesiones.forEach(([sid])=>{
+          const est = asistencia[aid+'__'+sid];
+          const bg = est==='P' ? '#c8e6d3' : (est==='A' ? '#f5c6c0' : '#f2f5f4');
+          const color = est==='P' ? '#0f4d2c' : (est==='A' ? '#7a1f14' : 'var(--text-muted)');
+          const label = est==='P' ? '✓' : (est==='A' ? '✕' : '–');
+          cells += `<td style="padding:0;border-bottom:1px solid var(--border);text-align:center;">
+            <div onclick="toggleAsistencia('${aid}','${sid}')" style="cursor:pointer;background:${bg};color:${color};font-weight:700;padding:10px 0;">${label}</div>
+          </td>`;
+        });
+      }
+      const cond = condicionAlumno(al);
+      const est = condEstilo(cond);
+      const auto = (!al.condicion || al.condicion==='-');
+      const opts = [''].concat(CONDICIONES).concat((al.condicion && !CONDICIONES.includes(al.condicion) && al.condicion!=='-')?[al.condicion]:[])
+        .map(o=>`<option value="${escAl(o)}" ${((auto?'':al.condicion)===o)?'selected':''}>${o===''?('Auto: '+(cond||'pendiente')):escAl(o)}</option>`).join('');
+      const inpS = 'width:56px;padding:4px 5px;border:1px solid var(--border);border-radius:5px;font-size:.76rem;text-align:center;';
+      cells += `<td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;font-weight:600;">${sesAl.length?nP+'/'+sesAl.length:'–'}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;"><input type="number" min="0" max="10" step="0.1" value="${al.nota===null||al.nota===undefined?'':al.nota}" style="${inpS}" onchange="guardarCampoAlumno('${aid}','nota',this.value)"></td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;"><input type="number" min="0" max="10" step="0.1" value="${al.notaRecup===null||al.notaRecup===undefined?'':al.notaRecup}" style="${inpS}" onchange="guardarCampoAlumno('${aid}','notaRecup',this.value)"></td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);"><select style="width:100%;padding:5px;border:1px solid var(--border);border-radius:5px;font-size:.72rem;font-weight:700;background:${est.bg};color:${est.fg};" onchange="guardarCampoAlumno('${aid}','condicion',this.value)">${opts}</select></td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);"><input value="${escAl(al.obs||'')}" style="width:100%;padding:4px 6px;border:1px solid var(--border);border-radius:5px;font-size:.72rem;" onchange="guardarCampoAlumno('${aid}','obs',this.value)"></td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:right;"><button class="btn danger small" onclick="eliminarAlumno('${aid}')">Quitar</button></td>`;
       return `<tr>${cells}</tr>`;
     }).join('');
   }
 
-  // resumen de evaluación
+  // resumen general de la vista
+  const R = calcResumen(cursoAlumnos, cursoSesiones);
   if(resumen){
-    const total = cursoAlumnos.length;
-    const aprobados = cursoAlumnos.filter(([id,a])=>a.nota!==null && a.nota!==undefined && a.nota>=6).length;
-    const reprobados = cursoAlumnos.filter(([id,a])=>a.nota!==null && a.nota!==undefined && a.nota<6).length;
-    const pendientes = total - aprobados - reprobados;
-    const notas = cursoAlumnos.map(([id,a])=>a.nota).filter(n=>n!==null && n!==undefined);
-    const promedio = notas.length ? (notas.reduce((s,n)=>s+n,0)/notas.length).toFixed(1) : '–';
-    const totalSesiones = cursoSesiones.length;
-    let asistenciaProm = '–';
-    if(totalSesiones>0 && total>0){
-      let sumaP = 0, totalMarcas = 0;
-      cursoAlumnos.forEach(([aid])=>{
-        cursoSesiones.forEach(([sid])=>{
-          const v = asistencia[aid+'__'+sid];
-          if(v){ totalMarcas++; if(v==='P') sumaP++; }
-        });
-      });
-      asistenciaProm = totalMarcas ? Math.round(sumaP/totalMarcas*100)+'%' : '–';
-    }
-    resumen.innerHTML = [
-      {n:total,l:'Alumnos'},
-      {n:totalSesiones,l:'Clases registradas'},
-      {n:aprobados,l:'Aprobados'},
-      {n:reprobados,l:'Reprobados'},
-      {n:pendientes,l:'Sin evaluar'},
-      {n:promedio,l:'Promedio de nota'},
-      {n:asistenciaProm,l:'Asistencia promedio'}
-    ].map(k=>`<div style="background:var(--bg);border-radius:8px;padding:10px 16px;min-width:110px;text-align:center;">
-      <div style="font-size:1.2rem;font-weight:700;color:var(--header-dark);">${k.n}</div>
-      <div style="font-size:.68rem;color:var(--text-muted);">${k.l}</div>
-    </div>`).join('');
+    resumen.innerHTML = resumenCards([
+      {n:R.total,l:'Alumnos'},
+      {n:R.clases,l:'Clases registradas'},
+      {n:R.asistPct===null?'–':R.asistPct+'%',l:'Asistencia promedio'},
+      {n:R.aprobados,l:'Aprobados'},
+      {n:R.reprobados,l:'No aprobados'},
+      {n:R.pendientes,l:'Sin evaluar / otros'},
+      {n:R.promedio===null?'–':R.promedio.toFixed(1),l:'Promedio de nota'}
+    ]);
+  }
+
+  // consolidado por central
+  if(porCentral){
+    if(verTodas){
+      const nombres = [...new Set(Object.values(alumnos).filter(a=>a.cursoId===selectedCursoAlumnos).map(a=>a.central||''))];
+      listaCentrales().forEach(c=>{ if(!nombres.includes(c.nombre)) nombres.push(c.nombre); });
+      nombres.sort((a,b)=>a.localeCompare(b,'es'));
+      const filas = nombres.map(cn=>{
+        const al = Object.entries(alumnos).filter(([id,a])=>a.cursoId===selectedCursoAlumnos && (a.central||'')===cn);
+        const se = Object.entries(sesiones).filter(([id,s])=>s.cursoId===selectedCursoAlumnos && (s.central||'')===cn);
+        const r = calcResumen(al, se);
+        const doc = (listaCentrales().find(x=>x.nombre===cn)||{}).docente||'';
+        const td = 'padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;';
+        return `<tr style="cursor:pointer;" onclick="irACentral('${encodeURIComponent(cn)}')"><td style="${td}text-align:left;font-weight:600;">${escAl(cn||'(Sin central)')}</td><td style="${td}text-align:left;">${escAl(doc)}</td><td style="${td}">${r.total}</td><td style="${td}">${r.clases}</td><td style="${td}">${r.asistPct===null?'–':r.asistPct+'%'}</td><td style="${td}color:var(--green);font-weight:700;">${r.aprobados}</td><td style="${td}color:var(--red);font-weight:700;">${r.reprobados}</td><td style="${td}">${r.pendientes}</td><td style="${td}">${r.promedio===null?'–':r.promedio.toFixed(1)}</td></tr>`;
+      }).join('') || '<tr><td colspan="9" style="padding:10px;color:var(--text-muted);text-align:center;">Todavía no hay centrales cargadas.</td></tr>';
+      porCentral.innerHTML = `<div class="card"><h2 style="margin:0 0 4px;">🏭 Resumen por central</h2><p style="font-size:.72rem;color:var(--text-muted);margin:0 0 8px;">Hacé clic en una central para abrir su registro.</p>
+        <div style="overflow-x:auto;border:1px solid var(--border);border-radius:8px;"><table style="width:100%;border-collapse:collapse;font-size:.76rem;">
+        <thead><tr style="background:var(--header);color:#fff;"><th style="padding:8px;text-align:left;">Central</th><th style="padding:8px;text-align:left;">Docente</th><th style="padding:8px;">Alumnos</th><th style="padding:8px;">Clases</th><th style="padding:8px;">Asistencia</th><th style="padding:8px;">Aprobados</th><th style="padding:8px;">No aprobados</th><th style="padding:8px;">Sin evaluar</th><th style="padding:8px;">Promedio</th></tr></thead>
+        <tbody>${filas}</tbody></table></div></div>`;
+    }else porCentral.innerHTML = '';
   }
   renderIndicadores();
 }
+
+function irACentral(enc){
+  selectedCentral = decodeURIComponent(enc);
+  lastDocKey = null;
+  renderAlumnosTabla();
+}
+
+/* ---------- Administrar centrales ---------- */
+function openCentralesModal(){
+  document.getElementById('cent_texto').value = listaCentrales().map(c=>c.nombre).join('\n');
+  document.getElementById('centralesModalBg').classList.add('active');
+}
+function guardarCentrales(){
+  const nuevos = [...new Set(document.getElementById('cent_texto').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean))];
+  const actuales = listaCentrales();
+  const ups = {};
+  nuevos.forEach(n=>{ if(!actuales.some(c=>c.nombre===n)) ups['convenio24/centrales/'+slugKey(n)+'/nombre'] = n; });
+  const noQuitadas = [];
+  actuales.forEach(c=>{
+    if(nuevos.includes(c.nombre)) return;
+    const usada = Object.values(alumnos).some(a=>a.central===c.nombre) || Object.values(sesiones).some(s=>s.central===c.nombre);
+    if(usada) noQuitadas.push(c.nombre);
+    else if(c.id) ups['convenio24/centrales/'+c.id] = null;
+  });
+  if(Object.keys(ups).length) dbApply(ups);
+  closeModal('centralesModalBg');
+  if(noQuitadas.length) alert('No se quitaron estas centrales porque tienen alumnos o clases cargadas: '+noQuitadas.join(', ')+'.\nPrimero quitá sus alumnos con "Vaciar listado".');
+}
+
+/* ============ IMPORTAR EXCEL DE ASISTENCIA (.xlsx, sin librerías externas) ============ */
+async function inflateRaw(u8){
+  const ds = new DecompressionStream('deflate-raw');
+  const stream = new Blob([u8]).stream().pipeThrough(ds);
+  return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+async function unzipXlsx(buf){
+  const u8 = new Uint8Array(buf), dv = new DataView(buf);
+  let e = u8.length-22;
+  while(e>=0 && dv.getUint32(e,true)!==0x06054b50) e--;
+  if(e<0) throw new Error('El archivo no es un .xlsx válido.');
+  const n = dv.getUint16(e+10,true);
+  let p = dv.getUint32(e+16,true);
+  const out = {};
+  for(let i=0;i<n;i++){
+    const method = dv.getUint16(p+10,true), csize = dv.getUint32(p+20,true);
+    const nlen = dv.getUint16(p+28,true), elen = dv.getUint16(p+30,true), clen = dv.getUint16(p+32,true);
+    const lho = dv.getUint32(p+42,true);
+    const name = new TextDecoder().decode(u8.subarray(p+46,p+46+nlen));
+    p += 46+nlen+elen+clen;
+    if(!/^xl\/(workbook\.xml|_rels\/workbook\.xml\.rels|sharedStrings\.xml|worksheets\/[^\/]+\.xml)$/.test(name)) continue;
+    const lnlen = dv.getUint16(lho+26,true), lelen = dv.getUint16(lho+28,true);
+    const start = lho+30+lnlen+lelen;
+    const data = u8.subarray(start, start+csize);
+    out[name] = method===0 ? data : await inflateRaw(data);
+  }
+  return out;
+}
+function colToIdx(ref){ const m = /^([A-Z]+)/.exec(ref)[1]; let n=0; for(const ch of m) n = n*26 + ch.charCodeAt(0)-64; return n; }
+async function leerXlsx(file){
+  if(typeof DecompressionStream==='undefined') throw new Error('Este navegador no puede leer .xlsx. Usá Edge o Chrome actualizados.');
+  const files = await unzipXlsx(await file.arrayBuffer());
+  const dec = new TextDecoder('utf-8');
+  const parse = u8 => new DOMParser().parseFromString(dec.decode(u8),'application/xml');
+  let ss = [];
+  if(files['xl/sharedStrings.xml']){
+    ss = [...parse(files['xl/sharedStrings.xml']).getElementsByTagName('si')].map(si=>[...si.getElementsByTagName('t')].map(t=>t.textContent).join(''));
+  }
+  let path = null;
+  try{
+    const wb = parse(files['xl/workbook.xml']), rels = parse(files['xl/_rels/workbook.xml.rels']);
+    const rid = wb.getElementsByTagName('sheet')[0].getAttribute('r:id');
+    [...rels.getElementsByTagName('Relationship')].forEach(r=>{ if(r.getAttribute('Id')===rid){ const t = r.getAttribute('Target'); path = t.startsWith('/') ? t.slice(1) : 'xl/'+t; } });
+  }catch(e){}
+  if(!path || !files[path]) path = Object.keys(files).filter(k=>/^xl\/worksheets\//.test(k)).sort()[0];
+  if(!path) throw new Error('No encontré hojas dentro del archivo.');
+  const grid = {};
+  [...parse(files[path]).getElementsByTagName('c')].forEach(c=>{
+    const ref = c.getAttribute('r'), t = c.getAttribute('t');
+    let v = null;
+    if(t==='inlineStr') v = [...c.getElementsByTagName('t')].map(x=>x.textContent).join('');
+    else{
+      const ve = c.getElementsByTagName('v')[0];
+      if(ve){ const raw = ve.textContent; v = t==='s' ? ss[parseInt(raw,10)] : ((t==='str'||t==='e') ? raw : (t==='b' ? raw==='1' : Number(raw))); }
+    }
+    if(v===null || v===undefined || v==='') return;
+    const r = parseInt(/(\d+)$/.exec(ref)[1],10);
+    (grid[r] || (grid[r] = {}))[colToIdx(ref)] = v;
+  });
+  return grid;
+}
+function excelISO(n){ return new Date(Math.round((n-25569)*86400)*1000).toISOString().slice(0,10); }
+function aNota(v){
+  if(typeof v==='number') return v;
+  const s = String(v==null?'':v).trim().replace(',','.');
+  if(!s || s==='-') return null;
+  const n = Number(s); return isNaN(n) ? null : n;
+}
+function aMarca(v){
+  const n = normTxt(v);
+  if(['✓','✔','P','PRESENTE','SI','OK'].includes(n)) return 'P';
+  if(['✕','✖','✗','X','A','AUSENTE','NO'].includes(n)) return 'A';
+  return null;
+}
+function analizarGrilla(grid){
+  const rows = Object.keys(grid).map(Number).sort((a,b)=>a-b);
+  const cell = (r,c)=> (grid[r] && grid[r][c]!==undefined) ? grid[r][c] : null;
+  let hr = null;
+  for(const r of rows){
+    const n = Object.values(grid[r]).map(normTxt);
+    if(n.includes('APELLIDO') && n.some(x=>x.startsWith('ID'))){ hr = r; break; }
+  }
+  if(hr===null) throw new Error('No encontré la fila de encabezados (ID DE ALUMNO / APELLIDO / NOMBRE). ¿Es el Excel de asistencia?');
+  const col = {}, classCols = [];
+  Object.entries(grid[hr]).forEach(([k,v])=>{
+    const ci = Number(k), n = normTxt(v);
+    if(n.startsWith('ID')) col.id = ci;
+    else if(n==='APELLIDO') col.apellido = ci;
+    else if(n==='NOMBRE') col.nombre = ci;
+    else if(n==='GERENCIA') col.gerencia = ci;
+    else if(n==='ZONA') col.zona = ci;
+    else if(n.includes('REPARTO')) col.reparto = ci;
+    else if(n.includes('SOBRE')) col.sobre = ci;
+    else if(n.includes('CENTRAL')) col.central = ci;
+    else if(n.startsWith('AREA')) col.area = ci;
+    else if(n==='ROL') col.rol = ci;
+    else if(n.startsWith('CLASE')) classCols.push(ci);
+  });
+  for(let r=Math.max(1,hr-4); r<=hr+2; r++){
+    Object.entries(grid[r]||{}).forEach(([k,v])=>{
+      const ci = Number(k), n = normTxt(v);
+      if(n.startsWith('CANTIDAD')) col.cant = ci;
+      else if(n.startsWith('CONDICION')) col.cond = ci;
+      else if(n.startsWith('OBSERV')) col.obs = ci;
+      else if(n.startsWith('ORIG') && r>=hr) col.orig = ci;
+      else if(n.startsWith('RECUP') && r>=hr) col.recup = ci;
+    });
+  }
+  if(!classCols.length) throw new Error('No encontré las columnas de clases ("Clase Nº 1", ...).');
+  const dateRow = hr+1;
+  const lastCol = col.cant ? col.cant-1 : Math.max(...classCols);
+  const sesCols = [];
+  for(let c=Math.min(...classCols); c<=lastCol; c++){
+    const v = cell(dateRow,c);
+    if(typeof v==='number' && v>40000 && v<70000) sesCols.push({c, fecha:excelISO(v), esClase:classCols.includes(c)});
+  }
+  // datos de cabecera (curso, instructor, horario)
+  const meta = {};
+  for(let r=1; r<hr; r++){
+    Object.entries(grid[r]||{}).forEach(([k,v])=>{
+      const n = normTxt(v), ci = Number(k);
+      const derecha = ()=>{ const cs = Object.keys(grid[r]).map(Number).filter(x=>x>ci).sort((a,b)=>a-b); for(const x of cs){ const val = String(grid[r][x]).trim(); if(val && !/^(DIAS CURSADO|INSTRUCTOR|NOMBRE DEL CURSO)/.test(normTxt(val))) return val; } return ''; };
+      if(n.startsWith('NOMBRE DEL CURSO')) meta.curso = derecha();
+      else if(n==='INSTRUCTOR') meta.instructor = derecha();
+      else if(n.startsWith('DIAS CURSADO')) meta.horario = derecha();
+    });
+  }
+  let hora = '';
+  const mh = /DE\s*(\d{1,2})(?::\d+)?\s*(?:HS?\.?)?\s*A\s*(\d{1,2})/i.exec(normTxt(meta.horario||''));
+  if(mh) hora = mh[1]+' A '+mh[2];
+  const mc = /\[\s*([^\]]+?)\s*\]/.exec(meta.curso||'');
+  const centralDefault = mc ? mc[1].trim() : '';
+  const cursoSolo = (meta.curso||'').replace(/\[[^\]]*\]/g,'').replace(/\s+/g,' ').trim();
+
+  const str = (r,c)=> c ? String(cell(r,c)==null?'':cell(r,c)).replace(/\s+/g,' ').trim() : '';
+  const filas = [];
+  rows.filter(r=>r>=hr+2).forEach(r=>{
+    const apellido = str(r,col.apellido), nombres = str(r,col.nombre);
+    if(!apellido && !nombres) return;
+    const marcas = {};
+    sesCols.forEach(s=>{ const m = aMarca(cell(r,s.c)); if(m) marcas[s.fecha] = m; });
+    let cond = str(r,col.cond);
+    if(cond==='-' ) cond = '';
+    else if(cond){ const hit = CONDICIONES.find(x=>normTxt(x)===normTxt(cond)); cond = hit || cond.toUpperCase(); }
+    filas.push({
+      id: str(r,col.id).replace(/\.0$/,''), apellido, nombres,
+      gerencia: str(r,col.gerencia), zona: str(r,col.zona), reparto: str(r,col.reparto), sobre: str(r,col.sobre),
+      central: str(r,col.central), area: str(r,col.area), rol: str(r,col.rol),
+      marcas, nota: col.orig ? aNota(cell(r,col.orig)) : null, notaRecup: col.recup ? aNota(cell(r,col.recup)) : null,
+      condicion: cond, obs: str(r,col.obs)
+    });
+  });
+  if(!filas.length) throw new Error('No encontré alumnos debajo de los encabezados.');
+  const sesiones_ = sesCols.filter(s=>s.esClase || filas.some(f=>f.marcas[s.fecha])).map(s=>({fecha:s.fecha}));
+  return {cursoNombre:cursoSolo, instructor:meta.instructor||'', hora, centralDefault, filas, sesiones:sesiones_};
+}
+
+function detectarCursoXls(nombre){
+  const base = normTxt(nombre||''); if(!base) return null;
+  let hit = null;
+  Object.entries(cursos).forEach(([id,c])=>{ const n = normTxt(c.nombre); if(n.includes(base) || base.includes(n)) hit = id; });
+  return hit;
+}
+
+/* arma los cambios a escribir (sin aplicarlos todavía) */
+function planificarImportacion(items){
+  const ups = {};
+  const st = {nuevos:0, actualizados:0, clasesNuevas:0, marcas:0, centrales:new Set()};
+  const asignados = {}; // cn -> id (evita duplicar entre archivos)
+  items.forEach(({an, cursoId})=>{
+    const usaC = esCursoCentrales(cursos[cursoId]);
+    const centralesArchivo = [...new Set(an.filas.map(f=>usaC ? (f.central||an.centralDefault||'').trim() : ''))];
+    centralesArchivo.forEach(cn=>{
+      let centId = 'curso';
+      if(cn){
+        st.centrales.add(cn);
+        centId = asignados[cn] || centralId(cn);
+        asignados[cn] = centId;
+        ups['convenio24/centrales/'+centId+'/nombre'] = cn;
+        if(an.instructor && centralesArchivo.length===1) ups['convenio24/centrales/'+centId+'/docente'] = an.instructor;
+      }else if(an.instructor && !usaC && cursos[cursoId] && !cursos[cursoId].docente){
+        ups['convenio24/cursos/'+cursoId+'/docente'] = an.instructor;
+      }
+      // clases
+      const sesId = {};
+      an.sesiones.forEach(s=>{
+        const ex = Object.entries(sesiones).find(([id,x])=>x.cursoId===cursoId && (x.central||'')===cn && x.fecha===s.fecha);
+        if(ex){ sesId[s.fecha] = ex[0]; if(!ex[1].hora && an.hora) ups['convenio24/sesiones/'+ex[0]+'/hora'] = an.hora; }
+        else{
+          const id = 's_'+cursoId+'_'+centId+'_'+s.fecha;
+          sesId[s.fecha] = id;
+          if(!ups['convenio24/sesiones/'+id]){
+            const d = {cursoId, fecha:s.fecha, hora:an.hora||''}; if(cn) d.central = cn;
+            ups['convenio24/sesiones/'+id] = d; st.clasesNuevas++;
+          }
+        }
+      });
+      // alumnos
+      an.filas.filter(f=>(usaC ? (f.central||an.centralDefault||'').trim() : '')===cn).forEach(f=>{
+        const nombreDisp = (f.apellido+', '+f.nombres).replace(/\s+/g,' ').replace(/^, |, $/g,'').trim();
+        let ex = f.id ? Object.entries(alumnos).find(([id,a])=>a.cursoId===cursoId && (a.central||'')===cn && String(a.dni||'')===f.id) : null;
+        if(!ex) ex = Object.entries(alumnos).find(([id,a])=>a.cursoId===cursoId && (a.central||'')===cn && normTxt(a.nombre)===normTxt(nombreDisp));
+        const campos = {dni:f.id, apellido:f.apellido, nombres:f.nombres, nombre:nombreDisp, gerencia:f.gerencia, zona:f.zona, reparto:f.reparto, sobre:f.sobre, area:f.area, rol:f.rol};
+        if(f.nota!==null) campos.nota = f.nota;
+        if(f.notaRecup!==null) campos.notaRecup = f.notaRecup;
+        if(f.condicion) campos.condicion = f.condicion;
+        if(f.obs) campos.obs = f.obs;
+        let aid;
+        if(ex){
+          aid = ex[0]; st.actualizados++;
+          Object.entries(campos).forEach(([k,v])=>{ if(v!=='' && v!==null) ups['convenio24/alumnos/'+aid+'/'+k] = v; });
+        }else{
+          aid = 'a_'+cursoId+'_'+centId+'_'+(String(f.id||slugKey(nombreDisp)).replace(/[^A-Za-z0-9_-]/g,''));
+          st.nuevos++;
+          const obj = {cursoId, nota:null}; if(cn) obj.central = cn;
+          Object.entries(campos).forEach(([k,v])=>{ if(v!=='' && v!==null) obj[k] = v; });
+          ups['convenio24/alumnos/'+aid] = obj;
+        }
+        Object.entries(f.marcas).forEach(([fecha,m])=>{
+          if(sesId[fecha]){ ups['convenio24/asistencia/'+aid+'__'+sesId[fecha]] = m; st.marcas++; }
+        });
+      });
+    });
+  });
+  return {ups, st};
+}
+
+let xlsItems = [];
+let xlsErrores = '';
+function openXlsModal(){
+  const sel = document.getElementById('xls_cursoFallback');
+  sel.innerHTML = Object.entries(cursos).sort((a,b)=>(a[1].orden||0)-(b[1].orden||0)).map(([id,c])=>`<option value="${id}">${escAl(c.orden+'. '+c.nombre)}</option>`).join('');
+  if(selectedCursoAlumnos) sel.value = selectedCursoAlumnos;
+  document.getElementById('xls_file').value = '';
+  document.getElementById('xls_preview').innerHTML = '';
+  document.getElementById('xls_btnImportar').disabled = true;
+  xlsItems = []; xlsErrores = '';
+  document.getElementById('xlsModalBg').classList.add('active');
+}
+async function onXlsFiles(){
+  const files = [...document.getElementById('xls_file').files];
+  xlsItems = []; xlsErrores = '';
+  document.getElementById('xls_preview').innerHTML = '<p style="color:var(--text-muted);font-size:.8rem;">Leyendo archivo(s)…</p>';
+  for(const f of files){
+    try{
+      xlsItems.push({fileName:f.name, an:analizarGrilla(await leerXlsx(f))});
+    }catch(e){
+      xlsErrores += `<div style="background:#fdecea;border:1px solid #f5c6c0;border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:.78rem;"><b>${escAl(f.name)}</b><br>No se pudo leer: ${escAl(e.message)}</div>`;
+    }
+  }
+  renderXlsPreview();
+}
+function renderXlsPreview(){
+  const fallback = document.getElementById('xls_cursoFallback').value;
+  let html = xlsErrores;
+  xlsItems.forEach(it=>{
+    const detectado = detectarCursoXls(it.an.cursoNombre);
+    it.cursoId = detectado || fallback;
+    const {st} = planificarImportacion([it]);
+    const c = cursos[it.cursoId];
+    const cents = [...new Set(it.an.filas.map(f=>(f.central||it.an.centralDefault||'').trim()))].filter(Boolean);
+    html += `<div style="background:#e8f5ee;border:1px solid #bfe0cd;border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:.78rem;line-height:1.5;">
+      <b>📄 ${escAl(it.fileName)}</b><br>
+      Curso: <b>${escAl(c?c.orden+'. '+truncate(c.nombre,70):'—')}</b>${detectado?'':' <span style="color:#a05a00;">(no lo reconocí por nombre: usé el curso elegido abajo)</span>'}<br>
+      ${esCursoCentrales(c)?'Central: <b>'+escAl(cents.join(', ')||'— sin central —')+'</b><br>':''}
+      Instructor: ${escAl(it.an.instructor||'—')} · Horario: ${escAl(it.an.hora||'—')}<br>
+      Alumnos: <b>${it.an.filas.length}</b> (${st.nuevos} nuevos, ${st.actualizados} ya existentes que se actualizan) · Clases: <b>${it.an.sesiones.length}</b> (${st.clasesNuevas} nuevas) · Marcas de asistencia: ${st.marcas}
+    </div>`;
+  });
+  document.getElementById('xls_preview').innerHTML = html;
+  document.getElementById('xls_btnImportar').disabled = !xlsItems.length;
+}
+async function confirmarImportXls(){
+  if(!xlsItems.length) return;
+  const items = xlsItems.map(it=>({an:it.an, cursoId:it.cursoId}));
+  const {ups, st} = planificarImportacion(items);
+  const btn = document.getElementById('xls_btnImportar'); btn.disabled = true;
+  try{
+    await dbApply(ups);
+  }catch(e){ btn.disabled = false; return; }
+  const last = items[items.length-1];
+  selectedCursoAlumnos = last.cursoId;
+  const cs = [...st.centrales];
+  selectedCentral = esCursoCentrales(cursos[last.cursoId]) ? (cs.length===1 ? cs[0] : '*') : null;
+  lastDocKey = null;
+  closeModal('xlsModalBg');
+  renderAlumnosTabla();
+  setTimeout(()=>alert(`Importación lista: ${st.nuevos} alumnos nuevos, ${st.actualizados} actualizados, ${st.clasesNuevas} clases nuevas y ${st.marcas} marcas de asistencia.`), 100);
+}
+
 
 /* ============ INDICADORES ============ */
 function computeIndicadoresData(){
@@ -1460,10 +1995,10 @@ function computeIndicadoresData(){
       });
     });
     const asistenciaPct = totalMarcas ? Math.round(sumaP/totalMarcas*100) : null;
-    const notas = alumnosCurso.map(([id,a])=>a.nota).filter(n=>n!==null && n!==undefined);
+    const notas = alumnosCurso.map(([id,a])=>notaFinal(a)).filter(n=>n!==null);
     const promedio = notas.length ? (notas.reduce((s,n)=>s+n,0)/notas.length) : null;
-    const aprobados = alumnosCurso.filter(([id,a])=>a.nota!==null&&a.nota!==undefined&&a.nota>=6).length;
-    const reprobados = alumnosCurso.filter(([id,a])=>a.nota!==null&&a.nota!==undefined&&a.nota<6).length;
+    const aprobados = alumnosCurso.filter(([id,a])=>esAprobado(a)).length;
+    const reprobados = alumnosCurso.filter(([id,a])=>esNoAprobado(a)).length;
     const evaluados = aprobados+reprobados;
     const aprobacionPct = evaluados ? Math.round(aprobados/evaluados*100) : null;
     const respuestasCurso = Object.entries(encuestas).filter(([id,e])=>e.cursoId===cid).map(([id,e])=>e);
@@ -1964,10 +2499,10 @@ function generarReporteCurso(cursoId, periodo){
   let totalMarcas=0, sumaP=0;
   alumnosCurso.forEach(([aid])=>{ sesionesCurso.forEach(([sid])=>{ const v=asistencia[aid+'__'+sid]; if(v){ totalMarcas++; if(v==='P') sumaP++; } }); });
   const asistenciaPct = totalMarcas ? Math.round(sumaP/totalMarcas*100) : null;
-  const notas = alumnosCurso.map(([id,a])=>a.nota).filter(n=>n!==null&&n!==undefined);
+  const notas = alumnosCurso.map(([id,a])=>notaFinal(a)).filter(n=>n!==null);
   const promedio = notas.length ? (notas.reduce((s,n)=>s+n,0)/notas.length) : null;
-  const aprobados = alumnosCurso.filter(([id,a])=>a.nota>=6).length;
-  const reprobados = alumnosCurso.filter(([id,a])=>a.nota!==null&&a.nota!==undefined&&a.nota<6).length;
+  const aprobados = alumnosCurso.filter(([id,a])=>esAprobado(a)).length;
+  const reprobados = alumnosCurso.filter(([id,a])=>esNoAprobado(a)).length;
   const presupuestado = (presupuesto[cursoId]&&presupuesto[cursoId].presupuestado)||0;
   const facturado = Object.values(facturas).filter(f=>f.cursoId===cursoId).reduce((s,f)=>s+(Number(f.monto)||0),0);
   const respuestasEnc = Object.values(encuestas).filter(e=>e.cursoId===cursoId);
