@@ -866,6 +866,7 @@ async function initLocalMode(){
   }
   usuariosReady = true;
   persist();
+  asegurarCentrales();
   renderAll();
   initSession();
 }
@@ -931,8 +932,10 @@ function initFirebaseListeners(){
     renderFacturasTabla();
     renderPresupuestoTabla();
   });
+  let centralesVistas = false;
   db.ref('convenio24/centrales').on('value', snap=>{
     centrales = snap.val() || {};
+    if(!centralesVistas){ centralesVistas = true; asegurarCentrales(); }
     renderAlumnosTabla();
   });
   initSession();
@@ -1259,9 +1262,9 @@ function collByName(n){
   return ({cursos,tareas,usuarios,alumnos,sesiones,asistencia,encuestas,logistica,presupuesto,facturas,centrales})[n];
 }
 /* Aplica varios cambios de una sola vez (Firebase: update multi-ruta; modo local: memoria + localStorage) */
-function dbApply(ups){
+function dbApply(ups, silencioso){
   if(useFirebase){
-    return db.ref().update(ups).catch(e=>{ alert('Error al guardar en Firebase: '+e.message); throw e; });
+    return db.ref().update(ups).catch(e=>{ if(!silencioso) alert('Error al guardar en Firebase: '+e.message); console.error(e); });
   }
   Object.entries(ups).forEach(([path,val])=>{
     const seg = path.split('/');
@@ -1275,6 +1278,34 @@ function dbApply(ups){
   persist();
   renderAlumnosTabla();
   return Promise.resolve();
+}
+
+/* Centrales del Curso 1 (se cargan una sola vez; después se administran desde "⚙ Administrar centrales") */
+const SEED_CENTRALES = [
+  {nombre:'La Calera', docente:'Mauro Peralta'},
+  {nombre:'La Viña', docente:'Roberto Actis'},
+  {nombre:'Ing. Fitz Simon', docente:'Osvaldo Tejada'},
+  {nombre:'Ing. Cassaffosuth', docente:'Luis Debandi'},
+  {nombre:'San Roque', docente:''},
+  {nombre:'Reolin y Piedras Moras', docente:'Mauricio Poidomani'},
+  {nombre:'Molinos I y II', docente:''}
+];
+function asegurarCentrales(){
+  if(centrales._seed) return;
+  const ex = listaCentrales(), ups = {};
+  SEED_CENTRALES.forEach(sc=>{
+    const f = ex.find(x=>normTxt(x.nombre)===normTxt(sc.nombre));
+    const id = f ? centralId(f.nombre) : slugKey(sc.nombre);
+    if(f){
+      if(!f.docente && sc.docente){ ups['convenio24/centrales/'+id+'/nombre'] = f.nombre; ups['convenio24/centrales/'+id+'/docente'] = sc.docente; }
+      else if(!f.id){ ups['convenio24/centrales/'+id+'/nombre'] = f.nombre; }
+    }else{
+      ups['convenio24/centrales/'+id+'/nombre'] = sc.nombre;
+      if(sc.docente) ups['convenio24/centrales/'+id+'/docente'] = sc.docente;
+    }
+  });
+  ups['convenio24/centrales/_seed'] = true;
+  dbApply(ups, true);
 }
 
 function listaCentrales(){
