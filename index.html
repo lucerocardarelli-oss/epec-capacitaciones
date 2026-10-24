@@ -149,7 +149,9 @@
     <div class="field"><label>Usuario</label><input id="login_user" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <div class="field"><label>Contraseña</label><input type="password" id="login_pass" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <div class="login-error" id="loginError"></div>
+    <div id="loginDiag" style="display:none;font-size:12px;color:#8a4b00;background:#fff4e0;border:1px solid #f0c987;border-radius:6px;padding:8px 10px;margin:6px 0;"></div>
     <button class="btn" style="width:100%;" id="loginBtn" onclick="doLogin()">Iniciar sesión</button>
+    <button class="btn" style="width:100%;margin-top:6px;display:none;background:#5a6b66;" id="retryBtn" onclick="location.reload()">Reintentar conexión</button>
     <p class="login-hint">Primer ingreso: usuario <b>admin</b> / contraseña <b>epec2026</b>. Cambiala apenas entres desde la pestaña "Usuarios", y creá ahí las cuentas del resto del equipo.</p>
   </div>
 </div>
@@ -688,7 +690,7 @@ async function doLogin(){
   const pass = document.getElementById('login_pass').value;
   const errEl = document.getElementById('loginError');
   errEl.textContent = '';
-  if(!usuariosReady){ errEl.textContent = 'Cargando usuarios, esperá un segundo y probá de nuevo…'; return; }
+  if(!usuariosReady){ errEl.textContent = connProblem ? 'Sin conexión con la base de datos (ver aviso arriba).' : 'Cargando usuarios, esperá un segundo y probá de nuevo…'; return; }
   const rec = usuarios[user];
   if(!rec){ errEl.textContent = 'Usuario o contraseña incorrectos.'; return; }
   const hash = await hashPassword(pass, rec.salt);
@@ -717,6 +719,22 @@ function setStatus(text, offline){
   el.classList.toggle('offline', !!offline);
 }
 
+let connProblem = '';
+function showConnProblem(msg){
+  connProblem = msg;
+  console.error('[Convenio24] '+msg);
+  const d = document.getElementById('loginDiag');
+  if(d){ d.innerHTML = '<b>No se pudo conectar con la base de datos.</b><br>'+msg; d.style.display='block'; }
+  const r = document.getElementById('retryBtn'); if(r) r.style.display='block';
+}
+// Si en 12 s no llegaron los usuarios, avisar con una causa probable en vez de quedarse "cargando"
+setTimeout(()=>{
+  if(!usuariosReady && !connProblem){
+    const esLocal = location.protocol === 'file:';
+    showConnProblem('La base no respondió en 12 segundos.'+(esLocal?' Estás abriendo el archivo desde tu PC (<code>file://</code>): Edge puede bloquear la sesión de Firebase en ese modo. Abrí la app desde su dirección web (GitHub Pages) o desde un servidor local.':' Revisá la conexión a internet o las reglas de la base en Firebase.'));
+  }
+}, 12000);
+
 function tryInitFirebase(){
   if(firebaseConfig.apiKey === "REEMPLAZAR"){
     setStatus("⚠ Modo local (configurá Firebase)", true);
@@ -738,15 +756,20 @@ function tryInitFirebase(){
         clearTimeout(timeout);
         try{
           firebase.initializeApp(firebaseConfig);
+          const authTimer = setTimeout(()=>{
+            if(!useFirebase) showConnProblem('El inicio de sesión anónimo de Firebase no respondió (10 s).'+(location.protocol==='file:'?' Es típico al abrir el archivo desde tu PC (<code>file://</code>).':' Verificá que "Anónimo" esté habilitado en Firebase → Authentication → Sign-in method.'));
+          }, 10000);
           firebase.auth().signInAnonymously().then(()=>{
+            clearTimeout(authTimer);
             db = firebase.database();
             useFirebase = true;
             setStatus("● Sistema en vivo — sincronizado");
             initFirebaseListeners();
           }).catch(e=>{
+            clearTimeout(authTimer);
             console.error(e);
-            setStatus("⚠ No se pudo autenticar — modo local", true);
-            initLocalMode();
+            setStatus("⚠ No se pudo autenticar", true);
+            showConnProblem('Firebase rechazó el inicio de sesión anónimo ('+(e && e.code ? e.code : e.message)+'). Revisá que el proveedor "Anónimo" esté habilitado en Firebase → Authentication.');
           });
         }catch(e){
           console.error(e);
@@ -831,6 +854,8 @@ function initFirebaseListeners(){
     if(!snap.exists()){
       db.ref('convenio24/usuarios/admin').set(await buildDefaultAdmin());
     }
+  }).catch(e=>{
+    showConnProblem('Firebase no permite leer los usuarios ('+(e && e.code ? e.code : e.message)+'). Suele ser que las reglas de la base vencieron o cambiaron: revisalas en Firebase → Realtime Database → Reglas.');
   });
   db.ref('convenio24/cursos').on('value', snap=>{
     cursos = snap.val() || {};
@@ -845,6 +870,8 @@ function initFirebaseListeners(){
     usuariosReady = true;
     renderUsuarios();
     if(currentUser) document.getElementById('currentUserLabel').textContent = (usuarios[currentUser]&&usuarios[currentUser].nombre)||currentUser;
+  }, e=>{
+    showConnProblem('Firebase bloqueó la lectura de usuarios ('+(e && e.code ? e.code : e.message)+'). Revisá las reglas en Firebase → Realtime Database → Reglas.');
   });
   db.ref('convenio24/alumnos').on('value', snap=>{
     alumnos = snap.val() || {};
