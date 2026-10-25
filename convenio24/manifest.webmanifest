@@ -1,0 +1,31 @@
+{
+  "name": "Convenio 24 — Seguimiento de Capacitaciones",
+  "short_name": "Convenio 24",
+  "description": "Seguimiento de capacitaciones del Convenio 24 · EPEC",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f2f5f4",
+  "theme_color": "#0f4d34",
+  "lang": "es-AR",
+  "icons": [
+    {
+      "src": "../icons/convenio24-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "../icons/convenio24-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "../icons/convenio24-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

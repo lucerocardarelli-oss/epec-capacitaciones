@@ -1,0 +1,31 @@
+{
+  "name": "EPEC SAU — Gestión de Capacitaciones",
+  "short_name": "Gestión Cap.",
+  "description": "Gestión de capacitaciones de EPEC SAU",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f2f5f4",
+  "theme_color": "#1f8a5f",
+  "lang": "es-AR",
+  "icons": [
+    {
+      "src": "icons/gestion-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/gestion-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/gestion-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

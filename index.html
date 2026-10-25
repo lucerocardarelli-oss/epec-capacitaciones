@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#1f8a5f">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/gestion-192.png">
+<link rel="apple-touch-icon" href="icons/gestion-192.png">
+<link rel="manifest" href="manifest.webmanifest">
 <title>EPEC SAU — Gestión de Capacitaciones</title>
 <link rel="preconnect" href="https://fonts.googleapis.com/">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -596,7 +600,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, onValue, push, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey:            "AIzaSyBvE7RSYKS4gmwcq48FttdR55fIjcj9dbU",
@@ -636,6 +640,8 @@ document.getElementById('login-pass').addEventListener('keydown', (e)=>{
 });
 
 // --- ESTADO DE SESIÓN: muestra login o la app según corresponda ---
+// La sesión se mantiene al recargar, pero se pide el login de nuevo al cerrar el navegador.
+setPersistence(auth, browserSessionPersistence).catch(()=>{}).then(()=>
 onAuthStateChanged(auth, (user) => {
   const overlay = document.getElementById('login-overlay');
   const contenido = document.getElementById('app-content');
@@ -661,7 +667,7 @@ onAuthStateChanged(auth, (user) => {
     contenido.style.display = 'none';
     document.getElementById('login-btn').textContent = 'Ingresar';
   }
-});
+}));
 
 window.fbPush   = (d) => push(cursosRef, d);
 window.fbUpdate = (k,d) => update(ref(db,'epec/cursos/'+k), d);
