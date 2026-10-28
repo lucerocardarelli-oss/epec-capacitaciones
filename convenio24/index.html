@@ -2710,13 +2710,65 @@ function analizarGrilla(grid){
       else if(n.startsWith('RECUP') && r>=hr) col.recup = ci;
     });
   }
-  if(!classCols.length) throw new Error('No encontré las columnas de clases ("Clase Nº 1", ...).');
-  const dateRow = hr+1;
-  const lastCol = col.cant ? col.cant-1 : Math.max(...classCols);
+  /* --- Respaldo: si no hay rótulos "Clase Nº X", se buscan las clases por otros rótulos, por fechas o por las marcas ✓/✕ --- */
+  const infoMax = Math.max(0, ...[col.id,col.apellido,col.nombre,col.gerencia,col.zona,col.reparto,col.sobre,col.central,col.area,col.rol].filter(Boolean));
+  const topes = [col.cant,col.cond,col.obs,col.orig,col.recup].filter(Boolean);
+  const ultimaCol = Math.max(...rows.flatMap(r=>Object.keys(grid[r]).map(Number)));
+  const limite = topes.length ? Math.min(...topes.filter(x=>x>infoMax)) : ultimaCol+1;
+  const limiteCol = isFinite(limite) ? limite : ultimaCol+1;
+  const fechaDeCelda = (v)=>{
+    if(typeof v==='number' && v>40000 && v<70000) return excelISO(v);
+    if(typeof v==='string'){
+      const m = /^\s*(\d{1,2})[\/\-.](\d{1,2})(?:[\/\-.](\d{2,4}))?\s*$/.exec(v);
+      if(m){ let y = m[3] ? parseInt(m[3],10) : new Date().getFullYear(); if(y<100) y += 2000; return y+'-'+pad2(parseInt(m[2],10))+'-'+pad2(parseInt(m[1],10)); }
+      const iso = /^(\d{4})-(\d{2})-(\d{2})/.exec(v); if(iso) return iso[0];
+    }
+    return null;
+  };
+  let porRotulos = classCols.length>0;
+  if(!classCols.length){
+    const alt = /^(CLASES?|DIA|JORNADA|ENCUENTRO|SESION|MODULO|TEMA|FECHA|N[°º]?\s*\d+)\b/;
+    for(let r=Math.max(1,hr-2); r<=hr+2; r++){
+      Object.entries(grid[r]||{}).forEach(([k,v])=>{
+        const ci = Number(k);
+        if(ci<=infoMax || ci>=limiteCol || classCols.includes(ci)) return;
+        const n = normTxt(v);
+        if((typeof v==='string' && alt.test(n)) || fechaDeCelda(v)) classCols.push(ci);
+      });
+    }
+  }
+  if(!classCols.length){
+    // columnas con marcas de asistencia en los datos
+    const cuenta = {};
+    rows.filter(r=>r>hr).forEach(r=>{
+      Object.entries(grid[r]).forEach(([k,v])=>{ const ci = Number(k); if(ci>infoMax && ci<limiteCol && aMarca(v)) cuenta[ci] = (cuenta[ci]||0)+1; });
+    });
+    Object.keys(cuenta).map(Number).forEach(ci=>classCols.push(ci));
+  }
+  if(!classCols.length){
+    const vistos = [];
+    for(let r=Math.max(1,hr-1); r<=hr+1; r++) Object.values(grid[r]||{}).forEach(v=>{ const t = String(v).replace(/\s+/g,' ').trim(); if(t && vistos.length<18 && !vistos.includes(t)) vistos.push(t); });
+    throw new Error('No encontré las columnas de las clases. Encabezados que leí: '+vistos.join(' | ')+'. Si las clases tienen otro rótulo, enviame el archivo para ajustarlo.');
+  }
+  classCols.sort((a,b)=>a-b);
+  const lastCol = Math.min(limiteCol-1, Math.max(...classCols));
   const sesCols = [];
+  let nSin = 0;
   for(let c=Math.min(...classCols); c<=lastCol; c++){
-    const v = cell(dateRow,c);
-    if(typeof v==='number' && v>40000 && v<70000) sesCols.push({c, fecha:excelISO(v), esClase:classCols.includes(c)});
+    let f = null;
+    for(const r of [hr+1, hr, hr-1, hr+2]){ f = fechaDeCelda(cell(r,c)); if(f) break; }
+    const esClase = classCols.includes(c);
+    const hayMarcas = rows.some(r=>r>hr && aMarca(cell(r,c)));
+    if(!esClase && !f) continue;
+    if(!f && !hayMarcas && !porRotulos) continue;
+    if(!f) nSin++;
+    sesCols.push({c, fecha:f, n:f?0:nSin, clave:f || ('S'+nSin), esClase});
+  }
+  if(!porRotulos){
+    // sin rótulos "Clase Nº": se descartan las columnas del final que no tienen ninguna marca
+    const conMarcas = sesCols.map(sc=>rows.some(r=>r>hr && aMarca(cell(r,sc.c))));
+    let ult = conMarcas.lastIndexOf(true);
+    if(ult>=0) sesCols.length = ult+1;
   }
   // datos de cabecera (curso, instructor, horario)
   const meta = {};
@@ -2738,11 +2790,11 @@ function analizarGrilla(grid){
 
   const str = (r,c)=> c ? String(cell(r,c)==null?'':cell(r,c)).replace(/\s+/g,' ').trim() : '';
   const filas = [];
-  rows.filter(r=>r>=hr+2).forEach(r=>{
+  rows.filter(r=>r>hr).forEach(r=>{
     const apellido = str(r,col.apellido), nombres = str(r,col.nombre);
     if(!apellido && !nombres) return;
     const marcas = {};
-    sesCols.forEach(s=>{ const m = aMarca(cell(r,s.c)); if(m) marcas[s.fecha] = m; });
+    sesCols.forEach(s=>{ const m = aMarca(cell(r,s.c)); if(m) marcas[s.clave] = m; });
     let cond = str(r,col.cond);
     if(cond==='-' ) cond = '';
     else if(cond){ const hit = CONDICIONES.find(x=>normTxt(x)===normTxt(cond)); cond = hit || cond.toUpperCase(); }
@@ -2755,7 +2807,7 @@ function analizarGrilla(grid){
     });
   });
   if(!filas.length) throw new Error('No encontré alumnos debajo de los encabezados.');
-  const sesiones_ = sesCols.filter(s=>s.esClase || filas.some(f=>f.marcas[s.fecha])).map(s=>({fecha:s.fecha}));
+  const sesiones_ = sesCols.filter(s=>s.esClase || filas.some(f=>f.marcas[s.clave])).map(s=>({fecha:s.fecha, clave:s.clave, n:s.n}));
   return {cursoNombre:cursoSolo, instructor:meta.instructor||'', hora, centralDefault, filas, sesiones:sesiones_};
 }
 
@@ -2780,12 +2832,27 @@ function grupoDeFila(an, f, usaC){
 
 function detectarCursoXls(nombre){
   const base = normTxt(nombre||''); if(!base) return null;
-  let hit = null;
-  Object.entries(cursos).forEach(([id,c])=>{ const n = normTxt(c.nombre); if(n.includes(base) || base.includes(n)) hit = id; });
+  let hit = null, mejor = 1e9;
+  Object.entries(cursos).forEach(([id,c])=>{
+    const n = normTxt(c.nombre);
+    if(n===base){ hit = id; mejor = -1; return; }
+    if(mejor<0) return;
+    if(n.includes(base) || base.includes(n)){
+      const d = Math.abs(n.length-base.length);
+      if(d<mejor){ mejor = d; hit = id; }
+    }
+  });
   return hit;
 }
 
 /* arma los cambios a escribir (sin aplicarlos todavía) */
+function sumarHabiles(base, k){ let d = base; while(esFinSemana(d)) d = addDays(d,1); for(let i=0;i<k;i++){ d = addDays(d,1); while(esFinSemana(d)) d = addDays(d,1); } return d; }
+function fechaDeSesion(s, cursoId, cn){
+  if(s.fecha) return s.fecha;
+  const ce = cn ? centralesCal().find(x=>x.nombre===cn) : null;
+  const base = (ce && ce.inicio) || (cursos[cursoId] && cursos[cursoId].inicio) || hoyISO();
+  return sumarHabiles(base, Math.max(0,(s.n||1)-1));
+}
 function planificarImportacion(items){
   const ups = {};
   const st = {nuevos:0, actualizados:0, clasesNuevas:0, marcas:0, centrales:new Set()};
@@ -2808,13 +2875,15 @@ function planificarImportacion(items){
       // clases
       const sesId = {};
       an.sesiones.forEach(s=>{
-        const ex = Object.entries(sesiones).find(([id,x])=>x.cursoId===cursoId && (x.central||'')===cn && x.fecha===s.fecha);
-        if(ex){ sesId[s.fecha] = ex[0]; if(!ex[1].hora && an.hora) ups['convenio24/sesiones/'+ex[0]+'/hora'] = an.hora; }
+        const sf = fechaDeSesion(s, cursoId, cn);
+        if(!s.fecha) st.estimadas = (st.estimadas||0)+1;
+        const ex = Object.entries(sesiones).find(([id,x])=>x.cursoId===cursoId && (x.central||'')===cn && x.fecha===sf);
+        if(ex){ sesId[s.clave] = ex[0]; if(!ex[1].hora && an.hora) ups['convenio24/sesiones/'+ex[0]+'/hora'] = an.hora; }
         else{
-          const id = 's_'+cursoId+'_'+centId+'_'+s.fecha;
-          sesId[s.fecha] = id;
+          const id = 's_'+cursoId+'_'+centId+'_'+sf;
+          sesId[s.clave] = id;
           if(!ups['convenio24/sesiones/'+id]){
-            const d = {cursoId, fecha:s.fecha, hora:an.hora||''}; if(cn) d.central = cn;
+            const d = {cursoId, fecha:sf, hora:an.hora||''}; if(cn) d.central = cn;
             ups['convenio24/sesiones/'+id] = d; st.clasesNuevas++;
           }
         }
@@ -2844,8 +2913,8 @@ function planificarImportacion(items){
           Object.entries(campos).forEach(([k,v])=>{ if(v!=='' && v!==null) obj[k] = v; });
           ups['convenio24/alumnos/'+aid] = obj;
         }
-        Object.entries(f.marcas).forEach(([fecha,m])=>{
-          if(sesId[fecha]){ ups['convenio24/asistencia/'+aid+'__'+sesId[fecha]] = m; st.marcas++; }
+        Object.entries(f.marcas).forEach(([clave,m])=>{
+          if(sesId[clave]){ ups['convenio24/asistencia/'+aid+'__'+sesId[clave]] = m; st.marcas++; }
         });
       });
     });
@@ -2908,7 +2977,7 @@ function renderXlsPreview(){
       Curso: <b>${escAl(c?c.orden+'. '+truncate(c.nombre,70):'—')}</b>${detectado?'':' <span style="color:var(--amber-ink);">(no lo reconocí por nombre: usé el curso elegido abajo)</span>'}<br>
       ${esCursoCentrales(c)?'Central: <b>'+escAl(cents.join(', ')||'— sin central —')+'</b>'+(plantas.length>1?' <span style="color:var(--text-muted);">(incluye plantas: '+escAl(plantas.join(', '))+')</span>':'')+'<br>':''}
       Instructor: ${escAl(it.an.instructor||'—')} · Horario: ${escAl(it.an.hora||'—')}<br>
-      Alumnos: <b>${it.an.filas.length}</b> (${st.nuevos} nuevos, ${st.actualizados} ya existentes que se actualizan) · Clases: <b>${it.an.sesiones.length}</b> (${st.clasesNuevas} nuevas) · Marcas de asistencia: ${st.marcas}${st.limpiadas?'<br><span style="color:var(--amber-ink);">Se van a juntar en esta central alumnos que estaban en una central separada, y se quita esa central vacía.</span>':''}
+      Alumnos: <b>${it.an.filas.length}</b> (${st.nuevos} nuevos, ${st.actualizados} ya existentes que se actualizan) · Clases: <b>${it.an.sesiones.length}</b> (${st.clasesNuevas} nuevas) · Marcas de asistencia: ${st.marcas}${st.estimadas?'<br><span style="color:var(--amber-ink);">⚠ Las clases de este Excel no traen fecha: se ubicaron desde el inicio del curso en días hábiles. Después podés corregirlas en cada clase.</span>':''}${st.limpiadas?'<br><span style="color:var(--amber-ink);">Se van a juntar en esta central alumnos que estaban en una central separada, y se quita esa central vacía.</span>':''}
     </div>`;
   });
   document.getElementById('xls_preview').innerHTML = html;
