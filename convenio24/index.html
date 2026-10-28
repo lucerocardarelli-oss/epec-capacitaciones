@@ -2700,6 +2700,12 @@ function analizarGrilla(grid){
     else if(n==='ROL') col.rol = ci;
     else if(n.startsWith('CLASE')) classCols.push(ci);
   });
+  for(let r=hr+1; r<=hr+2; r++){
+    Object.entries(grid[r]||{}).forEach(([k,v])=>{
+      const ci = Number(k), n = normTxt(v);
+      if(typeof v==='string' && n.startsWith('CLASE') && !classCols.includes(ci)) classCols.push(ci);
+    });
+  }
   for(let r=Math.max(1,hr-4); r<=hr+2; r++){
     Object.entries(grid[r]||{}).forEach(([k,v])=>{
       const ci = Number(k), n = normTxt(v);
@@ -2775,15 +2781,15 @@ function analizarGrilla(grid){
   for(let r=1; r<hr; r++){
     Object.entries(grid[r]||{}).forEach(([k,v])=>{
       const n = normTxt(v), ci = Number(k);
-      const derecha = ()=>{ const cs = Object.keys(grid[r]).map(Number).filter(x=>x>ci).sort((a,b)=>a-b); for(const x of cs){ const val = String(grid[r][x]).trim(); if(val && !/^(DIAS CURSADO|INSTRUCTOR|NOMBRE DEL CURSO)/.test(normTxt(val))) return val; } return ''; };
+      const derecha = ()=>{ const cs = Object.keys(grid[r]).map(Number).filter(x=>x>ci).sort((a,b)=>a-b); for(const x of cs){ const val = String(grid[r][x]).trim(); if(val && !/^(DIAS CURSADO|HORARIO|INSTRUCTOR|NOMBRE DEL CURSO|ID COHORTE)/.test(normTxt(val))) return val; } return ''; };
       if(n.startsWith('NOMBRE DEL CURSO')) meta.curso = derecha();
       else if(n==='INSTRUCTOR') meta.instructor = derecha();
-      else if(n.startsWith('DIAS CURSADO')) meta.horario = derecha();
+      else if(n.startsWith('DIAS CURSADO') || n.startsWith('HORARIO')) meta.horario = derecha();
     });
   }
   let hora = '';
   const mh = /DE\s*(\d{1,2})(?::\d+)?\s*(?:HS?\.?)?\s*A\s*(\d{1,2})/i.exec(normTxt(meta.horario||''));
-  if(mh) hora = mh[1]+' A '+mh[2];
+  if(mh) hora = parseInt(mh[1],10)+' A '+parseInt(mh[2],10);
   const mc = /\[\s*([^\]]+?)\s*\]/.exec(meta.curso||'');
   const centralDefault = mc ? mc[1].trim() : '';
   const cursoSolo = (meta.curso||'').replace(/\[[^\]]*\]/g,'').replace(/\s+/g,' ').trim();
