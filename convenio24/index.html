@@ -4,10 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="var(--ink)">
-<link rel="icon" type="image/png" sizes="192x192" href="../icons/convenio24-192.png">
-<link rel="apple-touch-icon" href="../icons/convenio24-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="data:image/png;base64,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">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
 <link rel="manifest" href="manifest.webmanifest">
 <title>Convenio 24 · Seguimiento de Capacitaciones · EPEC</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>try{if(localStorage.getItem("c24_tema")==="dark")document.documentElement.setAttribute("data-theme","dark");}catch(e){}</script>
 <style>
   :root{
@@ -28,6 +31,7 @@
   input,select,textarea{background:var(--input);color:var(--text);}
   input::placeholder,textarea::placeholder{color:var(--text-muted);opacity:.75;}
   .theme-btn{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:20px;padding:4px 11px;font-size:.9rem;cursor:pointer;line-height:1.2;}
+  .gp-btn{font-size:.78rem;font-weight:700;padding:5px 12px;margin-right:4px;}
   .theme-btn:hover{background:rgba(255,255,255,.3);}
   .login-theme{position:absolute;top:14px;right:14px;}
   *{box-sizing:border-box;}
@@ -296,6 +300,17 @@
   .pg-multi-panel small{color:var(--text-muted);}
   #pgPrintArea{display:none;}
   @media print{ #pgPrintArea{display:block;} #pgPrintArea .doc{font-size:12px;} }
+  /* Opciones con tarjeta (radio alineado con su texto) */
+  .opt-title{font-size:.78rem;font-weight:700;color:var(--text-muted);margin:12px 0 6px;text-transform:uppercase;letter-spacing:.03em;}
+  .opt-grid{display:grid;gap:8px;}
+  .opt-grid.dos{grid-template-columns:1fr 1fr;}
+  @media(max-width:520px){.opt-grid.dos{grid-template-columns:1fr;}}
+  label.opt-card{display:flex;align-items:flex-start;gap:12px;padding:11px 13px;border:2px solid var(--border);border-radius:10px;cursor:pointer;background:var(--card);margin:0;font-weight:400;transition:border-color .15s,background .15s;}
+  label.opt-card:hover{border-color:var(--green);}
+  label.opt-card input[type=radio]{width:18px;height:18px;min-width:18px;margin:2px 0 0;padding:0;flex:none;accent-color:var(--green);cursor:pointer;}
+  label.opt-card:has(input:checked){border-color:var(--green);background:var(--green-light);}
+  label.opt-card .ot{display:block;font-size:.86rem;font-weight:700;color:var(--text);line-height:1.25;}
+  label.opt-card .od{display:block;font-size:.72rem;color:var(--text-muted);margin-top:2px;line-height:1.35;}
 </style>
 </head>
 <body>
@@ -323,7 +338,7 @@
     <p>Cronograma 20 septiembre – 20 noviembre 2026 · EPEC SAU</p>
   </div>
   <div class="top-right">
-    <button class="theme-btn" id="themeBtn" onclick="toggleTema()" title="Cambiar entre modo claro y oscuro" aria-label="Cambiar tema">🌙</button> <div id="fbStatus" class="status-pill">Conectando…</div>
+    <button class="theme-btn gp-btn" onclick="openGuardarPantalla()" title="Guardar la pantalla que estás viendo (HTML o imagen)" aria-label="Guardar pantalla">💾 Guardar pantalla</button> <button class="theme-btn" id="themeBtn" onclick="toggleTema()" title="Cambiar entre modo claro y oscuro" aria-label="Cambiar tema">🌙</button> <div id="fbStatus" class="status-pill">Conectando…</div>
     <div class="userbar">👤 <span id="currentUserLabel"></span> · <a onclick="doLogout()">Cerrar sesión</a></div>
   </div>
 </header>
@@ -431,6 +446,8 @@
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:10px;">
         <h2 style="margin:0;">👥 Registro de asistencia y evaluación</h2>
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="btn small" onclick="openReporteAE()">📊 Reporte interactivo</button>
+          <button class="btn small secondary" onclick="openExportModal()">📤 Exportar todo</button>
           <button class="btn small" onclick="openXlsModal()">📥 Importar Excel</button>
           <input id="al_nuevoNombre" placeholder="Nombre del alumno" style="padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:.8rem;">
           <button class="btn small" onclick="agregarAlumno()">+ Alumno</button>
@@ -795,6 +812,49 @@
 </div>
 
 <!-- MODAL IMPORTAR ALUMNOS -->
+
+<div class="modal-bg" id="exportModalBg">
+  <div class="modal" style="width:min(540px,94vw);">
+    <h3>📤 Exportar asistencia y evaluación</h3>
+    <p style="font-size:.8rem;color:var(--text-muted);margin:-6px 0 0;">Incluye resumen, alumnos con su evaluación, asistencia alumno por clase, clases y mapa de calor.</p>
+    <div class="opt-title">¿Qué querés exportar?</div>
+    <div class="opt-grid">
+      <label class="opt-card"><input type="radio" name="ex_alcance" value="todo" checked><span><span class="ot">Todo</span><span class="od">Todos los cursos y todas las centrales</span></span></label>
+      <label class="opt-card"><input type="radio" name="ex_alcance" value="vista"><span><span class="ot">Solo lo que estoy viendo</span><span class="od" id="ex_alcanceVista">Curso y central elegidos en pantalla</span></span></label>
+    </div>
+    <div class="opt-title">Formato del archivo</div>
+    <div class="opt-grid dos">
+      <label class="opt-card"><input type="radio" name="ex_formato" value="xlsx" checked><span><span class="ot">Excel (.xlsx)</span><span class="od">Un archivo con varias hojas</span></span></label>
+      <label class="opt-card"><input type="radio" name="ex_formato" value="csv"><span><span class="ot">CSV</span><span class="od">2 archivos: alumnos y detalle de asistencia</span></span></label>
+    </div>
+    <div class="modal-actions"><div></div><div>
+      <button class="btn secondary" onclick="closeModal('exportModalBg')">Cancelar</button>
+      <button class="btn" onclick="ejecutarExportacion()">Descargar</button></div></div>
+  </div>
+</div>
+<div class="modal-bg" id="pantallaModalBg" style="z-index:70;">
+  <div class="modal" style="width:min(520px,94vw);">
+    <h3>💾 Guardar esta pantalla</h3>
+    <p style="font-size:.8rem;color:var(--text-muted);margin:-6px 0 0;">Se guarda <b id="gp_cual">la pantalla actual</b> tal como la ves, lista para compartir.</p>
+    <div class="opt-title">Formato</div>
+    <div class="opt-grid">
+      <label class="opt-card"><input type="radio" name="gp_formato" value="html" checked><span><span class="ot">Página web (.html) — recomendado</span><span class="od" id="gp_htmlDesc">Se abre en cualquier navegador, sin internet y con alta calidad.</span></span></label>
+      <label class="opt-card"><input type="radio" name="gp_formato" value="png"><span><span class="ot">Imagen (.png)</span><span class="od">Una foto de la pantalla, ideal para WhatsApp o para pegar en un documento.</span></span></label>
+    </div>
+    <div class="modal-actions"><div></div><div>
+      <button class="btn secondary" onclick="closeModal('pantallaModalBg')">Cancelar</button>
+      <button class="btn" id="gp_btn" onclick="ejecutarGuardarPantalla()">Guardar</button></div></div>
+  </div>
+</div>
+<div class="modal-bg" id="reporteAEModalBg" style="z-index:60;align-items:flex-start;overflow-y:auto;">
+  <div class="modal" style="width:min(1100px,98vw);max-height:none;margin:12px auto;padding:18px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;">
+      <h3 style="margin:0;">📊 Reporte de asistencia y evaluación</h3>
+      <button class="btn small secondary" onclick="cerrarReporteAE()">✕ Cerrar</button>
+    </div>
+    <div id="rp_body"></div>
+  </div>
+</div>
 <div class="modal-bg" id="importModalBg">
   <div class="modal" style="width:min(560px,92vw);">
     <h3>Importar lista de alumnos</h3>
@@ -1241,7 +1301,7 @@ function aplicarTema(t){
   if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); else document.documentElement.removeAttribute('data-theme');
   try{ localStorage.setItem('c24_tema', t); }catch(e){}
   const m = document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute('content', t==='dark' ? '#062722' : '#0f4d34');
-  document.querySelectorAll('.theme-btn').forEach(b=>{ b.textContent = t==='dark' ? '☀️' : '🌙'; b.title = t==='dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'; });
+  document.querySelectorAll('.theme-btn:not(.gp-btn)').forEach(b=>{ b.textContent = t==='dark' ? '☀️' : '🌙'; b.title = t==='dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'; });
 }
 function toggleTema(){ aplicarTema(temaActual()==='dark' ? 'light' : 'dark'); }
 document.addEventListener('DOMContentLoaded', ()=>aplicarTema(temaActual()));
@@ -4285,6 +4345,482 @@ function renderAll(){
   renderIndicadores();
   populateCursoReporteSelect();
   renderProgramas();
+}
+
+/* ============ REPORTE INTERACTIVO + EXPORTACIÓN · Asistencia y Evaluación ============ */
+const RP = {curso:'*', central:'*', metrica:'pct', tendencia:true, charts:{}, celdas:[], focoCond:null};
+const RP_ASIST_MIN = 75;
+
+function rpFmtF(iso){ const p=String(iso||'').split('-'); return p.length===3 ? p[2]+'/'+p[1] : String(iso||''); }
+function rpFmtFL(iso){ const p=String(iso||'').split('-'); return p.length===3 ? p[2]+'/'+p[1]+'/'+p[0] : String(iso||''); }
+function rpNum(n,d){ return (n===null||n===undefined||isNaN(n)) ? '–' : Number(n).toLocaleString('es-AR',{maximumFractionDigits:d===undefined?1:d}); }
+function rpDocente(a){ if(a.central){ const c=listaCentrales().find(x=>x.nombre===a.central); if(c&&c.docente) return c.docente; } const cu=cursos[a.cursoId]; return (cu&&cu.docente)||''; }
+function rpCursoNombre(id){ return (cursos[id]&&cursos[id].nombre)||'(curso eliminado)'; }
+
+/* alcance: cursoId|'*' , central|'*' */
+function rpDatos(cursoId, central){
+  const al = Object.entries(alumnos).filter(([id,a])=> (cursoId==='*'||a.cursoId===cursoId) && (central==='*'||(a.central||'')===central));
+  const se = Object.entries(sesiones).filter(([id,s])=> (cursoId==='*'||s.cursoId===cursoId) && (central==='*'||(s.central||'')===central))
+    .sort((a,b)=>String(a[1].fecha).localeCompare(String(b[1].fecha)));
+  const idx = {};
+  al.forEach(([id,a])=>{ const k=a.cursoId+'|'+(a.central||''); (idx[k]=idx[k]||[]).push([id,a]); });
+  const sesStat = se.map(([sid,s])=>{
+    const k = s.cursoId+'|'+(s.central||'');
+    let P=0,A=0,N=0; const aus=[];
+    (idx[k]||[]).forEach(([aid,a])=>{ const v=asistencia[aid+'__'+sid]; if(v==='P')P++; else if(v==='A'){A++;aus.push(a.nombre);} else N++; });
+    return {sid, s, P, A, N, pct:(P+A)?P/(P+A)*100:null, aus};
+  });
+  const alStat = al.map(([aid,a])=>{
+    const ses = Object.entries(sesiones).filter(([sid,x])=>x.cursoId===a.cursoId && (x.central||'')===(a.central||''));
+    let P=0,A=0; ses.forEach(([sid])=>{ const v=asistencia[aid+'__'+sid]; if(v==='P')P++; else if(v==='A')A++; });
+    const h = horasAlumno(aid,a);
+    const cond = condicionAlumno(a);
+    return {aid, a, nSes:ses.length, P, A, N:ses.length-P-A, pct:(P+A)?P/(P+A)*100:null, hProg:h.prog, hAsist:h.asist, nota:notaFinal(a), cond};
+  });
+  return {al, se, sesStat, alStat};
+}
+function rpGrupoCond(cond){
+  if(cond==='APROBADO') return 'Aprobados';
+  if(cond==='NO APROBADO'||cond==='ASISTIDO-NO APROBADO') return 'No aprobados';
+  if(cond==='NO ASISTIÓ'||cond==='ABANDONÓ') return 'No asistió / abandonó';
+  return 'Sin evaluar';
+}
+function rpHeat(p){ // 0..100 -> color rojo→ámbar→verde
+  if(p===null||p===undefined) return {bg:'var(--soft)',fg:'var(--text-muted)'};
+  const h = Math.round(Math.max(0,Math.min(100,p))*1.2);
+  return {bg:`hsl(${h},62%,${p>=50?44:50}%)`, fg:'#fff'};
+}
+function rpResumenDe(alStat, sesStat){
+  const n=alStat.length;
+  const ap=alStat.filter(x=>rpGrupoCond(x.cond)==='Aprobados').length;
+  const na=alStat.filter(x=>rpGrupoCond(x.cond)==='No aprobados').length;
+  const notas=alStat.map(x=>x.nota).filter(v=>v!==null);
+  let P=0,A=0; alStat.forEach(x=>{P+=x.P;A+=x.A;});
+  const hp=alStat.reduce((s,x)=>s+x.hProg,0), ha=alStat.reduce((s,x)=>s+x.hAsist,0);
+  return {n, clases:sesStat.length, ap, na, sin:n-ap-na-alStat.filter(x=>rpGrupoCond(x.cond)==='No asistió / abandonó').length,
+    nad:alStat.filter(x=>rpGrupoCond(x.cond)==='No asistió / abandonó').length,
+    prom:notas.length?notas.reduce((s,v)=>s+v,0)/notas.length:null, asist:(P+A)?P/(P+A)*100:null,
+    aprobPct:(ap+na)?ap/(ap+na)*100:null, hp, ha, cumpl:hp?ha/hp*100:null};
+}
+
+/* ---------- Exportación ---------- */
+function openExportModal(){
+  const v = document.getElementById('ex_alcanceVista');
+  if(v){
+    const c = selectedCursoAlumnos ? rpCursoNombre(selectedCursoAlumnos) : '';
+    const ce = (selectedCentral && selectedCentral!=='*' && selectedCentral!=='-') ? ' · '+selectedCentral : '';
+    v.textContent = selectedCursoAlumnos ? (c+ce) : 'Primero elegí un curso en la pestaña';
+  }
+  document.getElementById('exportModalBg').classList.add('active');
+}
+function rpFilas(alcance){
+  let cursoId='*', central='*';
+  if(alcance==='vista'){
+    if(!selectedCursoAlumnos){ alert('Elegí un curso en la lista de arriba para exportar solo esa vista, o exportá todo.'); return null; }
+    cursoId = selectedCursoAlumnos;
+    central = (esCursoCentrales(cursos[cursoId]) && selectedCentral && selectedCentral!=='*') ? (selectedCentral==='-'?'':selectedCentral) : '*';
+  }
+  const D = rpDatos(cursoId, central);
+  if(!D.al.length && !D.se.length){ alert('No hay datos de asistencia y evaluación para exportar.'); return null; }
+  const sesPorGrupo = {};
+  const ord = (a,b)=> rpCursoNombre(a.a.cursoId).localeCompare(rpCursoNombre(b.a.cursoId),'es') || (a.a.central||'').localeCompare(b.a.central||'','es') || String(a.a.nombre||'').localeCompare(String(b.a.nombre||''),'es');
+  const alS = D.alStat.slice().sort(ord);
+  // Alumnos y evaluación
+  const hAl = ['Curso','Central','Docente','Alumno','ID / DNI','Planta','Zona','Área','Rol','Clases programadas','Presentes','Ausentes','Sin marcar','% Asistencia','Horas programadas','Horas asistidas','Nota original','Nota recuperatorio','Nota final','Condición','Condición cargada a mano','Observaciones'];
+  const fAl = alS.map(x=>[rpCursoNombre(x.a.cursoId), x.a.central||'', rpDocente(x.a), x.a.nombre||'', x.a.dni||'', x.a.planta||'', x.a.zona||'', x.a.area||'', x.a.rol||'',
+    x.nSes, x.P, x.A, x.N, x.pct===null?'':Math.round(x.pct*10)/10, Math.round(x.hProg*10)/10, Math.round(x.hAsist*10)/10,
+    numOrNull(x.a.nota)===null?'':Number(x.a.nota), numOrNull(x.a.notaRecup)===null?'':Number(x.a.notaRecup), x.nota===null?'':x.nota, x.cond||'Sin evaluar',
+    (x.a.condicion&&x.a.condicion!=='-')?x.a.condicion:'', x.a.obs||'']);
+  // Detalle de asistencia (una fila por alumno y clase)
+  const hDet = ['Curso','Central','Alumno','ID / DNI','Fecha','Horario','Estado'];
+  const fDet = [];
+  alS.forEach(x=>{
+    Object.entries(sesiones).filter(([sid,s])=>s.cursoId===x.a.cursoId && (s.central||'')===(x.a.central||''))
+      .sort((a,b)=>String(a[1].fecha).localeCompare(String(b[1].fecha)))
+      .forEach(([sid,s])=>{ const v=asistencia[x.aid+'__'+sid]; fDet.push([rpCursoNombre(x.a.cursoId), x.a.central||'', x.a.nombre||'', x.a.dni||'', rpFmtFL(s.fecha), s.hora||'', v==='P'?'Presente':(v==='A'?'Ausente':'Sin marcar')]); });
+  });
+  // Clases
+  const hCl = ['Curso','Central','Fecha','Horario','Presentes','Ausentes','Sin marcar','% Asistencia'];
+  const fCl = D.sesStat.slice().sort((a,b)=>rpCursoNombre(a.s.cursoId).localeCompare(rpCursoNombre(b.s.cursoId),'es')||(a.s.central||'').localeCompare(b.s.central||'','es')||String(a.s.fecha).localeCompare(String(b.s.fecha)))
+    .map(x=>[rpCursoNombre(x.s.cursoId), x.s.central||'', rpFmtFL(x.s.fecha), x.s.hora||'', x.P, x.A, x.N, x.pct===null?'':Math.round(x.pct*10)/10]);
+  // Resumen por curso/central
+  const grupos = {};
+  D.alStat.forEach(x=>{ const k=x.a.cursoId+'|'+(x.a.central||''); (grupos[k]=grupos[k]||{c:x.a.cursoId,ce:x.a.central||'',al:[]}).al.push(x); });
+  D.sesStat.forEach(x=>{ const k=x.s.cursoId+'|'+(x.s.central||''); (grupos[k]=grupos[k]||{c:x.s.cursoId,ce:x.s.central||'',al:[]}); });
+  const hRes = ['Curso','Central','Docente','Alumnos','Clases','% Asistencia','Aprobados','No aprobados','No asistió / abandonó','Sin evaluar','% Aprobación (sobre evaluados)','Promedio de nota','Horas programadas','Horas asistidas','% Cumplimiento de horas'];
+  const fRes = Object.values(grupos).sort((a,b)=>rpCursoNombre(a.c).localeCompare(rpCursoNombre(b.c),'es')||a.ce.localeCompare(b.ce,'es')).map(g=>{
+    const ss = D.sesStat.filter(x=>x.s.cursoId===g.c && (x.s.central||'')===g.ce);
+    const r = rpResumenDe(g.al, ss);
+    return [rpCursoNombre(g.c), g.ce, rpDocente({cursoId:g.c,central:g.ce}), r.n, r.clases, r.asist===null?'':Math.round(r.asist*10)/10, r.ap, r.na, r.nad, r.sin, r.aprobPct===null?'':Math.round(r.aprobPct*10)/10, r.prom===null?'':Math.round(r.prom*100)/100, Math.round(r.hp*10)/10, Math.round(r.ha*10)/10, r.cumpl===null?'':Math.round(r.cumpl*10)/10];
+  });
+  // Mapa de calor central × fecha
+  const fechas = [...new Set(D.sesStat.map(x=>x.s.fecha))].sort();
+  const hMap = ['Curso','Central'].concat(fechas.map(rpFmtFL));
+  const mg = {};
+  D.sesStat.forEach(x=>{ const k=x.s.cursoId+'|'+(x.s.central||''); (mg[k]=mg[k]||{c:x.s.cursoId,ce:x.s.central||'',v:{}}).v[x.s.fecha]=x.pct; });
+  const fMap = Object.values(mg).sort((a,b)=>rpCursoNombre(a.c).localeCompare(rpCursoNombre(b.c),'es')||a.ce.localeCompare(b.ce,'es'))
+    .map(g=>[rpCursoNombre(g.c), g.ce].concat(fechas.map(f=>g.v[f]===undefined||g.v[f]===null?'':Math.round(g.v[f]))));
+  return {hRes,fRes,hAl,fAl,hDet,fDet,hCl,fCl,hMap,fMap, alcance};
+}
+function rpDescargar(blob, nombre){
+  const url = URL.createObjectURL(blob); const a = document.createElement('a');
+  a.href = url; a.download = nombre; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 800);
+}
+function rpCsv(h, f){
+  const q = v=>{ const s=String(v===null||v===undefined?'':v); return /[;"\n\r]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; };
+  return '﻿' + [h].concat(f).map(r=>r.map(q).join(';')).join('\r\n');
+}
+function ejecutarExportacion(){
+  const alcance = (document.querySelector('input[name="ex_alcance"]:checked')||{}).value || 'todo';
+  const formato = (document.querySelector('input[name="ex_formato"]:checked')||{}).value || 'xlsx';
+  const d = rpFilas(alcance); if(!d) return;
+  const hoy = hoyISO();
+  if(formato==='csv' || typeof XLSX==='undefined'){
+    if(formato==='xlsx') alert('No se pudo cargar el generador de Excel (revisá tu conexión). Se descarga en formato CSV, que se abre igual con Excel.');
+    rpDescargar(new Blob([rpCsv(d.hAl,d.fAl)],{type:'text/csv;charset=utf-8'}), 'Convenio24_Alumnos_y_evaluacion_'+hoy+'.csv');
+    rpDescargar(new Blob([rpCsv(d.hDet,d.fDet)],{type:'text/csv;charset=utf-8'}), 'Convenio24_Detalle_asistencia_'+hoy+'.csv');
+    closeModal('exportModalBg'); return;
+  }
+  const wb = XLSX.utils.book_new();
+  const add = (nombre, h, f)=>{
+    const ws = XLSX.utils.aoa_to_sheet([h].concat(f));
+    ws['!cols'] = h.map((t,i)=>({wch: Math.min(38, Math.max(String(t).length+2, ...f.slice(0,200).map(r=>String(r[i]===undefined?'':r[i]).length+2)))}));
+    ws['!autofilter'] = {ref: XLSX.utils.encode_range({s:{r:0,c:0},e:{r:Math.max(f.length,1),c:h.length-1}})};
+    ws['!freeze'] = {xSplit:0,ySplit:1};
+    XLSX.utils.book_append_sheet(wb, ws, nombre);
+  };
+  add('Resumen', d.hRes, d.fRes);
+  add('Alumnos y evaluación', d.hAl, d.fAl);
+  add('Detalle de asistencia', d.hDet, d.fDet);
+  add('Clases', d.hCl, d.fCl);
+  add('Mapa de calor (% asist.)', d.hMap, d.fMap);
+  XLSX.writeFile(wb, 'Convenio24_Asistencia_y_Evaluacion_'+(alcance==='vista'?'vista_':'completo_')+hoy+'.xlsx');
+  closeModal('exportModalBg');
+}
+
+/* ---------- Reporte interactivo ---------- */
+function openReporteAE(){
+  RP.curso = selectedCursoAlumnos || '*';
+  RP.central = (selectedCursoAlumnos && esCursoCentrales(cursos[selectedCursoAlumnos]) && selectedCentral && selectedCentral!=='*') ? (selectedCentral==='-'?'':selectedCentral) : '*';
+  RP.metrica='pct'; RP.tendencia=true; RP.focoCond=null;
+  document.getElementById('reporteAEModalBg').classList.add('active');
+  rpRender();
+}
+function cerrarReporteAE(){ rpDestroy(); closeModal('reporteAEModalBg'); }
+function rpDestroy(){ Object.values(RP.charts).forEach(c=>{ try{c.destroy();}catch(e){} }); RP.charts={}; }
+function rpSetCurso(v){ RP.curso=v; RP.central='*'; RP.focoCond=null; setTimeout(rpRender,0); }
+function rpSetCentral(v){ RP.central=v; RP.focoCond=null; setTimeout(rpRender,0); }
+function rpSetMetrica(m){ RP.metrica=m; setTimeout(rpRender,0); }
+function rpToggleTend(){ RP.tendencia=!RP.tendencia; setTimeout(rpRender,0); }
+
+function rpTrend(sesStat){
+  const fechas = [...new Set(sesStat.map(x=>x.s.fecha))].sort();
+  const m = RP.metrica;
+  const vals = fechas.map(f=>{
+    const ss = sesStat.filter(x=>x.s.fecha===f);
+    const P=ss.reduce((s,x)=>s+x.P,0), A=ss.reduce((s,x)=>s+x.A,0);
+    if(!(P+A)) return null;
+    return m==='pct' ? P/(P+A)*100 : (m==='pres'?P:A);
+  });
+  const W=3;
+  const ma = vals.map((v,i)=>{ if(v===null) return null; const w=vals.slice(Math.max(0,i-W+1),i+1).filter(x=>x!==null); return w.reduce((s,x)=>s+x,0)/w.length; });
+  const pts = vals.map((v,i)=>v===null?null:[i,v]).filter(Boolean);
+  let sl=null, b=0;
+  if(pts.length>=2){
+    const n=pts.length, sx=pts.reduce((s,p)=>s+p[0],0), sy=pts.reduce((s,p)=>s+p[1],0), sxy=pts.reduce((s,p)=>s+p[0]*p[1],0), sxx=pts.reduce((s,p)=>s+p[0]*p[0],0);
+    const den=n*sxx-sx*sx; sl = den? (n*sxy-sx*sy)/den : 0; b=(sy-sl*sx)/n;
+  }
+  const tr = sl===null ? vals.map(()=>null) : vals.map((v,i)=>sl*i+b);
+  return {fechas, vals, ma, tr, sl};
+}
+
+function rpRender(){
+  const body = document.getElementById('rp_body'); if(!body) return;
+  rpDestroy();
+  if(typeof Chart==='undefined'){ body.innerHTML='<div class="banner info">No se pudo cargar la librería de gráficos (revisá tu conexión a internet y volvé a abrir el reporte).</div>'; }
+  const D = rpDatos(RP.curso, RP.central);
+  const R = rpResumenDe(D.alStat, D.sesStat);
+  const cs = Object.entries(cursos).sort((a,b)=>String(a[1].nombre).localeCompare(String(b[1].nombre),'es'));
+  const optCurso = '<option value="*">Todos los cursos</option>'+cs.map(([id,c])=>`<option value="${id}" ${RP.curso===id?'selected':''}>${escAl(c.nombre)}</option>`).join('');
+  let centSel='';
+  if(RP.curso!=='*' && esCursoCentrales(cursos[RP.curso])){
+    const noms = [...new Set(Object.values(alumnos).filter(a=>a.cursoId===RP.curso).map(a=>a.central||''))];
+    Object.values(sesiones).filter(s=>s.cursoId===RP.curso).forEach(s=>{ if(!noms.includes(s.central||'')) noms.push(s.central||''); });
+    noms.sort((a,b)=>a.localeCompare(b,'es'));
+    centSel = `<select onchange="rpSetCentral(this.value)" style="padding:7px 8px;border:1px solid var(--border);border-radius:6px;font-size:.8rem;"><option value="*">Todas las centrales</option>${noms.map(n=>`<option value="${escAl(n)}" ${RP.central===n?'selected':''}>${escAl(n||'(Sin central)')}</option>`).join('')}</select>`;
+  }
+  const kpi = (n,l,sub,col)=>`<div style="background:var(--bg);border-radius:10px;padding:12px 14px;border-top:4px solid ${col||'var(--green)'};min-width:150px;flex:1;">
+      <div style="font-size:1.5rem;font-weight:800;color:var(--ink);">${n}</div><div style="font-size:.74rem;font-weight:700;">${l}</div><div style="font-size:.66rem;color:var(--text-muted);margin-top:2px;">${sub}</div></div>`;
+  const box = (t,ayuda,inner,extra)=>`<div class="card" style="margin:14px 0 0;${extra||''}"><h3 style="margin:0 0 4px;font-size:1rem;color:var(--ink);">${t}</h3>
+      <div style="background:var(--green-light);border:1px solid var(--green-border);border-radius:8px;padding:8px 10px;font-size:.74rem;line-height:1.45;margin:6px 0 10px;"><b>¿Cómo leerlo?</b> ${ayuda}</div>${inner}</div>`;
+
+  let html = `<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;">
+      <select onchange="rpSetCurso(this.value)" style="padding:7px 8px;border:1px solid var(--border);border-radius:6px;font-size:.8rem;max-width:100%;">${optCurso}</select>${centSel}
+      <span style="flex:1"></span>${RP.exportado?'':'<button class="btn small" onclick="rpExportarHTML()">💾 Guardar reporte como HTML</button> <button class="btn small secondary" onclick="openExportModal()">📤 Exportar datos</button>'}</div>`;
+  if(!D.al.length && !D.se.length){
+    body.innerHTML = html + '<div class="banner info">Todavía no hay alumnos ni clases cargadas para esta selección.</div>'; return;
+  }
+  html += `<div class="banner info">Este reporte resume <b>quién vino a las clases</b> (asistencia) y <b>cómo le fue a cada persona</b> (evaluación). Podés tocar los gráficos: al pasar el dedo o el mouse aparece el detalle, y al tocar un color o una celda se muestra quiénes son.</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      ${kpi(R.n,'Personas inscriptas','Cantidad de alumnos en esta selección')}
+      ${kpi(R.clases,'Clases dictadas','Clases cargadas en el cronograma')}
+      ${kpi(R.asist===null?'–':rpNum(R.asist,0)+'%','Asistencia','De cada 100 marcas cargadas, '+(R.asist===null?'—':Math.round(R.asist))+' son "presente"', R.asist===null?'':rpHeat(R.asist).bg)}
+      ${kpi(R.aprobPct===null?'–':rpNum(R.aprobPct,0)+'%','Aprobación','Aprobados sobre los que ya tienen resultado ('+R.ap+' de '+(R.ap+R.na)+')', R.aprobPct===null?'':rpHeat(R.aprobPct).bg)}
+      ${kpi(rpNum(R.prom,1),'Nota promedio','Promedio de la nota final (de 0 a 10)')}
+      ${kpi(R.cumpl===null?'–':rpNum(R.cumpl,0)+'%','Horas cumplidas',rpNum(R.ha,0)+' hs asistidas de '+rpNum(R.hp,0)+' programadas')}
+    </div>`;
+
+  // Tendencia (estilo oscuro)
+  const T = rpTrend(D.sesStat);
+  const mDesc = {pct:'el porcentaje de asistencia', pres:'la cantidad de personas presentes', aus:'la cantidad de personas ausentes'}[RP.metrica];
+  const btn = (k,l)=>`<button class="btn small ${RP.metrica===k?'':'secondary'}" onclick="rpSetMetrica('${k}')" style="${RP.metrica===k?'':'background:#101a17;color:#9fe8c0;border-color:#2a4a3d;'}">${l}</button>`;
+  let txtTend='';
+  if(T.sl===null) txtTend='Hacen falta al menos dos clases con asistencia cargada para calcular la tendencia.';
+  else{
+    const u = RP.metrica==='pct' ? ' puntos porcentuales' : ' personas';
+    const a = Math.abs(T.sl);
+    const buena = RP.metrica==='aus' ? T.sl<0 : T.sl>0;
+    txtTend = a<(RP.metrica==='pct'?0.5:0.1) ? '➡️ La tendencia general es <b>estable</b>: casi no cambia de una clase a otra.'
+      : `${buena?'📈':'📉'} La tendencia general ${T.sl>0?'<b>sube</b>':'<b>baja</b>'} en promedio ${rpNum(a,1)}${u} por clase ${buena?'(buena señal)':'(conviene prestar atención)'}.`;
+  }
+  html += `<div class="card" style="margin:14px 0 0;background:#0b1210;border:1px solid #1f3a30;color:#e6efec;">
+      <h3 style="margin:0 0 4px;font-size:1rem;color:#8fe3bb;">📈 Tendencia de la asistencia a lo largo de las clases</h3>
+      <div style="background:#12201b;border:1px solid #2a4a3d;border-radius:8px;padding:8px 10px;font-size:.74rem;line-height:1.5;margin:6px 0 10px;color:#cfe6dc;"><b>¿Cómo leerlo?</b> Cada punto es una fecha de clase y muestra ${mDesc}. La <b style="color:#39ff88;">línea verde gruesa</b> es el promedio de las últimas 3 clases: suaviza los saltos y deja ver hacia dónde va la asistencia. La <b style="color:#ff6b6b;">línea roja punteada</b> es la tendencia general: si apunta hacia arriba, mejora con el tiempo; si apunta hacia abajo, empeora.</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">${btn('pct','% Asistencia')}${btn('pres','Presentes')}${btn('aus','Ausentes')}
+        <span style="flex:1"></span><button class="btn small" onclick="rpToggleTend()" style="${RP.tendencia?'background:#c0392b;':'background:#101a17;color:#ff9b9b;border:1px solid #5a2a2a;'}">Línea de tendencia ${RP.tendencia?'✓':''}</button></div>
+      <div style="position:relative;height:300px;"><canvas id="rp_cTrend"></canvas></div>
+      <div style="margin-top:8px;font-size:.8rem;color:#cfe6dc;">${txtTend}</div></div>`;
+
+  // Mapa de calor central × fecha
+  const fechas = [...new Set(D.sesStat.map(x=>x.s.fecha))].sort();
+  const gMap = {};
+  D.sesStat.forEach(x=>{ const k=x.s.cursoId+'|'+(x.s.central||''); (gMap[k]=gMap[k]||{c:x.s.cursoId,ce:x.s.central||'',v:{}}).v[x.s.fecha]=x; });
+  const filasMap = Object.values(gMap).sort((a,b)=>(RP.curso==='*'?rpCursoNombre(a.c).localeCompare(rpCursoNombre(b.c),'es'):0)||a.ce.localeCompare(b.ce,'es'));
+  RP.celdas = [];
+  const th = 'padding:5px 6px;font-size:.66rem;text-align:center;white-space:nowrap;position:sticky;top:0;background:var(--header);color:#fff;';
+  let tHeat = `<table style="border-collapse:separate;border-spacing:2px;font-size:.7rem;"><thead><tr><th style="${th}left:0;z-index:2;text-align:left;min-width:150px;">Central</th>${fechas.map(f=>`<th style="${th}">${rpFmtF(f)}</th>`).join('')}</tr></thead><tbody>`;
+  filasMap.forEach(g=>{
+    const nom = (RP.curso==='*'?rpCursoNombre(g.c)+' · ':'')+(g.ce||(esCursoCentrales(cursos[g.c])?'(Sin central)':'Todo el curso'));
+    tHeat += `<tr><td style="padding:5px 8px;font-weight:700;position:sticky;left:0;background:var(--card);z-index:1;white-space:nowrap;">${escAl(nom)}</td>`;
+    fechas.forEach(f=>{
+      const x = g.v[f];
+      if(!x) { tHeat += `<td style="min-width:46px;"></td>`; return; }
+      const col = rpHeat(x.pct);
+      const i = RP.celdas.push({nom, x})-1;
+      tHeat += `<td onclick="rpCelda(${i})" title="${escAl(nom)} · ${rpFmtFL(f)}: ${x.pct===null?'sin marcas':Math.round(x.pct)+'% ('+x.P+' presentes, '+x.A+' ausentes)'}" style="cursor:pointer;min-width:46px;height:34px;text-align:center;border-radius:5px;font-weight:700;background:${col.bg};color:${col.fg};">${x.pct===null?'–':Math.round(x.pct)}</td>`;
+    });
+    tHeat += '</tr>';
+  });
+  tHeat += '</tbody></table>';
+  const leyenda = `<div style="display:flex;align-items:center;gap:6px;font-size:.68rem;margin-top:8px;flex-wrap:wrap;"><span>Poca asistencia</span>${[0,25,50,75,100].map(p=>`<span style="width:34px;height:12px;border-radius:3px;background:${rpHeat(p).bg};display:inline-block;"></span>`).join('')}<span>Mucha asistencia</span><span style="margin-left:10px;color:var(--text-muted);">Casilla vacía = esa central no tuvo clase ese día.</span></div>`;
+  html += box('🔥 Mapa de calor: asistencia por central y por día de clase',
+    'Cada fila es una central y cada columna una fecha de clase. El número es el <b>porcentaje de personas presentes</b>. Verde = vino casi todo el grupo, amarillo = asistencia media, rojo = faltó mucha gente. Tocá una casilla para ver quiénes faltaron.',
+    `<div style="overflow:auto;max-height:480px;border:1px solid var(--border);border-radius:8px;padding:4px;">${tHeat}</div>${leyenda}<div id="rp_detCelda" style="margin-top:8px;"></div>`);
+
+  // Mapa de calor 2: central × indicadores
+  const gI = {};
+  D.alStat.forEach(x=>{ const k=x.a.cursoId+'|'+(x.a.central||''); (gI[k]=gI[k]||{c:x.a.cursoId,ce:x.a.central||'',al:[]}).al.push(x); });
+  const filasI = Object.values(gI).sort((a,b)=>(RP.curso==='*'?rpCursoNombre(a.c).localeCompare(rpCursoNombre(b.c),'es'):0)||a.ce.localeCompare(b.ce,'es'));
+  const indRows = filasI.map(g=>{ const ss=D.sesStat.filter(x=>x.s.cursoId===g.c&&(x.s.central||'')===g.ce); const r=rpResumenDe(g.al,ss);
+    return {nom:(RP.curso==='*'?rpCursoNombre(g.c)+' · ':'')+(g.ce||'Todo el curso'), n:r.n, v:[r.asist, r.cumpl, r.aprobPct, r.prom===null?null:r.prom*10], real:[r.asist,r.cumpl,r.aprobPct,r.prom]}; });
+  if(indRows.length>1 || indRows.length===1){
+    const hdr = ['Asistencia','Horas cumplidas','Aprobación','Nota promedio'];
+    let t2 = `<table style="border-collapse:separate;border-spacing:2px;font-size:.74rem;width:100%;"><thead><tr><th style="${th}text-align:left;">Central</th><th style="${th}">Personas</th>${hdr.map(h=>`<th style="${th}">${h}</th>`).join('')}</tr></thead><tbody>`;
+    indRows.forEach(r=>{
+      t2 += `<tr><td style="padding:6px 8px;font-weight:700;">${escAl(r.nom)}</td><td style="text-align:center;">${r.n}</td>`;
+      r.v.forEach((v,i)=>{ const c=rpHeat(v); const txt = r.real[i]===null?'–':(i===3?rpNum(r.real[i],1):Math.round(r.real[i])+'%');
+        t2 += `<td style="text-align:center;font-weight:700;border-radius:5px;height:32px;background:${c.bg};color:${c.fg};">${txt}</td>`; });
+      t2 += '</tr>';
+    });
+    t2 += '</tbody></table>';
+    html += box('🌡️ Mapa de calor: cómo le va a cada central',
+      'Compara las centrales en cuatro cosas a la vez: cuánta gente asistió, cuántas horas de clase cumplieron, qué porcentaje aprobó y la nota promedio. <b>Cuanto más verde, mejor</b>; cuanto más rojo, más atención necesita esa central.',
+      `<div style="overflow:auto;">${t2}</div>`);
+  }
+
+  // Estado de evaluación + notas
+  html += `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:14px;">
+    <div class="card" style="margin:0;"><h3 style="margin:0 0 4px;font-size:1rem;color:var(--ink);">🎓 Resultado de la evaluación</h3>
+      <div style="background:var(--green-light);border:1px solid var(--green-border);border-radius:8px;padding:8px 10px;font-size:.74rem;line-height:1.45;margin:6px 0 10px;"><b>¿Cómo leerlo?</b> Cada porción es un grupo de personas según su resultado. Tocá una porción para ver los nombres.</div>
+      <div style="position:relative;height:240px;"><canvas id="rp_cCond"></canvas></div><div id="rp_detCond" style="margin-top:8px;"></div></div>
+    <div class="card" style="margin:0;"><h3 style="margin:0 0 4px;font-size:1rem;color:var(--ink);">📊 ¿Qué notas sacó la gente?</h3>
+      <div style="background:var(--green-light);border:1px solid var(--green-border);border-radius:8px;padding:8px 10px;font-size:.74rem;line-height:1.45;margin:6px 0 10px;"><b>¿Cómo leerlo?</b> Cada barra cuenta cuántas personas sacaron una nota dentro de ese rango. Las barras verdes aprueban (6 o más), las rojas no.</div>
+      <div style="position:relative;height:240px;"><canvas id="rp_cNotas"></canvas></div></div></div>`;
+
+  // Comparación por central (barras)
+  if(indRows.length>1){
+    html += box('🏭 Comparación entre centrales','Cada central tiene tres barras: <b>asistencia</b>, <b>horas cumplidas</b> y <b>aprobación</b>. Tocá una barra para ver esa central en detalle. Pasá el cursor para ver el valor exacto.',
+      `<div style="position:relative;height:${Math.max(260, indRows.length*34+90)}px;"><canvas id="rp_cCent"></canvas></div>`);
+  }
+
+  // Atención
+  const riesgo = D.alStat.filter(x=>x.pct!==null && x.pct<RP_ASIST_MIN).sort((a,b)=>a.pct-b.pct);
+  const noApr = D.alStat.filter(x=>rpGrupoCond(x.cond)==='No aprobados');
+  const li = (x,txt)=>`<li style="margin:2px 0;">${escAl(x.a.nombre)}${x.a.central?` <span style="color:var(--text-muted);">(${escAl(x.a.central)})</span>`:''} — ${txt}</li>`;
+  html += box('⚠️ Personas que conviene acompañar',
+    `Lista automática de quienes tienen <b>menos de ${RP_ASIST_MIN}% de asistencia</b> o no aprobaron. Sirve para saber a quién contactar o reforzar.`,
+    `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;font-size:.78rem;">
+      <div><b>Poca asistencia (${riesgo.length})</b><ul style="margin:6px 0 0;padding-left:18px;max-height:220px;overflow:auto;">${riesgo.slice(0,60).map(x=>li(x,Math.round(x.pct)+'% ('+x.P+' presentes, '+x.A+' ausentes)')).join('')||'<li style="list-style:none;color:var(--text-muted);">Nadie por debajo del límite 🎉</li>'}</ul></div>
+      <div><b>No aprobados (${noApr.length})</b><ul style="margin:6px 0 0;padding-left:18px;max-height:220px;overflow:auto;">${noApr.slice(0,60).map(x=>li(x,'nota '+(x.nota===null?'s/d':rpNum(x.nota,1)))).join('')||'<li style="list-style:none;color:var(--text-muted);">Nadie sin aprobar</li>'}</ul></div></div>`);
+
+  body.innerHTML = html;
+  if(typeof Chart==='undefined') return;
+  rpDibujar(D, T, R, indRows);
+}
+
+/* Reporte exportado: archivo HTML autónomo y totalmente interactivo (incluye el motor de gráficos y los datos del curso) */
+const RP_FUNCS = ['escAl','esCursoCentrales','numOrNull','notaFinal','condicionAlumno','listaCentrales','horasDeSesion','horasAlumno','rpFmtF','rpFmtFL','rpNum','rpDocente','rpCursoNombre','rpDatos','rpGrupoCond','rpHeat','rpResumenDe','rpSetCurso','rpSetCentral','rpSetMetrica','rpToggleTend','rpDestroy','rpTrend','rpRender','rpCelda','rpDibujar','rpDetCond','rpIrCentral'];
+async function rpLibChart(){
+  const url='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js';
+  try{ const r=await fetch(url); if(r.ok){ const t=await r.text(); if(t.length>50000) return '<script>'+t.replace(/<\/script/gi,'<\\/script')+'<\/script>'; } }catch(e){}
+  return '<script src="'+url+'"><\/script>';
+}
+async function rpExportarHTML(){
+  const cid = RP.curso;
+  const al = {}; Object.entries(alumnos).forEach(([id,a])=>{ if(cid==='*'||a.cursoId===cid) al[id]=a; });
+  const se = {}; Object.entries(sesiones).forEach(([id,x])=>{ if(cid==='*'||x.cursoId===cid) se[id]=x; });
+  const asi = {}; Object.entries(asistencia).forEach(([k,v])=>{ const a=k.split('__'); if(al[a[0]] && se[a[1]]) asi[k]=v; });
+  const cu = cid==='*' ? cursos : {[cid]:cursos[cid]};
+  const cen = {}; Object.entries(centrales).forEach(([id,c])=>{ if(c && c.nombre) cen[id]={nombre:c.nombre,docente:c.docente||''}; });
+  const J = o=>JSON.stringify(o).replace(/</g,'\\u003c');
+  const tema = document.documentElement.getAttribute('data-theme')||'';
+  const estilos = Array.from(document.querySelectorAll('style')).map(x=>x.textContent).join('\n');
+  const lib = await rpLibChart();
+  const cuN = cid==='*' ? 'Todos los cursos' : rpCursoNombre(cid);
+  const codigo = RP_FUNCS.map(n=>window[n].toString()).join('\n');
+  const js = 'let cursos='+J(cu)+', alumnos='+J(al)+', sesiones='+J(se)+', asistencia='+J(asi)+', centrales='+J(cen)+';\n'
+    +'const RP={curso:'+J(cid)+',central:'+J(RP.central)+',metrica:"pct",tendencia:true,charts:{},celdas:[],focoCond:null,exportado:true};\nconst RP_ASIST_MIN='+RP_ASIST_MIN+';\n'+codigo+'\nwindow.addEventListener("load",function(){rpRender();});';
+  const html = '<!DOCTYPE html><html lang="es"'+(tema?' data-theme="'+tema+'"':'')+'><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Reporte de asistencia y evaluación · Convenio 24 · EPEC</title><style>'+estilos+'\nbody{background:var(--bg);color:var(--text);margin:0;}.rp-wrap{max-width:1100px;margin:0 auto;padding:16px;}</style></head><body>'
+    +'<header class="top"><div><h1>📊 Reporte de asistencia y evaluación</h1><p>Convenio 24 · Seguimiento de Capacitaciones · EPEC SAU · '+escAl(cuN)+' · generado el '+rpFmtFL(hoyISO())+'</p></div></header>'
+    +'<div class="rp-wrap"><div id="rp_body"></div></div>'+lib+'<script>'+js.replace(/<\/script/gi,'<\\/script')+'<\/script></body></html>';
+  rpDescargar(new Blob([html],{type:'text/html;charset=utf-8'}), 'Convenio24_Reporte_asistencia_evaluacion_'+hoyISO()+'.html');
+}
+
+/* ---------- Guardar la pantalla que se está viendo (HTML o PNG) ---------- */
+function gpContexto(){
+  const rep = document.getElementById('reporteAEModalBg').classList.contains('active');
+  const b = document.querySelector('nav.tabs button.active');
+  const tab = b ? b.textContent.trim() : 'Pantalla';
+  return {rep, tab, nombre: rep ? 'el reporte de asistencia y evaluación' : 'la pestaña "'+tab+'"'};
+}
+function openGuardarPantalla(){
+  const c = gpContexto();
+  document.getElementById('gp_cual').textContent = c.nombre;
+  document.getElementById('gp_htmlDesc').textContent = c.rep ? 'Reporte interactivo: gráficos que responden al tocar, mapas de calor y filtros. Funciona sin instalar nada.' : 'Se abre en cualquier navegador, con los mismos colores y datos que ves ahora.';
+  document.getElementById('pantallaModalBg').classList.add('active');
+}
+function gpCongelar(orig, clon){
+  const o = orig.querySelectorAll('input,select,textarea'), n = clon.querySelectorAll('input,select,textarea');
+  o.forEach((el,i)=>{ const c=n[i]; if(!c) return;
+    if(el.tagName==='SELECT'){ Array.from(c.options).forEach((op,k)=>{ if(k===el.selectedIndex) op.setAttribute('selected',''); else op.removeAttribute('selected'); }); }
+    else if(el.tagName==='TEXTAREA'){ c.textContent = el.value; }
+    else if(el.type==='checkbox'||el.type==='radio'){ if(el.checked) c.setAttribute('checked',''); else c.removeAttribute('checked'); }
+    else c.setAttribute('value', el.value);
+    c.setAttribute('disabled',''); });
+  const oc = orig.querySelectorAll('canvas'), nc = clon.querySelectorAll('canvas');
+  oc.forEach((cv,i)=>{ try{ const img=document.createElement('img'); img.src=cv.toDataURL('image/png'); img.style.cssText='width:100%;'+(cv.style.height?'height:'+cv.style.height+';':'')+'object-fit:contain;'; nc[i].replaceWith(img); }catch(e){} });
+  clon.querySelectorAll('button,.no-export').forEach(b=>b.remove());
+  clon.querySelectorAll('[onclick]').forEach(el=>el.removeAttribute('onclick'));
+}
+async function ejecutarGuardarPantalla(){
+  const fmt = (document.querySelector('input[name="gp_formato"]:checked')||{}).value || 'html';
+  const c = gpContexto();
+  const btn = document.getElementById('gp_btn'); btn.disabled = true; const txt = btn.textContent; btn.textContent = 'Guardando…';
+  try{
+    if(c.rep && fmt==='html'){ await rpExportarHTML(); }
+    else if(fmt==='png'){
+      const el = c.rep ? document.querySelector('#reporteAEModalBg .modal') : document.querySelector('.panel.active');
+      if(typeof html2canvas==='undefined'){ alert('No se pudo cargar el generador de imágenes (revisá tu conexión). Probá con el formato HTML.'); return; }
+      const bg = getComputedStyle(document.body).backgroundColor;
+      const marcados = Array.from(el.querySelectorAll('input:not([type=radio]):not([type=checkbox]),select,textarea'));
+      const estil = {}; marcados.forEach((x,i)=>{ x.setAttribute('data-gpi',i); const cs=getComputedStyle(x); estil[i]={t: x.tagName==='SELECT' ? ((x.options[x.selectedIndex]||{}).text||'') : (x.value||''), bg:cs.backgroundColor, color:cs.color, border:cs.border, radius:cs.borderRadius, pad:cs.padding, font:cs.font, ta:cs.textAlign, w:cs.width, h:cs.height, disp:cs.display==='none'?'none':'flex'}; });
+      const cv = await html2canvas(el,{scale:2,backgroundColor:bg,useCORS:true,logging:false,windowWidth:Math.max(1280,el.scrollWidth+40),
+        onclone:(doc)=>{ doc.querySelectorAll('[data-gpi]').forEach(x=>{ const e=estil[x.getAttribute('data-gpi')]; if(!e) return; const d=doc.createElement('div'); d.textContent=e.t; d.style.cssText='box-sizing:border-box;display:'+e.disp+';align-items:center;justify-content:'+(e.ta==='center'?'center':'flex-start')+';overflow:hidden;white-space:nowrap;background:'+e.bg+';color:'+e.color+';border:'+e.border+';border-radius:'+e.radius+';padding:'+e.pad+';font:'+e.font+';width:'+e.w+';height:'+e.h+';'; x.replaceWith(d); }); doc.querySelectorAll('*').forEach(x=>{ const cs=doc.defaultView.getComputedStyle(x); if(/(auto|scroll)/.test(cs.overflowY)||/(auto|scroll)/.test(cs.overflowX)){ x.style.overflow='visible'; x.style.maxHeight='none'; } }); const m=doc.querySelector('#reporteAEModalBg'); if(m){ m.style.position='static'; m.style.overflow='visible'; } doc.querySelectorAll('#reporteAEModalBg button').forEach(x=>x.remove()); doc.querySelectorAll('#reporteAEModalBg select').forEach(x=>x.style.display='none'); }});
+      marcados.forEach(x=>x.removeAttribute('data-gpi'));
+      await new Promise(res=>cv.toBlob(b=>{ rpDescargar(b,'Convenio24_'+(c.rep?'Reporte_asistencia':c.tab.replace(/[^\wáéíóúñ]+/gi,' ').trim().replace(/ +/g,'_'))+'_'+hoyISO()+'.png'); res(); },'image/png'));
+    }else{
+      const panel = document.querySelector('.panel.active'); if(!panel) return;
+      const clon = panel.cloneNode(true); gpCongelar(panel, clon);
+      const estilos = Array.from(document.querySelectorAll('style')).map(x=>x.textContent).join('\n');
+      const tema = document.documentElement.getAttribute('data-theme')||'';
+      const html = '<!DOCTYPE html><html lang="es"'+(tema?' data-theme="'+tema+'"':'')+'><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Convenio 24 · '+escAl(c.tab)+'</title><style>'+estilos+'\nbody{background:var(--bg);color:var(--text);margin:0;}.rp-wrap{max-width:1250px;margin:0 auto;padding:16px;}</style></head><body>'
+        +'<header class="top"><div><h1>Convenio 24 · '+escAl(c.tab)+'</h1><p>Seguimiento de Capacitaciones · EPEC SAU · generado el '+rpFmtFL(hoyISO())+'</p></div></header><div class="rp-wrap">'+clon.outerHTML+'</div></body></html>';
+      rpDescargar(new Blob([html],{type:'text/html;charset=utf-8'}), 'Convenio24_'+c.tab.replace(/[^\wáéíóúñ]+/gi,' ').trim().replace(/ +/g,'_')+'_'+hoyISO()+'.html');
+    }
+    closeModal('pantallaModalBg');
+  }finally{ btn.disabled=false; btn.textContent=txt; }
+}
+
+function rpCelda(i){
+  const c = RP.celdas[i]; const box = document.getElementById('rp_detCelda'); if(!c||!box) return;
+  const x=c.x;
+  box.innerHTML = `<div style="background:var(--soft2);border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:.78rem;"><b>${escAl(c.nom)}</b> · ${rpFmtFL(x.s.fecha)}${x.s.hora?' · '+escAl(x.s.hora):''}<br>
+    ✅ ${x.P} presentes · ❌ ${x.A} ausentes · ➖ ${x.N} sin marcar${x.pct!==null?' · <b>'+Math.round(x.pct)+'%</b> de asistencia':''}
+    ${x.aus.length?`<div style="margin-top:4px;color:var(--bad-fg);"><b>Faltaron:</b> ${x.aus.map(escAl).join(', ')}</div>`:''}</div>`;
+}
+
+function rpDibujar(D, T, R, indRows){
+  const css = getComputedStyle(document.documentElement);
+  const tx = (css.getPropertyValue('--text-muted')||'#5b6b66').trim(), grid = (css.getPropertyValue('--border')||'#dfe6e3').trim();
+  Chart.defaults.font.family = 'inherit';
+  // Tendencia
+  const es = RP.metrica==='pct';
+  const cT = document.getElementById('rp_cTrend');
+  if(cT){
+    const ds = [
+      {label: es?'Asistencia de cada clase (%)':(RP.metrica==='pres'?'Presentes por clase':'Ausentes por clase'), data:T.vals, borderColor:'#7d8b86', backgroundColor:'#7d8b86', borderWidth:1.5, pointRadius:3, tension:0, spanGaps:true},
+      {label:'Promedio de las últimas 3 clases', data:T.ma, borderColor:'#39ff88', backgroundColor:'rgba(57,255,136,.14)', borderWidth:3.5, pointRadius:0, pointHoverRadius:5, tension:.35, fill:true, spanGaps:true}
+    ];
+    if(RP.tendencia) ds.push({label:'Tendencia general', data:T.tr, borderColor:'#ff6b6b', borderWidth:2, borderDash:[7,5], pointRadius:0, fill:false});
+    RP.charts.trend = new Chart(cT, {type:'line', data:{labels:T.fechas.map(rpFmtF), datasets:ds}, options:{responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
+      plugins:{legend:{labels:{color:'#cfe6dc',usePointStyle:true,boxWidth:8}}, tooltip:{callbacks:{label:c=>c.dataset.label+': '+(c.parsed.y===null?'–':(es?Math.round(c.parsed.y*10)/10+'%':Math.round(c.parsed.y*10)/10))}}},
+      scales:{x:{ticks:{color:'#9db2ab'},grid:{color:'rgba(255,255,255,.06)'}}, y:{beginAtZero:true, max:es?100:undefined, ticks:{color:'#9db2ab',callback:v=>es?v+'%':v}, grid:{color:'rgba(255,255,255,.08)'}}}}});
+  }
+  // Condición
+  const grp = {'Aprobados':'#1f8a5f','No aprobados':'#c0392b','No asistió / abandonó':'#e0a526','Sin evaluar':'#8a9a95'};
+  const cuenta = {}; Object.keys(grp).forEach(k=>cuenta[k]=0);
+  D.alStat.forEach(x=>{ cuenta[rpGrupoCond(x.cond)]++; });
+  const cC = document.getElementById('rp_cCond');
+  if(cC){
+    const labs = Object.keys(grp);
+    RP.charts.cond = new Chart(cC, {type:'doughnut', data:{labels:labs.map(l=>l+' ('+cuenta[l]+')'), datasets:[{data:labs.map(l=>cuenta[l]), backgroundColor:labs.map(l=>grp[l]), borderWidth:2, borderColor:'transparent'}]},
+      options:{responsive:true, maintainAspectRatio:false, cutout:'58%', plugins:{legend:{position:'bottom',labels:{color:tx,usePointStyle:true,boxWidth:8}}, tooltip:{callbacks:{label:c=>' '+c.parsed+' persona(s) · '+(D.alStat.length?Math.round(c.parsed/D.alStat.length*100):0)+'%'}}},
+      onClick:(e,els)=>{ if(!els.length) return; const l=labs[els[0].index]; setTimeout(()=>rpDetCond(l, D, grp[l]),0); }}});
+  }
+  // Histograma de notas
+  const cN = document.getElementById('rp_cNotas');
+  if(cN){
+    const b = [0,0,0,0,0,0,0,0,0,0,0];
+    D.alStat.forEach(x=>{ if(x.nota!==null) b[Math.min(10,Math.floor(x.nota))]++; });
+    const lab = ['0-0,9','1-1,9','2-2,9','3-3,9','4-4,9','5-5,9','6-6,9','7-7,9','8-8,9','9-9,9','10'];
+    RP.charts.notas = new Chart(cN, {type:'bar', data:{labels:lab, datasets:[{label:'Personas', data:b, backgroundColor:b.map((v,i)=>i>=6?'#1f8a5f':'#c0392b'), borderRadius:4}]},
+      options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{callbacks:{title:i=>'Notas de '+i[0].label, label:c=>' '+c.parsed.y+' persona(s)'}}},
+      scales:{x:{ticks:{color:tx,font:{size:10}},grid:{display:false}}, y:{beginAtZero:true,ticks:{color:tx,precision:0},grid:{color:grid}}}}});
+  }
+  // Centrales
+  const cCe = document.getElementById('rp_cCent');
+  if(cCe){
+    const labs = indRows.map(r=>r.nom);
+    const dsx = (l,i,col)=>({label:l, data:indRows.map(r=>r.real[i]===null?null:Math.round(r.real[i]*10)/10), backgroundColor:col, borderRadius:3});
+    RP.charts.cent = new Chart(cCe, {type:'bar', data:{labels:labs, datasets:[dsx('Asistencia (%)',0,'#1f8a5f'), dsx('Horas cumplidas (%)',1,'#3b82c4'), dsx('Aprobación (%)',2,'#e0a526')]},
+      options:{indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{color:tx,usePointStyle:true,boxWidth:8}}, tooltip:{callbacks:{label:c=>' '+c.dataset.label+': '+(c.parsed.x===null?'–':c.parsed.x+'%')}}},
+      scales:{x:{beginAtZero:true,max:100,ticks:{color:tx,callback:v=>v+'%'},grid:{color:grid}}, y:{ticks:{color:tx,font:{size:10}},grid:{display:false}}},
+      onClick:(e,els)=>{ if(!els.length) return; const cn = labs[els[0].index]; setTimeout(()=>rpIrCentral(cn),0); }}});
+  }
+}
+function rpDetCond(l, D, col){
+  const box = document.getElementById('rp_detCond'); if(!box) return;
+  const ls = D.alStat.filter(x=>rpGrupoCond(x.cond)===l).sort((a,b)=>String(a.a.nombre).localeCompare(String(b.a.nombre),'es'));
+  box.innerHTML = `<div style="border-left:4px solid ${col};background:var(--soft2);border-radius:6px;padding:8px 10px;font-size:.76rem;"><b>${l} (${ls.length})</b>
+    <div style="max-height:150px;overflow:auto;margin-top:4px;">${ls.map(x=>escAl(x.a.nombre)+(x.nota!==null?' <span style="color:var(--text-muted);">('+rpNum(x.nota,1)+')</span>':'')).join(' · ')||'—'}</div></div>`;
+}
+function rpIrCentral(nombreFila){
+  // nombreFila puede traer "Curso · Central"
+  const partes = nombreFila.split(' · ');
+  const cn = partes[partes.length-1];
+  const hay = listaCentrales().some(c=>c.nombre===cn);
+  if(RP.curso!=='*' && hay){ RP.central=cn; RP.focoCond=null; rpRender(); }
 }
 
 tryInitFirebase();
