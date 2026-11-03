@@ -665,13 +665,13 @@
     <div class="card">
       <div class="row2">
         <div class="field"><label>Tipo de reporte</label>
-          <select id="rep_tipo" onchange="onCambioTipoReporte()">
+          <select id="rep_tipo" onchange="onCambioTipoReporte();autoReporte()">
             <option value="curso">Por curso</option>
             <option value="consolidado">Consolidado (todos los cursos)</option>
           </select>
         </div>
-        <div class="field"><label>Agrupar tendencia por</label>
-          <select id="rep_periodo">
+        <div class="field" id="rep_periodoWrap"><label>Agrupar el mapa de calor por (consolidado)</label>
+          <select id="rep_periodo" onchange="autoReporte()">
             <option value="semanal">Semanal</option>
             <option value="quincenal">Quincenal</option>
             <option value="mensual">Mensual</option>
@@ -680,7 +680,7 @@
       </div>
       <div class="field" id="rep_cursoWrap" style="max-width:560px;">
         <label>Curso</label>
-        <select id="rep_curso"></select>
+        <select id="rep_curso" onchange="autoReporte()"></select>
       </div>
       <div style="display:flex;gap:8px;">
         <button class="btn" onclick="generarReporte()">Generar reporte</button>
@@ -3156,7 +3156,7 @@ function populateCursoEncuestaSelect(){
   if(!sel) return;
   const current = sel.value || selectedCursoEncuesta;
   sel.innerHTML = Object.entries(cursos).sort((a,b)=>(a[1].orden||0)-(b[1].orden||0))
-    .map(([id,c])=>`<option value="${id}">${c.orden}. ${c.nombre}</option>`).join('');
+    .map(([id,c])=>`<option value="${id}">${c.orden?c.orden+'. ':''}${escAl(c.nombre)}</option>`).join('');
   if(current && cursos[current]) sel.value = current;
   selectedCursoEncuesta = sel.value || null;
 }
@@ -3255,7 +3255,7 @@ function populateCursoLogisticaSelect(){
   if(!sel) return;
   const current = sel.value || selectedCursoLogistica;
   sel.innerHTML = Object.entries(cursos).sort((a,b)=>(a[1].orden||0)-(b[1].orden||0))
-    .map(([id,c])=>`<option value="${id}">${c.orden}. ${c.nombre}</option>`).join('');
+    .map(([id,c])=>`<option value="${id}">${c.orden?c.orden+'. ':''}${escAl(c.nombre)}</option>`).join('');
   if(current && cursos[current]) sel.value = current;
   selectedCursoLogistica = sel.value || null;
   onSelectCursoLogisticaFields();
@@ -3325,7 +3325,7 @@ function populateCursoFacturasSelect(){
   if(!sel) return;
   const current = sel.value || selectedCursoFacturas;
   sel.innerHTML = Object.entries(cursos).sort((a,b)=>(a[1].orden||0)-(b[1].orden||0))
-    .map(([id,c])=>`<option value="${id}">${c.orden}. ${c.nombre}</option>`).join('');
+    .map(([id,c])=>`<option value="${id}">${c.orden?c.orden+'. ':''}${escAl(c.nombre)}</option>`).join('');
   if(current && cursos[current]) sel.value = current;
   selectedCursoFacturas = sel.value || null;
 }
@@ -3990,6 +3990,7 @@ function imprimirDoc(){
 function onCambioTipoReporte(){
   const tipo = document.getElementById('rep_tipo').value;
   document.getElementById('rep_cursoWrap').style.display = tipo==='curso' ? 'block' : 'none';
+  const pw = document.getElementById('rep_periodoWrap'); if(pw) pw.style.display = tipo==='curso' ? 'none' : 'block';
 }
 
 function populateCursoReporteSelect(){
@@ -3997,7 +3998,7 @@ function populateCursoReporteSelect(){
   if(!sel) return;
   const current = sel.value;
   sel.innerHTML = Object.entries(cursos).sort((a,b)=>(a[1].orden||0)-(b[1].orden||0))
-    .map(([id,c])=>`<option value="${id}">${c.orden}. ${c.nombre}</option>`).join('');
+    .map(([id,c])=>`<option value="${id}">${c.orden?c.orden+'. ':''}${escAl(c.nombre)}</option>`).join('');
   if(current && cursos[current]) sel.value = current;
 }
 
@@ -4125,14 +4126,11 @@ function generarReporteCurso(cursoId, periodo){
       {n:valCurso===null?'—':valCurso.toFixed(1)+'/5', l:'Valoración del curso'},
       {n:valDocente===null?'—':valDocente.toFixed(1)+'/5', l:'Valoración del docente'}
     ])}
-    <div class="card">
-      <h3>📈 Tendencia de asistencia (${periodo})</h3>
-      ${tendenciaRows}
-    </div>
-    <div class="card">
-      <h3>🔥 Mapa de calor de asistencia</h3>
+    <div id="rep_motor"></div>
+    ${esCursoCentrales(c) ? '' : `<div class="card">
+      <h3>🔥 Mapa de calor de asistencia por persona</h3>
       ${heatmapHtml}
-    </div>
+    </div>`}
     <div class="card">
       <h3>💰 Presupuesto</h3>
       <p style="font-size:.85rem;">Presupuestado: <b>$${presupuestado.toLocaleString('es-AR')}</b> &nbsp;·&nbsp; Facturado: <b>$${facturado.toLocaleString('es-AR')}</b> &nbsp;·&nbsp; Saldo: <b>$${(presupuestado-facturado).toLocaleString('es-AR')}</b></p>
@@ -4197,10 +4195,7 @@ function generarReporteConsolidado(periodo){
       {n:'$'+totalPresu.toLocaleString('es-AR'), l:'Presupuestado'},
       {n:'$'+totalFact.toLocaleString('es-AR'), l:'Facturado'}
     ])}
-    <div class="card">
-      <h3>📈 Tendencia de asistencia general (${periodo})</h3>
-      ${tendenciaRows}
-    </div>
+    <div id="rep_motor"></div>
     <div class="card">
       <h3>🔥 Mapa de calor — clases dictadas por curso y período</h3>
       <div style="overflow-x:auto;">
@@ -4228,10 +4223,17 @@ function generarReporteConsolidado(periodo){
 function generarReporte(){
   const tipo = document.getElementById('rep_tipo').value;
   const periodo = document.getElementById('rep_periodo').value;
-  const html = tipo==='curso' ? generarReporteCurso(document.getElementById('rep_curso').value, periodo) : generarReporteConsolidado(periodo);
+  const cid = document.getElementById('rep_curso').value;
+  const html = tipo==='curso' ? generarReporteCurso(cid, periodo) : generarReporteConsolidado(periodo);
+  const cb = document.getElementById('rp_body'); if(cb && !document.getElementById('reporteAEModalBg').classList.contains('active')) cb.innerHTML='';
   document.getElementById('reportePreview').innerHTML = html;
   document.getElementById('rep_printBtn').style.display = 'inline-block';
+  if(tipo==='curso' && !cursos[cid]) return;
+  RP.cont='rep_motor'; RP.hideCurso=true; RP.sinKpi=true;
+  RP.curso = tipo==='curso' ? cid : '*'; RP.central='*'; RP.metrica='pct'; RP.tendencia=true; RP.focoCond=null;
+  rpRender();
 }
+function autoReporte(){ if(document.getElementById('panel-reportes').classList.contains('active')) generarReporte(); }
 
 /* ============ USUARIOS ============ */
 function openUserModal(username){
@@ -4325,6 +4327,7 @@ document.getElementById('tabsNav').addEventListener('click', e=>{
   btn.classList.add('active');
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  if(btn.dataset.tab==='reportes'){ onCambioTipoReporte(); generarReporte(); }
   if(btn.dataset.anchor){
     setTimeout(()=>{
       const el = document.getElementById(btn.dataset.anchor);
@@ -4501,13 +4504,15 @@ function ejecutarExportacion(){
 
 /* ---------- Reporte interactivo ---------- */
 function openReporteAE(){
+  RP.cont='rp_body'; RP.hideCurso=false; RP.sinKpi=false;
+  const tabBox=document.getElementById('rep_motor'); if(tabBox) tabBox.innerHTML='';
   RP.curso = selectedCursoAlumnos || '*';
   RP.central = (selectedCursoAlumnos && esCursoCentrales(cursos[selectedCursoAlumnos]) && selectedCentral && selectedCentral!=='*') ? (selectedCentral==='-'?'':selectedCentral) : '*';
   RP.metrica='pct'; RP.tendencia=true; RP.focoCond=null;
   document.getElementById('reporteAEModalBg').classList.add('active');
   rpRender();
 }
-function cerrarReporteAE(){ rpDestroy(); closeModal('reporteAEModalBg'); }
+function cerrarReporteAE(){ rpDestroy(); const b=document.getElementById('rp_body'); if(b) b.innerHTML=''; closeModal('reporteAEModalBg'); }
 function rpDestroy(){ Object.values(RP.charts).forEach(c=>{ try{c.destroy();}catch(e){} }); RP.charts={}; }
 function rpSetCurso(v){ RP.curso=v; RP.central='*'; RP.focoCond=null; setTimeout(rpRender,0); }
 function rpSetCentral(v){ RP.central=v; RP.focoCond=null; setTimeout(rpRender,0); }
@@ -4519,12 +4524,13 @@ function rpTrend(sesStat){
   const m = RP.metrica;
   const vals = fechas.map(f=>{
     const ss = sesStat.filter(x=>x.s.fecha===f);
+    if(m==='cls') return ss.length;
     const P=ss.reduce((s,x)=>s+x.P,0), A=ss.reduce((s,x)=>s+x.A,0);
     if(!(P+A)) return null;
     return m==='pct' ? P/(P+A)*100 : (m==='pres'?P:A);
   });
-  const W=3;
-  const ma = vals.map((v,i)=>{ if(v===null) return null; const w=vals.slice(Math.max(0,i-W+1),i+1).filter(x=>x!==null); return w.reduce((s,x)=>s+x,0)/w.length; });
+  const ms = fechas.map(f=>new Date(f+'T00:00:00').getTime());
+  const ma = vals.map((v,i)=>{ if(v===null) return null; const w=[]; vals.forEach((x,j)=>{ if(x!==null && ms[j]<=ms[i] && ms[i]-ms[j]<7*86400000) w.push(x); }); return w.reduce((s,x)=>s+x,0)/w.length; });
   const pts = vals.map((v,i)=>v===null?null:[i,v]).filter(Boolean);
   let sl=null, b=0;
   if(pts.length>=2){
@@ -4536,7 +4542,7 @@ function rpTrend(sesStat){
 }
 
 function rpRender(){
-  const body = document.getElementById('rp_body'); if(!body) return;
+  const body = document.getElementById(RP.cont||'rp_body'); if(!body) return;
   rpDestroy();
   if(typeof Chart==='undefined'){ body.innerHTML='<div class="banner info">No se pudo cargar la librería de gráficos (revisá tu conexión a internet y volvé a abrir el reporte).</div>'; }
   const D = rpDatos(RP.curso, RP.central);
@@ -4556,12 +4562,12 @@ function rpRender(){
       <div style="background:var(--green-light);border:1px solid var(--green-border);border-radius:8px;padding:8px 10px;font-size:.74rem;line-height:1.45;margin:6px 0 10px;"><b>¿Cómo leerlo?</b> ${ayuda}</div>${inner}</div>`;
 
   let html = `<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;">
-      <select onchange="rpSetCurso(this.value)" style="padding:7px 8px;border:1px solid var(--border);border-radius:6px;font-size:.8rem;max-width:100%;">${optCurso}</select>${centSel}
+      ${RP.hideCurso?'':`<select onchange="rpSetCurso(this.value)" style="padding:7px 8px;border:1px solid var(--border);border-radius:6px;font-size:.8rem;max-width:100%;">${optCurso}</select>`}${centSel}
       <span style="flex:1"></span>${RP.exportado?'':'<button class="btn small" onclick="rpExportarHTML()">💾 Guardar reporte como HTML</button> <button class="btn small secondary" onclick="openExportModal()">📤 Exportar datos</button>'}</div>`;
   if(!D.al.length && !D.se.length){
     body.innerHTML = html + '<div class="banner info">Todavía no hay alumnos ni clases cargadas para esta selección.</div>'; return;
   }
-  html += `<div class="banner info">Este reporte resume <b>quién vino a las clases</b> (asistencia) y <b>cómo le fue a cada persona</b> (evaluación). Podés tocar los gráficos: al pasar el dedo o el mouse aparece el detalle, y al tocar un color o una celda se muestra quiénes son.</div>
+  html += RP.sinKpi ? '' : `<div class="banner info">Este reporte resume <b>quién vino a las clases</b> (asistencia) y <b>cómo le fue a cada persona</b> (evaluación). Podés tocar los gráficos: al pasar el dedo o el mouse aparece el detalle, y al tocar un color o una celda se muestra quiénes son.</div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
       ${kpi(R.n,'Personas inscriptas','Cantidad de alumnos en esta selección')}
       ${kpi(R.clases,'Clases dictadas','Clases cargadas en el cronograma')}
@@ -4573,21 +4579,21 @@ function rpRender(){
 
   // Tendencia (estilo oscuro)
   const T = rpTrend(D.sesStat);
-  const mDesc = {pct:'el porcentaje de asistencia', pres:'la cantidad de personas presentes', aus:'la cantidad de personas ausentes'}[RP.metrica];
+  const mDesc = {pct:'el porcentaje de asistencia', pres:'la cantidad de personas presentes', aus:'la cantidad de personas ausentes', cls:'la cantidad de clases dictadas'}[RP.metrica];
   const btn = (k,l)=>`<button class="btn small ${RP.metrica===k?'':'secondary'}" onclick="rpSetMetrica('${k}')" style="${RP.metrica===k?'':'background:#101a17;color:#9fe8c0;border-color:#2a4a3d;'}">${l}</button>`;
   let txtTend='';
   if(T.sl===null) txtTend='Hacen falta al menos dos clases con asistencia cargada para calcular la tendencia.';
   else{
-    const u = RP.metrica==='pct' ? ' puntos porcentuales' : ' personas';
+    const u = RP.metrica==='pct' ? ' puntos porcentuales' : (RP.metrica==='cls' ? ' clases' : ' personas');
     const a = Math.abs(T.sl);
-    const buena = RP.metrica==='aus' ? T.sl<0 : T.sl>0;
+    const buena = RP.metrica==='aus' ? T.sl<0 : T.sl>0; /* 'cls': más clases = mayor actividad */
     txtTend = a<(RP.metrica==='pct'?0.5:0.1) ? '➡️ La tendencia general es <b>estable</b>: casi no cambia de una clase a otra.'
       : `${buena?'📈':'📉'} La tendencia general ${T.sl>0?'<b>sube</b>':'<b>baja</b>'} en promedio ${rpNum(a,1)}${u} por clase ${buena?'(buena señal)':'(conviene prestar atención)'}.`;
   }
   html += `<div class="card" style="margin:14px 0 0;background:#0b1210;border:1px solid #1f3a30;color:#e6efec;">
       <h3 style="margin:0 0 4px;font-size:1rem;color:#8fe3bb;">📈 Tendencia de la asistencia a lo largo de las clases</h3>
-      <div style="background:#12201b;border:1px solid #2a4a3d;border-radius:8px;padding:8px 10px;font-size:.74rem;line-height:1.5;margin:6px 0 10px;color:#cfe6dc;"><b>¿Cómo leerlo?</b> Cada punto es una fecha de clase y muestra ${mDesc}. La <b style="color:#39ff88;">línea verde gruesa</b> es el promedio de las últimas 3 clases: suaviza los saltos y deja ver hacia dónde va la asistencia. La <b style="color:#ff6b6b;">línea roja punteada</b> es la tendencia general: si apunta hacia arriba, mejora con el tiempo; si apunta hacia abajo, empeora.</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">${btn('pct','% Asistencia')}${btn('pres','Presentes')}${btn('aus','Ausentes')}
+      <div style="background:#12201b;border:1px solid #2a4a3d;border-radius:8px;padding:8px 10px;font-size:.74rem;line-height:1.5;margin:6px 0 10px;color:#cfe6dc;"><b>¿Cómo leerlo?</b> Cada punto es una fecha de clase y muestra ${mDesc}. La <b style="color:#39ff88;">línea verde gruesa</b> es el promedio móvil de 7 días: suaviza los saltos y deja ver hacia dónde va la asistencia. La <b style="color:#ff6b6b;">línea roja punteada</b> es la tendencia general: si apunta hacia arriba, mejora con el tiempo; si apunta hacia abajo, empeora.</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">${btn('pct','% Asistencia')}${btn('pres','Presentes')}${btn('aus','Ausentes')}${btn('cls','Clases')}
         <span style="flex:1"></span><button class="btn small" onclick="rpToggleTend()" style="${RP.tendencia?'background:#c0392b;':'background:#101a17;color:#ff9b9b;border:1px solid #5a2a2a;'}">Línea de tendencia ${RP.tendencia?'✓':''}</button></div>
       <div style="position:relative;height:300px;"><canvas id="rp_cTrend"></canvas></div>
       <div style="margin-top:8px;font-size:.8rem;color:#cfe6dc;">${txtTend}</div></div>`;
@@ -4769,8 +4775,8 @@ function rpDibujar(D, T, R, indRows){
   const cT = document.getElementById('rp_cTrend');
   if(cT){
     const ds = [
-      {label: es?'Asistencia de cada clase (%)':(RP.metrica==='pres'?'Presentes por clase':'Ausentes por clase'), data:T.vals, borderColor:'#7d8b86', backgroundColor:'#7d8b86', borderWidth:1.5, pointRadius:3, tension:0, spanGaps:true},
-      {label:'Promedio de las últimas 3 clases', data:T.ma, borderColor:'#39ff88', backgroundColor:'rgba(57,255,136,.14)', borderWidth:3.5, pointRadius:0, pointHoverRadius:5, tension:.35, fill:true, spanGaps:true}
+      {label: es?'Asistencia de cada clase (%)':(RP.metrica==='pres'?'Presentes por clase':(RP.metrica==='cls'?'Clases por día':'Ausentes por clase')), data:T.vals, borderColor:'#7d8b86', backgroundColor:'#7d8b86', borderWidth:1.5, pointRadius:3, tension:0, spanGaps:true},
+      {label:'Promedio móvil 7 días', data:T.ma, borderColor:'#39ff88', backgroundColor:'rgba(57,255,136,.14)', borderWidth:3.5, pointRadius:0, pointHoverRadius:5, tension:.35, fill:true, spanGaps:true}
     ];
     if(RP.tendencia) ds.push({label:'Tendencia general', data:T.tr, borderColor:'#ff6b6b', borderWidth:2, borderDash:[7,5], pointRadius:0, fill:false});
     RP.charts.trend = new Chart(cT, {type:'line', data:{labels:T.fechas.map(rpFmtF), datasets:ds}, options:{responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
