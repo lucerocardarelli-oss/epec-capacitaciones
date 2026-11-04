@@ -941,10 +941,11 @@ Carlos Rodríguez
 
 <!-- MODAL CENTRALES -->
 <div class="modal-bg" id="centralesModalBg">
-  <div class="modal" style="width:min(460px,92vw);">
+  <div class="modal" style="width:min(640px,94vw);max-height:92vh;overflow:auto;">
     <h3>Centrales hidroeléctricas</h3>
-    <p style="font-size:.8rem;color:var(--text-muted);margin-top:-6px;">Una central por renglón. Aparecen en el desplegable del curso aunque todavía no tengan alumnos. Las que ya tienen datos no se pueden quitar.</p>
-    <div class="field"><textarea id="cent_texto" style="min-height:200px;" placeholder="La Viña&#10;..."></textarea></div>
+    <p style="font-size:.8rem;color:var(--text-muted);margin-top:-6px;">Una central por renglón. Aparecen en el desplegable del curso aunque todavía no tengan alumnos. Si una central quedó repetida, usá <b>Eliminar</b> (si está vacía) o <b>Unir</b> (si ya tiene alumnos o clases).</p>
+    <div class="field"><label>Centrales cargadas</label><div id="cent_lista"></div></div>
+    <div class="field"><label>Agregar o renombrar (una por renglón)</label><textarea id="cent_texto" style="min-height:140px;" placeholder="La Viña&#10;..."></textarea></div>
     <div class="modal-actions">
       <div></div>
       <div>
@@ -2643,7 +2644,86 @@ function irACentral(enc){
 /* ---------- Administrar centrales ---------- */
 function openCentralesModal(){
   document.getElementById('cent_texto').value = listaCentrales().map(c=>c.nombre).join('\n');
+  renderCentralesLista();
   document.getElementById('centralesModalBg').classList.add('active');
+}
+function centralUso(nombre){
+  return {
+    al: Object.values(alumnos).filter(a=>a.central===nombre).length,
+    se: Object.values(sesiones).filter(x=>x.central===nombre).length
+  };
+}
+function renderCentralesLista(){
+  const box = document.getElementById('cent_lista'); if(!box) return;
+  const lista = listaCentrales();
+  if(!lista.length){ box.innerHTML = '<div style="font-size:.85rem;color:var(--text-muted);">No hay centrales cargadas.</div>'; return; }
+  box.innerHTML = lista.map((c,i)=>{
+    const u = centralUso(c.nombre), vacia = !u.al && !u.se;
+    const otras = lista.filter(o=>o.nombre!==c.nombre);
+    const acc = vacia
+      ? `<button class="btn small" style="background:var(--red,#c0392b);color:#fff;" onclick="eliminarCentralVacia(${i})">🗑 Eliminar</button>`
+      : `<select id="cent_un_${i}" style="max-width:190px;"><option value="">Unir con…</option>${otras.map(o=>`<option value="${escAttr(o.nombre)}">${escAttr(o.nombre)}</option>`).join('')}</select>
+         <button class="btn small secondary" onclick="unirCentral(${i})">🔀 Unir</button>`;
+    return `<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border,rgba(128,128,128,.25));">
+      <div style="flex:1;min-width:170px;"><b>${escAttr(c.nombre)}</b><div style="font-size:.75rem;color:var(--text-muted);">${u.al} alumno${u.al!==1?'s':''} · ${u.se} clase${u.se!==1?'s':''}</div></div>${acc}</div>`;
+  }).join('');
+}
+function escAttr(t){ return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function eliminarCentralVacia(i){
+  const c = listaCentrales()[i]; if(!c) return;
+  const u = centralUso(c.nombre); if(u.al || u.se){ alert('Esa central tiene alumnos o clases: usá "Unir".'); return; }
+  if(!confirm('¿Eliminar la central "'+c.nombre+'"? No tiene alumnos ni clases.')) return;
+  const ups = {};
+  if(c.id){ ups['convenio24/centrales/'+c.id] = null; Object.keys(informes).filter(k=>k.endsWith('__'+c.id)).forEach(k=>{ ups['convenio24/informes/'+k] = null; }); }
+  if(Object.keys(ups).length){ sincCursoCentrales(ups, {}); dbApply(ups); }
+  setTimeout(()=>{ document.getElementById('cent_texto').value = listaCentrales().map(x=>x.nombre).join('\n'); renderCentralesLista(); }, 400);
+}
+/* Une una central repetida con la correcta: pasa alumnos, clases y asistencia, y elimina la repetida. */
+function unirCentral(i){
+  const lista = listaCentrales(), o = lista[i]; if(!o) return;
+  const destNom = document.getElementById('cent_un_'+i).value;
+  if(!destNom){ alert('Elegí con qué central unirla.'); return; }
+  const d = lista.find(x=>x.nombre===destNom); if(!d) return;
+  const uo = centralUso(o.nombre), ud = centralUso(d.nombre);
+  if(!confirm(`Se va a UNIR "${o.nombre}" (${uo.al} alumnos, ${uo.se} clases) dentro de "${d.nombre}" (${ud.al} alumnos, ${ud.se} clases).\n\nLos alumnos y clases pasan a "${d.nombre}"; si ya estaban repetidos, se juntan sin perder asistencias ni notas. Luego se elimina "${o.nombre}".\n\n¿Continuar?`)) return;
+  const ups = {}, mapA = {}, mapS = {};
+  const normN = t=>normTxt(t||'').toLowerCase().replace(/\s+/g,' ').trim();
+  // alumnos
+  Object.entries(alumnos).filter(([,a])=>a.central===o.nombre).forEach(([aid,a])=>{
+    const dup = Object.entries(alumnos).find(([id,x])=>id!==aid && x.central===d.nombre && x.cursoId===a.cursoId && normN(x.nombre)===normN(a.nombre));
+    if(dup){
+      mapA[aid] = dup[0];
+      Object.entries(a).forEach(([k,v])=>{ if(['cursoId','central','nombre'].includes(k)) return; if((dup[1][k]===undefined||dup[1][k]===null||dup[1][k]==='') && v!==undefined && v!==null && v!=='') ups['convenio24/alumnos/'+dup[0]+'/'+k] = v; });
+      ups['convenio24/alumnos/'+aid] = null;
+    }else{ mapA[aid] = aid; ups['convenio24/alumnos/'+aid+'/central'] = d.nombre; }
+  });
+  // clases
+  Object.entries(sesiones).filter(([,x])=>x.central===o.nombre).forEach(([sid,x])=>{
+    const dup = Object.entries(sesiones).find(([id,y])=>id!==sid && y.central===d.nombre && y.cursoId===x.cursoId && y.fecha===x.fecha);
+    if(dup){ mapS[sid] = dup[0]; ups['convenio24/sesiones/'+sid] = null; if(!dup[1].hora && x.hora) ups['convenio24/sesiones/'+dup[0]+'/hora'] = x.hora; }
+    else{ mapS[sid] = sid; ups['convenio24/sesiones/'+sid+'/central'] = d.nombre; }
+  });
+  // asistencia: se reubican las marcas de lo que cambió de alumno o de clase
+  Object.entries(asistencia).forEach(([k,v])=>{
+    const [aid,sid] = k.split('__'); if(!(aid in mapA) && !(sid in mapS)) return;
+    const nk = (mapA[aid]||aid)+'__'+(mapS[sid]||sid);
+    if(nk===k) return;
+    if(asistencia[nk]===undefined && ups['convenio24/asistencia/'+nk]===undefined) ups['convenio24/asistencia/'+nk] = v;
+    ups['convenio24/asistencia/'+k] = null;
+  });
+  // datos de la central: completa lo que falte en la que queda y elimina la repetida
+  const no = o.id ? (centrales[o.id]||{}) : {}, nd = d.id ? (centrales[d.id]||{}) : {};
+  const did = d.id || slugKey(d.nombre);
+  if(!d.id) ups['convenio24/centrales/'+did+'/nombre'] = d.nombre;
+  ['docente','inicio','fin','hora','color'].forEach(f=>{ if(!nd[f] && no[f]) ups['convenio24/centrales/'+did+'/'+f] = no[f]; });
+  if(o.id){
+    ups['convenio24/centrales/'+o.id] = null;
+    Object.keys(informes).filter(k=>k.endsWith('__'+o.id)).forEach(k=>{ const nk = k.slice(0,-o.id.length)+did; if(!informes[nk]) ups['convenio24/informes/'+nk] = informes[k]; ups['convenio24/informes/'+k] = null; });
+  }
+  dbApply(ups);
+  // si la vista actual estaba en la central eliminada, pasa a la que queda
+  if(selectedCentral===o.nombre){ selectedCentral = d.nombre; lastDocKey = null; }
+  setTimeout(()=>{ document.getElementById('cent_texto').value = listaCentrales().map(x=>x.nombre).join('\n'); renderCentralesLista(); try{ populateCursoAlumnosSelect(); renderAlumnosTabla(); }catch(e){} }, 500);
 }
 function guardarCentrales(){
   const nuevos = [...new Set(document.getElementById('cent_texto').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean))];
