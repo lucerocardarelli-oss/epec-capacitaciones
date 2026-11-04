@@ -2076,7 +2076,7 @@ document.querySelectorAll('.kanban-col').forEach(col=>{
 /* ============ ASISTENCIA Y EVALUACIÓN (pestaña unificada) ============ */
 let selectedCentral = null;   // null = curso sin centrales | '*' = todas | '-' = sin central | nombre de la central
 let lastDocKey = null;
-const CONDICIONES = ['APROBADO','ASISTIDO-NO APROBADO','NO APROBADO','NO ASISTIÓ','ABANDONÓ','EN REVISIÓN','ASISTIÓ'];
+const CONDICIONES = ['APROBADO','ASISTIÓ-NO APROBÓ','NO APROBADO','NO ASISTIÓ','ABANDONÓ','EN REVISIÓN','ASISTIÓ'];
 
 function escAl(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function normTxt(s){ return String(s==null?'':s).normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,' ').trim().toUpperCase(); }
@@ -2090,17 +2090,19 @@ function notaFinal(a){
   const r = numOrNull(a.notaRecup), n = numOrNull(a.nota);
   return r!==null && !isNaN(r) ? r : (n!==null && !isNaN(n) ? n : null);
 }
+/* "ASISTIDO-NO APROBADO" es el nombre anterior de "ASISTIÓ-NO APROBÓ": se unifican para que lo ya cargado siga valiendo. */
+function normCond(c){ return (c && normTxt(c)==='ASISTIDO-NO APROBADO') ? 'ASISTIÓ-NO APROBÓ' : c; }
 function condicionAlumno(a){
-  if(a.condicion && a.condicion!=='-') return a.condicion;
+  if(a.condicion && a.condicion!=='-') return normCond(a.condicion);
   const n = notaFinal(a);
   if(n===null) return '';
   return n>=6 ? 'APROBADO' : 'NO APROBADO';
 }
 function esAprobado(a){ return condicionAlumno(a)==='APROBADO'; }
-function esNoAprobado(a){ const c = condicionAlumno(a); return c==='NO APROBADO' || c==='ASISTIDO-NO APROBADO'; }
+function esNoAprobado(a){ const c = condicionAlumno(a); return c==='NO APROBADO' || c==='ASISTIÓ-NO APROBÓ'; }
 function condEstilo(c){
   if(c==='APROBADO') return {bg:'var(--ok-bg)',fg:'var(--ok-fg)'};
-  if(c==='NO APROBADO' || c==='ASISTIDO-NO APROBADO') return {bg:'var(--bad-bg)',fg:'var(--bad-fg)'};
+  if(c==='NO APROBADO' || c==='ASISTIÓ-NO APROBÓ') return {bg:'var(--bad-bg)',fg:'var(--bad-fg)'};
   if(c==='NO ASISTIÓ' || c==='ABANDONÓ') return {bg:'var(--warn-bg)',fg:'var(--warn-fg)'};
   return {bg:'var(--soft)',fg:'var(--text-muted)'};
 }
@@ -2402,7 +2404,7 @@ function guardarCampoAlumno(alumnoId, campo, valor){
     v = valor==='' ? null : Number(String(valor).replace(',','.'));
     if(v!==null && (isNaN(v) || v<0 || v>10)){ alert('La nota tiene que estar entre 0 y 10.'); renderAlumnosTabla(); return; }
     // si la condición era una de las que dependen de la nota, se vuelve a calcular sola
-    if(['APROBADO','NO APROBADO','ASISTIDO-NO APROBADO'].includes(al.condicion)) ups['convenio24/alumnos/'+alumnoId+'/condicion'] = null;
+    if(['APROBADO','NO APROBADO','ASISTIDO-NO APROBADO','ASISTIÓ-NO APROBÓ'].includes(al.condicion)) ups['convenio24/alumnos/'+alumnoId+'/condicion'] = null;
   }else if(campo==='condicion' || campo==='obs'){
     v = String(valor||'').trim(); if(v==='') v = null;
   }
@@ -2512,8 +2514,9 @@ function renderAlumnosTabla(){
       const cond = condicionAlumno(al);
       const est = condEstilo(cond);
       const auto = (!al.condicion || al.condicion==='-');
-      const opts = [''].concat(CONDICIONES).concat((al.condicion && !CONDICIONES.includes(al.condicion) && al.condicion!=='-')?[al.condicion]:[])
-        .map(o=>`<option value="${escAl(o)}" ${((auto?'':al.condicion)===o)?'selected':''}>${o===''?('Auto: '+(cond||'pendiente')):escAl(o)}</option>`).join('');
+      const condAct = normCond(al.condicion);
+      const opts = [''].concat(CONDICIONES).concat((condAct && !CONDICIONES.includes(condAct) && condAct!=='-')?[condAct]:[])
+        .map(o=>`<option value="${escAl(o)}" ${((auto?'':condAct)===o)?'selected':''}>${o===''?('Auto: '+(cond||'pendiente')):escAl(o)}</option>`).join('');
       const inpS = 'width:56px;padding:4px 5px;border:1px solid var(--border);border-radius:5px;font-size:.76rem;text-align:center;';
       cells += `<td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;font-weight:600;">${sesAl.length?nP+'/'+sesAl.length:'–'}</td>
       <td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;"><input type="number" min="0" max="10" step="0.1" value="${al.nota===null||al.nota===undefined?'':al.nota}" style="${inpS}" onchange="guardarCampoAlumno('${aid}','nota',this.value)"></td>
@@ -2943,7 +2946,7 @@ function analizarGrilla(grid){
     sesCols.forEach(s=>{ const m = aMarca(cell(r,s.c)); if(m) marcas[s.clave] = m; });
     let cond = str(r,col.cond);
     if(cond==='-' ) cond = '';
-    else if(cond){ const hit = CONDICIONES.find(x=>normTxt(x)===normTxt(cond)); cond = hit || cond.toUpperCase(); }
+    else if(cond){ const hit = CONDICIONES.find(x=>normTxt(x)===normTxt(cond)); cond = hit || normCond(cond.toUpperCase()); }
     filas.push({
       id: str(r,col.id).replace(/\.0$/,''), apellido, nombres,
       gerencia: str(r,col.gerencia), zona: str(r,col.zona), reparto: str(r,col.reparto), sobre: str(r,col.sobre),
@@ -4464,7 +4467,7 @@ function rpDatos(cursoId, central){
 }
 function rpGrupoCond(cond){
   if(cond==='APROBADO') return 'Aprobados';
-  if(cond==='NO APROBADO'||cond==='ASISTIDO-NO APROBADO') return 'No aprobados';
+  if(cond==='NO APROBADO'||cond==='ASISTIÓ-NO APROBÓ') return 'No aprobados';
   if(cond==='NO ASISTIÓ'||cond==='ABANDONÓ') return 'No asistió / abandonó';
   return 'Sin evaluar';
 }
@@ -4513,7 +4516,7 @@ function rpFilas(alcance){
   const fAl = alS.map(x=>[rpCursoNombre(x.a.cursoId), x.a.central||'', rpDocente(x.a), x.a.nombre||'', x.a.dni||'', x.a.planta||'', x.a.zona||'', x.a.area||'', x.a.rol||'',
     x.nSes, x.P, x.A, x.N, x.pct===null?'':Math.round(x.pct*10)/10, Math.round(x.hProg*10)/10, Math.round(x.hAsist*10)/10,
     numOrNull(x.a.nota)===null?'':Number(x.a.nota), numOrNull(x.a.notaRecup)===null?'':Number(x.a.notaRecup), x.nota===null?'':x.nota, x.cond||'Sin evaluar',
-    (x.a.condicion&&x.a.condicion!=='-')?x.a.condicion:'', x.a.obs||'']);
+    (x.a.condicion&&x.a.condicion!=='-')?normCond(x.a.condicion):'', x.a.obs||'']);
   // Detalle de asistencia (una fila por alumno y clase)
   const hDet = ['Curso','Central','Alumno','ID / DNI','Fecha','Horario','Estado'];
   const fDet = [];
@@ -4756,7 +4759,7 @@ function rpRender(){
 }
 
 /* Reporte exportado: archivo HTML autónomo y totalmente interactivo (incluye el motor de gráficos y los datos del curso) */
-const RP_FUNCS = ['escAl','esCursoCentrales','numOrNull','notaFinal','condicionAlumno','listaCentrales','horasDeSesion','horasAlumno','rpFmtF','rpFmtFL','rpNum','rpDocente','rpCursoNombre','rpDatos','rpGrupoCond','rpHeat','rpResumenDe','rpSetCurso','rpSetCentral','rpSetMetrica','rpToggleTend','rpDestroy','rpTrend','rpRender','rpCelda','rpDibujar','rpDetCond','rpIrCentral'];
+const RP_FUNCS = ['escAl','esCursoCentrales','numOrNull','notaFinal','normTxt','normCond','condicionAlumno','listaCentrales','horasDeSesion','horasAlumno','rpFmtF','rpFmtFL','rpNum','rpDocente','rpCursoNombre','rpDatos','rpGrupoCond','rpHeat','rpResumenDe','rpSetCurso','rpSetCentral','rpSetMetrica','rpToggleTend','rpDestroy','rpTrend','rpRender','rpCelda','rpDibujar','rpDetCond','rpIrCentral'];
 async function rpLibChart(){
   const url='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js';
   try{ const r=await fetch(url); if(r.ok){ const t=await r.text(); if(t.length>50000) return '<script>'+t.replace(/<\/script/gi,'<\\/script')+'<\/script>'; } }catch(e){}
