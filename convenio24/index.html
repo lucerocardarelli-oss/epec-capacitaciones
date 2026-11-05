@@ -191,6 +191,15 @@
   .tl-umb{position:absolute;top:15px;height:24px;border-radius:12px;background:linear-gradient(90deg,var(--green-light),var(--soft));border:2px dashed var(--green-border);color:var(--ink);font-size:.7rem;font-weight:800;display:flex;align-items:center;padding:0 12px;white-space:nowrap;overflow:hidden;pointer-events:none;}
   .tl-bar{position:absolute;top:7px;height:40px;border-radius:10px;background:var(--c);background-image:linear-gradient(135deg,rgba(255,255,255,.28),rgba(0,0,0,.14));color:#fff;box-shadow:0 3px 8px rgba(0,0,0,.25);cursor:grab;overflow:hidden;touch-action:none;user-select:none;transition:box-shadow .15s,transform .15s;}
   .tl-bar:hover{box-shadow:0 6px 14px rgba(0,0,0,.32);transform:translateY(-1px);}
+  .tl-bar.done{opacity:.6;filter:saturate(.75);}
+  .tl-bar .tl-tag{font-size:.62rem;opacity:.95;font-weight:700;}
+  .fe-tbl{width:100%;border-collapse:collapse;font-size:.78rem;}
+  .fe-tbl th{text-align:left;padding:6px 8px;border-bottom:2px solid var(--border);font-size:.7rem;text-transform:uppercase;color:var(--text-muted);}
+  .fe-tbl td{padding:6px 8px;border-bottom:1px solid var(--border);vertical-align:top;}
+  .fe-st{display:inline-block;padding:1px 8px;border-radius:10px;font-size:.68rem;font-weight:700;background:var(--soft);}
+  .fe-st.real{background:var(--ok-bg);color:var(--ok-fg);} .fe-st.curso{background:var(--warn-bg);color:var(--warn-fg);}
+  .fe-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;}
+  .fe-hist{font-size:.74rem;color:var(--text-muted);max-height:150px;overflow:auto;border:1px solid var(--border);border-radius:8px;padding:6px 10px;}
   .tl-bar.drag{cursor:grabbing;opacity:.92;box-shadow:0 10px 22px rgba(0,0,0,.4);z-index:5;}
   .tl-bar-in{padding:4px 12px;display:flex;flex-direction:column;justify-content:center;height:100%;white-space:nowrap;overflow:hidden;pointer-events:none;}
   .tl-bar-in b{font-size:.74rem;}
@@ -714,12 +723,49 @@
 </main>
 </div><!-- /appRoot -->
 
+<!-- MODAL FECHAS DEL CURSO (módulos, grupos y trazabilidad) -->
+<div class="modal-bg" id="fechasModalBg">
+  <div class="modal" style="width:min(980px,96vw);max-height:92vh;overflow:auto;">
+    <h3 id="fe_titulo">Fechas del curso</h3>
+    <input type="hidden" id="fe_cid"><input type="hidden" id="fe_tid">
+    <p style="font-size:.8rem;color:var(--text-muted);margin-top:-6px;">Cada fecha queda registrada con su módulo y grupo. Agregar una fecha nueva <b>no borra</b> las anteriores: quedan en la línea de tiempo como realizadas.</p>
+    <div id="fe_lista"></div>
+    <div class="acts" style="margin:8px 0 14px;display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn small secondary" id="fe_btnRec" onclick="recuperarFechasPlan()" style="display:none;">↩ Recuperar fechas del plan original</button>
+      <button class="btn small secondary" onclick="feVerCurso()">✏️ Datos del curso</button>
+    </div>
+    <h4 id="fe_formTit" style="margin:6px 0;">Agregar fecha</h4>
+    <div class="fe-grid">
+      <div class="field"><label>Módulo</label><input type="text" id="fe_mod" list="fe_modlist" placeholder="Ej.: Módulo 2"><datalist id="fe_modlist"></datalist></div>
+      <div class="field"><label>Grupo</label><input type="text" id="fe_grupo" placeholder="Ej.: A, B, 1…"></div>
+      <div class="field"><label>Inicio</label><input type="date" id="fe_ini"></div>
+      <div class="field"><label>Fin</label><input type="date" id="fe_fin"></div>
+      <div class="field"><label>Horario</label><input type="text" id="fe_hora" placeholder="Ej.: 8 A 12"></div>
+      <div class="field"><label>Docente</label><input type="text" id="fe_doc"></div>
+      <div class="field"><label>Lugar</label><input type="text" id="fe_lugar"></div>
+      <div class="field"><label>Nota</label><input type="text" id="fe_nota" placeholder="Opcional"></div>
+    </div>
+    <div class="acts" style="margin:8px 0;display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn" id="fe_btnGuardar" onclick="guardarTramo()">+ Agregar fecha</button>
+      <button class="btn secondary" id="fe_btnCancel" onclick="editarTramo(null)" style="display:none;">Cancelar edición</button>
+    </div>
+    <details style="margin-top:10px;"><summary style="cursor:pointer;font-weight:700;">📚 Módulos del plan de formación</summary>
+      <p style="font-size:.78rem;color:var(--text-muted);margin:6px 0;">Un módulo por renglón. Aparecen como sugerencia al cargar cada fecha.</p>
+      <textarea id="fe_modtxt" style="width:100%;min-height:130px;"></textarea>
+      <button class="btn small secondary" onclick="guardarModulosPlan()" style="margin-top:6px;">Guardar módulos</button>
+    </details>
+    <details style="margin-top:10px;"><summary style="cursor:pointer;font-weight:700;">🕘 Historial de cambios (trazabilidad)</summary><div class="fe-hist" id="fe_hist" style="margin-top:6px;"></div></details>
+    <div class="modal-actions"><div></div><div><button class="btn secondary" onclick="closeModal('fechasModalBg')">Cerrar</button></div></div>
+  </div>
+</div>
+
 <!-- MODAL CURSO -->
 <div class="modal-bg" id="courseModalBg">
   <div class="modal">
     <h3 id="courseModalTitle">Editar curso</h3>
     <input type="hidden" id="c_id">
     <div id="c_pgLinks" style="display:none;gap:8px;margin:-4px 0 12px;flex-wrap:wrap;">
+      <button class="btn small" onclick="closeModal('courseModalBg');openFechasModal(document.getElementById('c_id').value)">📅 Fechas, módulos y grupos</button>
       <button class="btn small secondary" onclick="irAProgramaInforme(document.getElementById('c_id').value,'programa')">📘 Programa de capacitación</button>
       <button class="btn small secondary" onclick="irAProgramaInforme(document.getElementById('c_id').value,'informe')">📝 Informe del curso</button>
     </div>
@@ -1169,7 +1215,7 @@ async function initLocalMode(){
   informes = data.informes || {};
   archivos = data.archivos || {};
   if(Object.keys(cursos).length === 0){
-    seedCursos.forEach((c,i)=>{ cursos["c"+i] = c; });
+    seedCursos.forEach((c,i)=>{ cursos["c"+i] = JSON.parse(JSON.stringify(c)); });
   }
   if(Object.keys(usuarios).length === 0){
     usuarios['admin'] = await buildDefaultAdmin();
@@ -1351,9 +1397,24 @@ function colorCentral(ce){
   return CAL_COLORS[i % CAL_COLORS.length];
 }
 function cursoCentralesId(){ return Object.keys(cursos).find(id=>esCursoCentrales(cursos[id])) || null; }
+/* Fechas de un curso (cada una con módulo y grupo). Los cursos sin fechas registradas usan inicio/fin como antes. */
+function tramosDe(cid){
+  const t = (cursos[cid]||{}).tramos || {};
+  return Object.entries(t).filter(([,x])=>x && x.inicio && x.fin).map(([tid,x])=>Object.assign({tid},x))
+    .sort((a,b)=>a.inicio.localeCompare(b.inicio) || String(a.mod||'').localeCompare(String(b.mod||''),'es',{numeric:true}) || String(a.grupo||'').localeCompare(String(b.grupo||''),'es',{numeric:true}));
+}
+function etiquetaTramo(t){ return [t.mod, t.grupo ? 'Grupo '+t.grupo : ''].filter(Boolean).join(' · '); }
+function estadoTramo(t){ const h = hoyISO(); return t.fin<h ? 'real' : (t.inicio<=h ? 'curso' : 'prog'); }
 function calEventosTodos(){
   const out = [];
   Object.entries(cursos).forEach(([id,c])=>{
+    const tr = esCursoCentrales(c) ? [] : tramosDe(id);
+    if(tr.length){
+      tr.forEach(t=>out.push({key:'t:'+id+':'+t.tid, tipo:'curso', id, tid:t.tid, titulo:(c.orden?c.orden+'. ':'')+c.nombre, orden:c.orden||0, inicio:t.inicio, fin:t.fin,
+        color:c.color||'#1f8a5f', docente:t.docente||c.docente||'', lugar:t.lugar||c.lugar||'', hora:t.hora||'', etiqueta:etiquetaTramo(t), nota:t.nota||'', done:estadoTramo(t)==='real',
+        extra:[c.modalidad, c.horas?c.horas+' h':''].filter(Boolean).join(' · ')}));
+      return;
+    }
     if(esCursoCentrales(c) || !c.inicio || !c.fin) return;
     out.push({key:'c:'+id, tipo:'curso', id, titulo:(c.orden?c.orden+'. ':'')+c.nombre, orden:c.orden||0, inicio:c.inicio, fin:c.fin,
       color:c.color||'#1f8a5f', docente:c.docente||'', lugar:c.lugar||'', hora:'', extra:[c.modalidad, c.horas?c.horas+' h':''].filter(Boolean).join(' · ')});
@@ -1384,7 +1445,7 @@ function calPendientes(){
   return centralesCal().filter(ce=>(!ce.inicio || !ce.fin) && (!q || normTxt(ce.nombre+' '+(ce.docente||'')).includes(q)));
 }
 function tituloEvento(e){ return escAl(e.titulo); }
-function tipEvento(e){ return [e.titulo, fmtLarga(e.inicio)+' al '+fmtLarga(e.fin), fmtHora(e.hora), e.docente?('Docente: '+e.docente):'', e.lugar?('Lugar: '+e.lugar):'', e.extra].filter(Boolean).join('\n'); }
+function tipEvento(e){ return [e.titulo, e.etiqueta, e.done?'✔ Realizado':'', fmtLarga(e.inicio)+' al '+fmtLarga(e.fin), fmtHora(e.hora), e.docente?('Docente: '+e.docente):'', e.lugar?('Lugar: '+e.lugar):'', e.extra].filter(Boolean).join('\n'); }
 
 /* sincroniza las fechas del Curso 1 con las de sus centrales (mínimo y máximo) */
 function sincCursoCentrales(ups, over){
@@ -1407,10 +1468,22 @@ function sincCursoCentrales(ups, over){
 
 function guardarFechasEvento(key, s, f){
   const ups = {};
+  if(key.startsWith('t:')){
+    const [, cid, tid] = key.split(':');
+    const t = ((cursos[cid]||{}).tramos||{})[tid]; if(!t) return;
+    ups['convenio24/cursos/'+cid+'/tramos/'+tid+'/inicio'] = s;
+    ups['convenio24/cursos/'+cid+'/tramos/'+tid+'/fin'] = f;
+    ups['convenio24/cursos/'+cid+'/tramos/'+tid+'/modPor'] = pgUsuarioNombre()||'';
+    ups['convenio24/cursos/'+cid+'/tramos/'+tid+'/modTs'] = Date.now();
+    histAdd(ups, cid, 'Movió '+(etiquetaTramo(t)||'una fecha')+' de '+fmtCorta(t.inicio)+'–'+fmtCorta(t.fin)+' a '+fmtCorta(s)+'–'+fmtCorta(f)+' (línea de tiempo)');
+    sincTramos(ups, cid, {[tid]:Object.assign({}, t, {inicio:s, fin:f})});
+    dbApply(ups); return;
+  }
   if(key.startsWith('c:')){
     const id = key.slice(2);
     ups['convenio24/cursos/'+id+'/inicio'] = s;
     ups['convenio24/cursos/'+id+'/fin'] = f;
+    const c0 = cursos[id]||{}; histAdd(ups, id, 'Movió el curso de '+(c0.inicio?fmtCorta(c0.inicio):'?')+'–'+(c0.fin?fmtCorta(c0.fin):'?')+' a '+fmtCorta(s)+'–'+fmtCorta(f));
   }else{
     const id = key.slice(2);
     const ce = centralesCal().find(x=>x.id===id);
@@ -1422,7 +1495,8 @@ function guardarFechasEvento(key, s, f){
   dbApply(ups);
 }
 function abrirEventoCal(key){
-  if(key.startsWith('c:') || key.startsWith('g:')) openCourseModal(key.slice(2));
+  if(key.startsWith('t:')) openFechasModal(key.split(':')[1], key.split(':')[2]);
+  else if(key.startsWith('c:') || key.startsWith('g:')) openFechasModal(key.slice(2));
   else openCentralEvModal(key.slice(2));
 }
 
@@ -1520,16 +1594,22 @@ function renderTimeline(body, evs, pend){
     evC.forEach(e=>filas.push({tipo:'central', ev:e}));
     pend.forEach(ce=>filas.push({tipo:'pend', ce}));
   }
-  evs.filter(e=>e.tipo==='curso').sort((a,b)=>a.orden-b.orden).forEach(e=>filas.push({tipo:'curso', ev:e}));
+  const porCurso = new Map();
+  evs.filter(e=>e.tipo==='curso').forEach(e=>{ if(!porCurso.has(e.id)) porCurso.set(e.id, []); porCurso.get(e.id).push(e); });
+  [...porCurso.values()].sort((a,b)=>a[0].orden-b[0].orden).forEach(l=>{
+    l.sort((a,b)=>a.inicio.localeCompare(b.inicio)); const fines = [];
+    l.forEach(e=>{ let k = fines.findIndex(f=>f<e.inicio); if(k<0){ k = fines.length; fines.push(''); } fines[k] = e.fin; e.lane = k; });
+    filas.push({tipo:'curso', ev:l[0], evs:l, h:Math.max(ROW, 8+46*fines.length)});
+  });
 
   let labels = `<div class="tl-lab-head">Curso / central</div>`;
   let rowsHtml = '';
   const barra = (e)=>{
     const left = dayDiff(start, e.inicio)*dw, w = (dayDiff(e.inicio, e.fin)+1)*dw;
-    const sub = [fmtHora(e.hora), e.docente].filter(Boolean).join(' · ');
-    return `<div class="tl-bar" data-key="${e.key}" data-s="${e.inicio}" data-f="${e.fin}" style="left:${left}px;width:${w}px;--c:${e.color};" title="${escAl(tipEvento(e))}" onpointerdown="tlDrag(event,'${e.key}','move')">
+    const sub = [e.etiqueta, fmtHora(e.hora), e.docente].filter(Boolean).join(' · ');
+    return `<div class="tl-bar ${e.done?'done':''}" data-key="${e.key}" data-s="${e.inicio}" data-f="${e.fin}" style="left:${left}px;width:${w}px;${e.lane?`top:${7+46*e.lane}px;`:''}--c:${e.color};" title="${escAl(tipEvento(e))}" onpointerdown="tlDrag(event,'${e.key}','move')">
       <span class="tl-h l" onpointerdown="tlDrag(event,'${e.key}','l')"></span>
-      <div class="tl-bar-in"><b class="tl-fechas">${fmtCorta(e.inicio)} – ${fmtCorta(e.fin)}</b>${sub?`<i>${escAl(sub)}</i>`:''}</div>
+      <div class="tl-bar-in"><b class="tl-fechas">${e.done?'✔ ':''}${fmtCorta(e.inicio)} – ${fmtCorta(e.fin)}</b>${sub?`<i>${escAl(sub)}</i>`:''}</div>
       <span class="tl-h r" onpointerdown="tlDrag(event,'${e.key}','r')"></span></div>`;
   };
   filas.forEach(f=>{
@@ -1551,9 +1631,9 @@ function renderTimeline(body, evs, pend){
       labels += `<div class="tl-lab pend" style="height:${ROW}px;" onclick="openCentralEvModal('${ce.id}')"><b>⚡ ${escAl(ce.nombre)}</b><span>${escAl(ce.docente||'sin docente')} · fecha a definir</span></div>`;
       rowsHtml += `<div class="tl-row pend" style="height:${ROW}px;" onclick="tlClickPend(event,'${ce.id}')"><div class="tl-pend-txt">⏳ Fecha a definir — hacé clic en el día de inicio</div></div>`;
     }else{
-      const e = f.ev;
-      labels += `<div class="tl-lab" style="height:${ROW}px;border-left:5px solid ${e.color};" onclick="abrirEventoCal('${e.key}')"><b>${escAl(truncate(e.titulo,46))}</b><span>${escAl(e.extra||'')}${e.docente?' · '+escAl(e.docente):''}</span></div>`;
-      rowsHtml += `<div class="tl-row" style="height:${ROW}px;">${barra(e)}</div>`;
+      const e = f.ev, nfe = f.evs.length;
+      labels += `<div class="tl-lab" style="height:${f.h}px;border-left:5px solid ${e.color};" onclick="openFechasModal('${e.id}')" title="Ver y cargar las fechas de este curso"><b>${escAl(truncate(e.titulo,46))}</b><span>${escAl(e.extra||'')}${nfe>1 || e.tid?' · 📅 '+nfe+' fecha'+(nfe!==1?'s':''):''}${nfe===1&&e.docente?' · '+escAl(e.docente):''}</span></div>`;
+      rowsHtml += `<div class="tl-row" style="height:${f.h}px;">${f.evs.map(barra).join('')}</div>`;
     }
   });
   if(!filas.length) rowsHtml = `<div style="padding:30px;text-align:center;color:var(--text-muted);">No hay eventos para mostrar con estos filtros.</div>`;
@@ -1563,7 +1643,7 @@ function renderTimeline(body, evs, pend){
   for(let k=0;k<nDias;k++){ const w = wdayISO(addDays(start,k)); if(w===6){ stripes += `<div class="tl-fin" style="left:${k*dw}px;width:${Math.min(2,nDias-k)*dw}px;"></div>`; } else if(w===0 && k===0){ stripes += `<div class="tl-fin" style="left:0;width:${dw}px;"></div>`; } }
   const hoyOff = dayDiff(start,hoy);
   const hoyLine = (hoyOff>=0 && hoyOff<nDias) ? `<div class="tl-hoy" style="left:${hoyOff*dw+dw/2}px;"><span>HOY</span></div>` : '';
-  const totalH = filas.length*ROW;
+  const totalH = filas.reduce((a,f)=>a+(f.h||ROW),0);
 
   body.innerHTML = `<div class="tl-wrap" style="--dw:${dw}px;">
     <div class="tl-labels">${labels}</div>
@@ -1769,9 +1849,11 @@ function renderDiaFicha(forzar){
     const pr = programas[e.id], inf = informes[e.id];
     return `<div class="dia-card" style="--c:${e.color};">
       <div class="dia-card-t">${escAl(e.titulo)} ${fichaEstado(e, iso)}</div>
+      ${fichaFila('🧩', escAl(e.etiqueta||''))}
       ${fichaFila('🎓', escAl([c.modalidad, c.horas?c.horas+' h':''].filter(Boolean).join(' · ')))}
-      ${fichaFila('👤', escAl(c.docente||'Docente sin asignar'))}
-      ${fichaFila('📍', escAl(c.lugar))}
+      ${fichaFila('🕙', escAl(fmtHora(e.hora)))}
+      ${fichaFila('👤', escAl(e.docente||c.docente||'Docente sin asignar'))}
+      ${fichaFila('📍', escAl(e.lugar||c.lugar))}
       ${fichaFila('📅', escAl(fmtLarga(e.inicio)+' al '+fmtLarga(e.fin)))}
       ${fichaFila('👥', c.participantes ? c.participantes+' participantes previstos' : '')}
       ${fichaFila('🎯', escAl(c.dirigido))}
@@ -1940,14 +2022,150 @@ function saveCourse(){
   if(!data.nombre){ alert('El nombre del curso es obligatorio.'); return; }
   if(new Date(data.fin) < new Date(data.inicio)){ alert('La fecha de fin no puede ser anterior al inicio.'); return; }
 
-  if(useFirebase){
-    db.ref('convenio24/cursos/'+id).set(data).catch(e=>alert('Error al guardar en Firebase: '+e.message));
-  }else{
-    cursos[id] = data;
-    persist();
-    renderAll();
+  const prev = cursos[id], ups = {};
+  const tieneTramos = prev && tramosDe(id).length;
+  if(tieneTramos){ data.inicio = prev.inicio; data.fin = prev.fin; }   // las fechas se administran en "Fechas, módulos y grupos"
+  else if(prev && prev.inicio && prev.fin && (prev.inicio!==data.inicio || prev.fin!==data.fin)){
+    if(confirm('Este curso ya tenía las fechas '+fmtCorta(prev.inicio)+' – '+fmtCorta(prev.fin)+'.\n\nAceptar: conservarlas como fecha realizada y sumar las nuevas.\nCancelar: reemplazar la fecha anterior por la nueva.')){
+      const t1 = uid2(), t2 = uid2(), ahora = Date.now(), u = pgUsuarioNombre()||'';
+      ups['convenio24/cursos/'+id+'/tramos/'+t1] = {mod:'Primera edición', inicio:prev.inicio, fin:prev.fin, creadoPor:u, ts:ahora-1};
+      ups['convenio24/cursos/'+id+'/tramos/'+t2] = {mod:'Nueva edición', inicio:data.inicio, fin:data.fin, creadoPor:u, ts:ahora};
+      histAdd(ups, id, 'Conservó las fechas anteriores ('+fmtCorta(prev.inicio)+'–'+fmtCorta(prev.fin)+') y agregó '+fmtCorta(data.inicio)+'–'+fmtCorta(data.fin));
+    }else histAdd(ups, id, 'Reemplazó las fechas '+fmtCorta(prev.inicio)+'–'+fmtCorta(prev.fin)+' por '+fmtCorta(data.inicio)+'–'+fmtCorta(data.fin));
   }
+  Object.entries(data).forEach(([k,v])=>{ ups['convenio24/cursos/'+id+'/'+k] = v; });
+  dbApply(ups);
   closeModal('courseModalBg');
+}
+
+/* ============ FECHAS DEL CURSO: módulos, grupos y trazabilidad ============ */
+function histAdd(ups, cid, txt){
+  ups['convenio24/cursos/'+cid+'/hist/'+Date.now().toString(36)+Math.random().toString(36).slice(2,5)] = {ts:Date.now(), u:pgUsuarioNombre()||'(sin identificar)', txt};
+}
+/* mantiene inicio/fin del curso = primera y última de sus fechas */
+function sincTramos(ups, cid, cambios){
+  const m = {}; tramosDe(cid).forEach(t=>{ m[t.tid] = t; });
+  Object.entries(cambios||{}).forEach(([tid,t])=>{ if(t===null) delete m[tid]; else m[tid] = t; });
+  const l = Object.values(m);
+  if(!l.length){ ups['convenio24/cursos/'+cid+'/inicio'] = null; ups['convenio24/cursos/'+cid+'/fin'] = null; return; }
+  ups['convenio24/cursos/'+cid+'/inicio'] = l.map(t=>t.inicio).sort()[0];
+  ups['convenio24/cursos/'+cid+'/fin'] = l.map(t=>t.fin).sort().slice(-1)[0];
+}
+function modulosDe(cid){
+  const c = cursos[cid]||{};
+  if(typeof c.modulosTxt==='string') return c.modulosTxt.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+  return /\bSEAs?\b/i.test(c.nombre||'') ? Array.from({length:9},(_,i)=>'Módulo '+(i+1)) : [];
+}
+function fmtTs(ts){ const d = new Date(ts); return pad2(d.getDate())+'/'+pad2(d.getMonth()+1)+'/'+d.getFullYear()+' '+pad2(d.getHours())+':'+pad2(d.getMinutes()); }
+function openFechasModal(cid, tid){
+  const c = cursos[cid]; if(!c) return;
+  document.getElementById('fe_cid').value = cid;
+  document.getElementById('fe_titulo').textContent = 'Fechas del curso — '+(c.orden?c.orden+'. ':'')+c.nombre;
+  document.getElementById('fe_modtxt').value = modulosDe(cid).join('\n');
+  document.getElementById('fechasModalBg').classList.add('active');
+  renderFechasModal();
+  editarTramo(tid || null);
+}
+function renderFechasModal(){
+  const cid = document.getElementById('fe_cid').value, c = cursos[cid]; if(!c) return;
+  let tr = tramosDe(cid), legacy = false;
+  if(!tr.length && c.inicio && c.fin){ legacy = true; tr = [{tid:'', mod:'Fecha cargada', inicio:c.inicio, fin:c.fin, docente:c.docente, lugar:c.lugar}]; }
+  const lab = {real:['Realizado','real'], curso:['En curso','curso'], prog:['Programado','']};
+  document.getElementById('fe_lista').innerHTML = tr.length ? `<div style="overflow:auto;"><table class="fe-tbl"><thead><tr><th>Módulo</th><th>Grupo</th><th>Fechas</th><th>Horario</th><th>Docente</th><th>Lugar</th><th>Estado</th><th>Cargó</th><th></th></tr></thead><tbody>`+
+    tr.map(t=>{ const es = lab[estadoTramo(t)]; const quien = t.creadoPor ? escAl(t.creadoPor)+(t.ts?'<br><small>'+fmtTs(t.ts)+'</small>':'') : '';
+      return `<tr><td><b>${escAl(t.mod||'—')}</b>${t.nota?`<br><small>${escAl(t.nota)}</small>`:''}</td><td>${escAl(t.grupo||'—')}</td><td>${fmtCorta(t.inicio)} – ${fmtCorta(t.fin)}<br><small>${t.inicio.slice(0,4)}</small></td><td>${escAl(fmtHora(t.hora)||'')}</td><td>${escAl(t.docente||'')}</td><td>${escAl(t.lugar||'')}</td><td><span class="fe-st ${es[1]}">${es[0]}</span></td><td>${quien}</td>
+      <td style="white-space:nowrap;">${legacy?'':`<button class="btn small secondary" onclick="editarTramo('${t.tid}')">✏️</button> <button class="btn small secondary" onclick="borrarTramo('${t.tid}')">🗑</button>`}</td></tr>`; }).join('')+`</tbody></table></div>`
+    : '<div style="padding:10px;color:var(--text-muted);">Todavía no hay fechas cargadas para este curso.</div>';
+  document.getElementById('fe_modlist').innerHTML = modulosDe(cid).map(m=>`<option value="${escAl(m)}">`).join('');
+  const hist = Object.values(c.hist||{}).sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,40);
+  document.getElementById('fe_hist').innerHTML = hist.length ? hist.map(h=>`<div>• <b>${fmtTs(h.ts)}</b> · ${escAl(h.u||'')} — ${escAl(h.txt||'')}</div>`).join('') : 'Sin cambios registrados todavía.';
+  document.getElementById('fe_btnRec').style.display = fechasSeedFaltantes(cid) ? '' : 'none';
+}
+function editarTramo(tid){
+  const cid = document.getElementById('fe_cid').value, c = cursos[cid]||{};
+  const t = tid ? ((c.tramos||{})[tid]) : null;
+  document.getElementById('fe_tid').value = t ? tid : '';
+  document.getElementById('fe_formTit').textContent = t ? 'Editar fecha' : 'Agregar fecha';
+  document.getElementById('fe_btnGuardar').textContent = t ? 'Guardar cambios' : '+ Agregar fecha';
+  document.getElementById('fe_btnCancel').style.display = t ? '' : 'none';
+  const v = t || {};
+  document.getElementById('fe_mod').value = v.mod||'';
+  document.getElementById('fe_grupo').value = v.grupo||'';
+  document.getElementById('fe_ini').value = v.inicio||'';
+  document.getElementById('fe_fin').value = v.fin||'';
+  document.getElementById('fe_hora').value = v.hora||'';
+  document.getElementById('fe_doc').value = v.docente||'';
+  document.getElementById('fe_lugar').value = v.lugar||'';
+  document.getElementById('fe_nota').value = v.nota||'';
+}
+function guardarTramo(){
+  const cid = document.getElementById('fe_cid').value, tid0 = document.getElementById('fe_tid').value, c = cursos[cid]; if(!c) return;
+  const g = id=>document.getElementById(id).value.trim();
+  const t = {mod:g('fe_mod'), grupo:g('fe_grupo'), inicio:g('fe_ini'), fin:g('fe_fin'), hora:g('fe_hora'), docente:g('fe_doc'), lugar:g('fe_lugar'), nota:g('fe_nota')};
+  if(!t.inicio || !t.fin){ alert('Cargá la fecha de inicio y la de fin.'); return; }
+  if(t.fin < t.inicio){ alert('La fecha de fin no puede ser anterior al inicio.'); return; }
+  const ups = {}, u = pgUsuarioNombre()||'', cambiosSync = {};
+  // si el curso solo tenía una fecha suelta (inicio/fin), se conserva como primera fecha antes de agregar otra
+  if(!tramosDe(cid).length && c.inicio && c.fin && !tid0){
+    const t0 = uid2();
+    ups['convenio24/cursos/'+cid+'/tramos/'+t0] = {mod:'Fecha anterior', inicio:c.inicio, fin:c.fin, docente:c.docente||'', lugar:c.lugar||'', creadoPor:u, ts:Date.now()-1};
+    cambiosSync[t0] = {inicio:c.inicio, fin:c.fin};
+    histAdd(ups, cid, 'Conservó la fecha ya cargada ('+fmtCorta(c.inicio)+'–'+fmtCorta(c.fin)+')');
+  }
+  const tid = tid0 || uid2(), rot = etiquetaTramo(t) || 'fecha';
+  if(tid0){
+    const o = (c.tramos||{})[tid0]||{}, cambios = [];
+    ['mod','grupo','inicio','fin','hora','docente','lugar','nota'].forEach(k=>{ if((o[k]||'')!==(t[k]||'')) cambios.push(k+': '+(o[k]||'—')+' → '+(t[k]||'—')); });
+    if(!cambios.length){ editarTramo(null); return; }
+    Object.entries(t).forEach(([k,v])=>{ ups['convenio24/cursos/'+cid+'/tramos/'+tid+'/'+k] = v; });
+    ups['convenio24/cursos/'+cid+'/tramos/'+tid+'/modPor'] = u; ups['convenio24/cursos/'+cid+'/tramos/'+tid+'/modTs'] = Date.now();
+    histAdd(ups, cid, 'Editó '+rot+' ('+cambios.join('; ')+')');
+  }else{
+    const dup = tramosDe(cid).find(x=>(x.mod||'')===t.mod && (x.grupo||'')===t.grupo && t.mod && x.inicio<=t.fin && x.fin>=t.inicio);
+    if(dup && !confirm('Ya hay una fecha de '+etiquetaTramo(dup)+' que se superpone ('+fmtCorta(dup.inicio)+'–'+fmtCorta(dup.fin)+'). ¿Agregar igual?')) return;
+    ups['convenio24/cursos/'+cid+'/tramos/'+tid] = Object.assign({}, t, {creadoPor:u, ts:Date.now()});
+    histAdd(ups, cid, 'Agregó '+rot+': '+fmtCorta(t.inicio)+'–'+fmtCorta(t.fin)+(t.docente?' · '+t.docente:''));
+  }
+  cambiosSync[tid] = t;
+  sincTramos(ups, cid, cambiosSync);
+  Promise.resolve(dbApply(ups)).then(()=>setTimeout(()=>{ renderFechasModal(); editarTramo(null); }, 350));
+}
+function borrarTramo(tid){
+  const cid = document.getElementById('fe_cid').value, t = ((cursos[cid]||{}).tramos||{})[tid]; if(!t) return;
+  if(!confirm('¿Eliminar la fecha '+(etiquetaTramo(t)||'')+' '+fmtCorta(t.inicio)+'–'+fmtCorta(t.fin)+'?\n\nQueda registrada en el historial de cambios.')) return;
+  const ups = {}; ups['convenio24/cursos/'+cid+'/tramos/'+tid] = null;
+  histAdd(ups, cid, 'Eliminó '+(etiquetaTramo(t)||'una fecha')+' ('+fmtCorta(t.inicio)+'–'+fmtCorta(t.fin)+')');
+  sincTramos(ups, cid, {[tid]:null});
+  Promise.resolve(dbApply(ups)).then(()=>setTimeout(()=>{ renderFechasModal(); editarTramo(null); }, 350));
+}
+function guardarModulosPlan(){
+  const cid = document.getElementById('fe_cid').value;
+  const ups = {}; ups['convenio24/cursos/'+cid+'/modulosTxt'] = document.getElementById('fe_modtxt').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean).join('\n');
+  histAdd(ups, cid, 'Actualizó los módulos del plan de formación');
+  Promise.resolve(dbApply(ups)).then(()=>setTimeout(renderFechasModal, 350));
+}
+function feVerCurso(){ const cid = document.getElementById('fe_cid').value; closeModal('fechasModalBg'); openCourseModal(cid); }
+/* Fechas con las que el curso estaba cargado originalmente (plan) y que ya no figuran en el calendario */
+function fechasSeedFaltantes(cid){
+  const c = cursos[cid]; if(!c || esCursoCentrales(c)) return null;
+  const sd = seedCursos.find(x=>x.orden===c.orden && normTxt(x.nombre)===normTxt(c.nombre));
+  if(!sd || !sd.inicio || !sd.fin) return null;
+  const ya = tramosDe(cid).some(t=>t.inicio===sd.inicio && t.fin===sd.fin) || (!tramosDe(cid).length && c.inicio===sd.inicio && c.fin===sd.fin);
+  return ya ? null : sd;
+}
+function recuperarFechasPlan(){
+  const cid = document.getElementById('fe_cid').value, c = cursos[cid], sd = fechasSeedFaltantes(cid); if(!sd) return;
+  if(!confirm('Se va a recuperar la fecha original del plan: '+fmtCorta(sd.inicio)+' – '+fmtCorta(sd.fin)+'.\n\nLas fechas que hoy tiene el curso se conservan.')) return;
+  const ups = {}, u = pgUsuarioNombre()||'';
+  if(!tramosDe(cid).length && c.inicio && c.fin){
+    ups['convenio24/cursos/'+cid+'/tramos/'+uid2()] = {mod:'Fecha cargada después', inicio:c.inicio, fin:c.fin, docente:c.docente||'', lugar:c.lugar||'', creadoPor:u, ts:Date.now()};
+  }
+  const t = {mod:'Fecha original del plan', inicio:sd.inicio, fin:sd.fin, docente:sd.docente||'', lugar:sd.lugar||'', creadoPor:u, ts:Date.now()-1};
+  const tid = uid2(); ups['convenio24/cursos/'+cid+'/tramos/'+tid] = t;
+  histAdd(ups, cid, 'Recuperó la fecha original del plan ('+fmtCorta(sd.inicio)+'–'+fmtCorta(sd.fin)+')');
+  const nuevas = {}; Object.entries(ups).forEach(([k,v])=>{ const m = /tramos\/(\w+)$/.exec(k); if(m && v && v.inicio) nuevas[m[1]] = v; });
+  sincTramos(ups, cid, nuevas);
+  Promise.resolve(dbApply(ups)).then(()=>setTimeout(renderFechasModal, 350));
 }
 
 function deleteCourse(){
@@ -2129,11 +2347,10 @@ function dbApply(ups, silencioso){
   Object.entries(ups).forEach(([path,val])=>{
     const seg = path.split('/');
     const coll = collByName(seg[1]); if(!coll) return;
-    if(seg.length===3){ if(val===null) delete coll[seg[2]]; else coll[seg[2]] = JSON.parse(JSON.stringify(val)); }
-    else if(seg.length===4){
-      if(!coll[seg[2]]) coll[seg[2]] = {};
-      if(val===null) delete coll[seg[2]][seg[3]]; else coll[seg[2]][seg[3]] = val;
-    }
+    let o = coll;
+    for(let i=2;i<seg.length-1;i++){ if(o[seg[i]]==null || typeof o[seg[i]]!=='object') o[seg[i]] = {}; o = o[seg[i]]; }
+    const last = seg[seg.length-1];
+    if(val===null) delete o[last]; else o[last] = (val && typeof val==='object') ? JSON.parse(JSON.stringify(val)) : val;
   });
   persist();
   renderAlumnosTabla();
