@@ -1083,8 +1083,12 @@ function tryInitFirebase(){
           const authTimer = setTimeout(()=>{
             if(!useFirebase) showConnProblem('El inicio de sesión anónimo de Firebase no respondió (10 s).'+(location.protocol==='file:'?' Es típico al abrir el archivo desde tu PC (<code>file://</code>).':' Verificá que "Anónimo" esté habilitado en Firebase → Authentication → Sign-in method.'));
           }, 10000);
-          firebase.auth().signInAnonymously().then(()=>{
+          // La sesión se guarda solo en esta pestaña: así otra app del mismo dominio (p. ej. la Matriz, al tocar "Salir")
+          // no cierra la sesión de esta y no aparece PERMISSION_DENIED al guardar.
+          Promise.resolve(firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)).catch(()=>{})
+          .then(()=>firebase.auth().signInAnonymously()).then(()=>{
             clearTimeout(authTimer);
+            firebase.auth().onAuthStateChanged(u=>{ if(!u && useFirebase) firebase.auth().signInAnonymously().catch(()=>{}); });
             db = firebase.database();
             useFirebase = true;
             setStatus("● Sistema en vivo — sincronizado");
@@ -2113,7 +2117,14 @@ function collByName(n){
 /* Aplica varios cambios de una sola vez (Firebase: update multi-ruta; modo local: memoria + localStorage) */
 function dbApply(ups, silencioso){
   if(useFirebase){
-    return db.ref().update(ups).catch(e=>{ if(!silencioso) alert('Error al guardar en Firebase: '+e.message); console.error(e); });
+    const fallo = e=>{ if(!silencioso) alert('Error al guardar en Firebase: '+e.message+(/PERMISSION_DENIED/.test(e.message||'')?'\n\nSi se repite, recargá la página (Ctrl+F5) para renovar la sesión.':'')); console.error(e); };
+    return db.ref().update(ups).catch(e=>{
+      // Sesión cerrada o vencida (p. ej. por otra pestaña de la misma web): se renueva y se reintenta una vez.
+      if(/PERMISSION_DENIED/.test(e && e.message || '')){
+        return firebase.auth().signInAnonymously().then(()=>db.ref().update(ups)).catch(fallo);
+      }
+      fallo(e);
+    });
   }
   Object.entries(ups).forEach(([path,val])=>{
     const seg = path.split('/');
